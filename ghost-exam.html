@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>인간 유사도 시험 — 귀신</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="exam-page ghost">
+  <div class="exam-wrap">
+
+    <!-- 헤더 -->
+    <header class="exam-header">
+      <a class="icon left" href="index.html" aria-label="홈으로">←</a>
+      <h1 class="exam-brand gradient-text">인간 유사도 시험</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+    </header>
+
+    <!-- 4모서리 장식 -->
+    <i class="exam-corner tl"></i>
+    <i class="exam-corner tr"></i>
+    <i class="exam-corner bl"></i>
+    <i class="exam-corner br"></i>
+
+    <!-- 퀴즈 -->
+    <main class="exam-panel" id="quiz">
+      <div class="exam-topbar">
+        <button class="exam-prev" id="exam-prev" type="button">← 이전</button>
+        <span class="exam-counter" id="exam-counter">1/10</span>
+      </div>
+
+      <div class="exam-progress">
+        <div class="exam-progress-fill" id="exam-progress-fill"></div>
+      </div>
+
+      <p class="exam-qnum gradient-text" id="exam-qnum">Q1.</p>
+      <h2 class="exam-question" id="exam-question">질문이 여기에 표시됩니다.</h2>
+
+      <div class="exam-answers" id="exam-answers">
+        <!-- 보기 버튼은 js/script.js 에서 생성됩니다 -->
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

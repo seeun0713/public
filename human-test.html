@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>귀신 유형 테스트 — 인간</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="typetest-page human">
+
+  <!-- 헤더 -->
+  <header class="typetest-header">
+    <a class="icon left" href="index.html" aria-label="홈으로">←</a>
+    <h1 class="typetest-brand">귀신 유형 테스트</h1>
+    <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+  </header>
+
+  <!-- 오방색 띠 -->
+  <div class="saekdong-band"></div>
+
+  <!-- 퀴즈 -->
+  <main class="typetest-panel">
+    <div class="typetest-topbar">
+      <button class="typetest-prev" id="test-prev" type="button">← 이전</button>
+      <span class="typetest-counter" id="test-counter">1/10</span>
+    </div>
+
+    <div class="typetest-progress">
+      <div class="typetest-progress-fill" id="test-progress-fill"></div>
+    </div>
+
+    <p class="typetest-qnum" id="test-qnum">Q1.</p>
+    <h2 class="typetest-question" id="test-question">질문이 여기에 표시됩니다.</h2>
+
+    <div class="typetest-answers" id="test-answers">
+      <!-- 보기 버튼은 js/script.js 에서 생성됩니다 -->
+    </div>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
