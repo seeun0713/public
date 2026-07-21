@@ -479,6 +479,28 @@ function setupMenu() {
 
 
 /* ===========================================================
+   6. 귀신 도감 검색 (human-encyclopedia.html)
+   검색창에 입력하면 이름이 맞는 카드만 보여줍니다.
+   =========================================================== */
+function setupDogamSearch() {
+  var input = document.getElementById("dogam-search-input");
+  if (!input) return; // 이 페이지가 아니면 중단
+
+  var cards = document.querySelectorAll("#dogam-grid .dogam-card");
+
+  input.addEventListener("input", function () {
+    var keyword = input.value.trim().toLowerCase();
+    cards.forEach(function (card) {
+      var nameEl = card.querySelector(".dogam-card-name");
+      var name = nameEl ? nameEl.textContent.toLowerCase() : "";
+      // 검색어가 이름에 포함되면 보이고, 아니면 숨김
+      card.style.display = name.indexOf(keyword) !== -1 ? "" : "none";
+    });
+  });
+}
+
+
+/* ===========================================================
    페이지가 열리면 알맞은 기능을 실행합니다.
    (각 함수는 자기 페이지가 아니면 알아서 중단됩니다.)
    =========================================================== */
@@ -488,4 +510,5 @@ document.addEventListener("DOMContentLoaded", function () {
   startGhostExam();
   showGhostResult();
   setupMenu();
+  setupDogamSearch();
 });

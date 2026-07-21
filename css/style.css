@@ -1452,3 +1452,337 @@ body.ordinance-page {
   .ordinance-corner { width: 60px; height: 60px; }
   .ordinance-chapter .desc { display: block; margin-left: 0; margin-top: 4px; }
 }
+
+
+/* =========================================================
+   귀신 도감 목록 페이지 (human-encyclopedia.html)
+   Figma 디자인. 검정 헤더 + 오방색 띠 + 한지 배경 +
+   검색바 + 검정 카드(흰 모서리 + 노리개) 4×2 그리드.
+   ========================================================= */
+
+body.dogam-page {
+  background: #efe6cf url("../images/parchment.jpg") center / cover fixed;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+/* 헤더 (검정 바) */
+.dogam-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 127px;
+  background: #000;
+}
+.dogam-header .dogam-brand {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #fff;
+}
+.dogam-header .icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  text-decoration: none;
+  font-size: 24px;
+}
+.dogam-header .icon.left { left: 40px; }
+.dogam-header .icon.right { right: 40px; }
+
+/* 본문 */
+.dogam-main {
+  max-width: 1302px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* 검색바 */
+.dogam-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #000;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 44px;
+}
+.dogam-search svg { flex: none; }
+.dogam-search input {
+  flex: 1;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+.dogam-search input::placeholder { color: #9a9a9a; }
+
+/* 카드 그리드 (4열) */
+.dogam-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 90px 40px;
+}
+
+/* 카드 한 장 */
+.dogam-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #000;
+  padding: 20px;
+  text-decoration: none;
+  color: #fff;
+}
+.dogam-card-img {
+  height: 231px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dogam-card-img img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.dogam-card-name {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+/* 카드 흰색 모서리 장식 (CSS L자 브래킷) */
+.dogam-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid #fff;
+}
+.dogam-corner.tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
+.dogam-corner.tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
+.dogam-corner.bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
+.dogam-corner.br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+
+/* 노리개 매듭 (카드 우하단에 매달림) */
+.dogam-knot {
+  position: absolute;
+  bottom: -56px;
+  right: 14px;
+  width: 60px;
+  pointer-events: none;
+}
+
+@media (max-width: 1000px) {
+  .dogam-grid { grid-template-columns: repeat(2, 1fr); gap: 80px 24px; }
+}
+@media (max-width: 560px) {
+  .dogam-grid { grid-template-columns: 1fr; }
+  .dogam-header .dogam-brand { font-size: 30px; }
+}
+
+
+/* =========================================================
+   시작 화면 (index.html) — 인간/귀신 선택
+   확립된 무드 적용: 인간=한지·오방색·빨강 / 귀신=검정·파스텔.
+   좌우 분할 화면, 마우스를 올린 쪽이 넓어집니다.
+   ========================================================= */
+
+body.entry-page {
+  --pastel: linear-gradient(90deg, #fffbd4 0%, #fdd0f3 41.83%, #9fffca 100%);
+  background: #000;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* 상단 가운데 안내 배지 */
+.entry-topbar {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 12px 28px;
+  backdrop-filter: blur(4px);
+}
+.entry-brand {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.entry-brand .g { /* 귀신 */
+  background: var(--pastel);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.entry-brand .x { color: #fff; margin: 0 6px; }
+.entry-brand .h { color: #ffe400; } /* 인간 */
+.entry-guide {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #bbb;
+  letter-spacing: 1px;
+}
+
+/* 좌우 분할 */
+.entry-split {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 한 쪽 (클릭 영역) */
+.entry-side {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  overflow: hidden;
+  transition: flex 0.45s ease;
+}
+.entry-side:hover { flex: 1.35; }
+
+/* 인간 쪽 — 한지 + 오방색 + 빨강 */
+.entry-side.human {
+  background: #efe6cf url("../images/parchment.jpg") center / cover;
+  color: #1a1a1a;
+}
+.entry-side.human .saekdong-band {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 14px;
+}
+
+/* 귀신 쪽 — 검정 + 파스텔 */
+.entry-side.ghost {
+  background: radial-gradient(120% 90% at 70% 20%, #1b1530 0%, #000 70%);
+  color: #fff;
+}
+.entry-side.ghost .cloud-ornament {
+  position: absolute;
+  top: 60px; right: 8%;
+  width: 200px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* 가운데 경계의 오방색 세로 띠 */
+.entry-split::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 8px;
+  transform: translateX(-50%);
+  z-index: 6;
+  background: repeating-linear-gradient(
+    180deg,
+    #ff0004 0 22px, #ffffff 22px 44px, #002bff 44px 66px,
+    #e60084 66px 88px, #ffe400 88px 110px, #c000e2 110px 132px, #00e926 132px 154px
+  );
+}
+
+/* 가운데 텍스트 블록 */
+.entry-inner {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding: 24px;
+}
+.entry-tag {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+.entry-side.human .entry-tag { background: #d51313; color: #fff; }
+.entry-side.ghost .entry-tag {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    var(--pastel) border-box;
+  color: #fff;
+}
+
+.entry-name {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 18px;
+}
+.entry-side.ghost .entry-name {
+  background: var(--pastel);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.entry-desc {
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 280px;
+  margin: 0 auto 28px;
+}
+.entry-side.human .entry-desc { color: #4a4030; }
+.entry-side.ghost .entry-desc { color: #cfc6e0; }
+
+/* 입장 버튼 */
+.entry-go {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px 30px;
+  border-radius: 999px;
+}
+.entry-side.human .entry-go {
+  background: #1a1a1a;
+  color: #fff;
+}
+.entry-side.ghost .entry-go {
+  border: 1.6px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    var(--pastel) border-box;
+  color: #fff;
+}
+
+/* 모서리 노리개 장식 (인간 쪽) */
+.entry-side.human .entry-knot {
+  position: absolute;
+  top: 0; left: 12%;
+  width: 60px;
+  pointer-events: none;
+}
+
+/* 좁은 화면: 위아래로 쌓기 */
+@media (max-width: 760px) {
+  .entry-split { flex-direction: column; }
+  .entry-side { min-height: 50vh; }
+  .entry-side:hover { flex: 1; }
+  .entry-split::after {
+    left: 0; right: 0; top: 50%; bottom: auto;
+    width: auto; height: 8px;
+    transform: translateY(-50%);
+    background: repeating-linear-gradient(
+      90deg,
+      #ff0004 0 22px, #ffffff 22px 44px, #002bff 44px 66px,
+      #e60084 66px 88px, #ffe400 88px 110px, #c000e2 110px 132px, #00e926 132px 154px
+    );
+  }
+  .entry-name { font-size: 60px; }
+  .entry-side.ghost .cloud-ornament { width: 130px; }
+}

@@ -6,22 +6,41 @@
   <title>귀신 × 인간</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="home">
-  <main class="home-main">
-    <h1 class="home-title">귀신 × 인간</h1>
-    <p class="home-subtitle">당신의 정체를 선택하세요.</p>
+<body class="entry-page">
 
-    <div class="choice-wrap">
-      <a class="choice choice-human" href="human-encyclopedia.html">
-        <span class="choice-label">인간</span>
-        <span class="choice-desc">귀신 도감 · 대응 규칙 · 성격 테스트</span>
-      </a>
+  <!-- 상단 안내 배지 -->
+  <div class="entry-topbar">
+    <span class="entry-brand">
+      <span class="g">귀신</span><span class="x">×</span><span class="h">인간</span>
+    </span>
+    <span class="entry-guide">당신의 정체를 선택하세요</span>
+  </div>
 
-      <a class="choice choice-ghost" href="ghost-archive.html">
-        <span class="choice-label">귀신</span>
-        <span class="choice-desc">착한 귀신 아카이브 · 인간 세상 규칙 · 유사도 시험</span>
-      </a>
-    </div>
+  <main class="entry-split">
+
+    <!-- 인간 진영 -->
+    <a class="entry-side human" href="human-encyclopedia.html">
+      <div class="saekdong-band"></div>
+      <img class="entry-knot" src="images/knot-red.svg" alt="" />
+      <div class="entry-inner">
+        <span class="entry-tag">人 · 인간 진영</span>
+        <h2 class="entry-name">인간</h2>
+        <p class="entry-desc">귀신 도감 · 귀신 대응 규칙 · 귀신 유형 테스트</p>
+        <span class="entry-go">인간으로 입장 →</span>
+      </div>
+    </a>
+
+    <!-- 귀신 진영 -->
+    <a class="entry-side ghost" href="ghost-archive.html">
+      <img class="cloud-ornament" src="images/cloud-ornament.svg" alt="" />
+      <div class="entry-inner">
+        <span class="entry-tag">鬼 · 귀신 진영</span>
+        <h2 class="entry-name">귀신</h2>
+        <p class="entry-desc">착한 귀신 아카이브 · 인간 세상 규칙 · 인간 유사도 시험</p>
+        <span class="entry-go">귀신으로 입장 →</span>
+      </div>
+    </a>
+
   </main>
 </body>
 </html>

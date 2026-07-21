@@ -6,39 +6,94 @@
   <title>귀신 도감 — 인간</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="human">
-  <header class="site-header">
-    <a class="home-link" href="index.html">← 홈으로</a>
-    <nav class="faction-nav">
-      <a href="human-encyclopedia.html" class="active">귀신 도감</a>
-      <a href="human-rules.html">귀신 대응 규칙</a>
-      <a href="human-test.html">성격 유형 테스트</a>
-    </nav>
+<body class="dogam-page human">
+
+  <!-- 헤더 -->
+  <header class="dogam-header">
+    <a class="icon left" href="index.html" aria-label="홈으로">←</a>
+    <h1 class="dogam-brand">귀신 도감</h1>
+    <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
   </header>
 
-  <main class="page">
-    <h1>귀신 도감</h1>
-    <p class="lead">당신이 마주칠 수 있는 귀신들의 기록.</p>
+  <!-- 오방색 띠 -->
+  <div class="saekdong-band"></div>
 
-    <section class="card-grid">
-      <a class="card" href="human-encyclopedia-susalgwi.html">
-        <div class="card-image"><img src="images/susalgwi.png" alt="수살귀" /></div>
-        <h2 class="card-title">수살귀</h2>
-        <p class="card-brief">지역: 불특정 · 죽음: 익사 · 위험도 ★★★★★</p>
-        <h3>세부 특징</h3>
-        <p>물에 얽매인 귀신. 자세히 보기 →</p>
+  <main class="dogam-main">
+
+    <!-- 검색바 -->
+    <div class="dogam-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="2" />
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <input id="dogam-search-input" type="text" placeholder="귀신 이름 검색" />
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="dogam-grid" id="dogam-grid">
+
+      <a class="dogam-card" href="human-encyclopedia-susalgwi.html">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-susalgwi.png" alt="수살귀" /></span>
+        <span class="dogam-card-name">수살귀</span>
+        <img class="dogam-knot" src="images/knot-red.svg" alt="" />
       </a>
 
-      <article class="card">
-        <div class="card-image">이미지</div>
-        <h2 class="card-title">귀신 이름</h2>
-        <p class="card-brief">간략 정보 — 출몰 지역, 위험도 등.</p>
-        <h3>세부 특징</h3>
-        <p>세부 특징 설명이 들어갑니다.</p>
-        <h3>스토리</h3>
-        <p>이 귀신에 얽힌 이야기가 들어갑니다.</p>
-      </article>
-    </section>
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-maehwa.png" alt="매화귀신" /></span>
+        <span class="dogam-card-name">매화귀신</span>
+        <img class="dogam-knot" src="images/knot-green.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-golchul.png" alt="골출귀" /></span>
+        <span class="dogam-card-name">골출귀</span>
+        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-jigwi.png" alt="지귀" /></span>
+        <span class="dogam-card-name">지귀</span>
+        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="human-encyclopedia-susalgwi.html">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-susalgwi.png" alt="수살귀" /></span>
+        <span class="dogam-card-name">수살귀</span>
+        <img class="dogam-knot" src="images/knot-red.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-maehwa.png" alt="매화귀신" /></span>
+        <span class="dogam-card-name">매화귀신</span>
+        <img class="dogam-knot" src="images/knot-green.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-golchul.png" alt="골출귀" /></span>
+        <span class="dogam-card-name">골출귀</span>
+        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      </a>
+
+      <a class="dogam-card" href="#">
+        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        <span class="dogam-card-img"><img src="images/dogam-jigwi.png" alt="지귀" /></span>
+        <span class="dogam-card-name">지귀</span>
+        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      </a>
+
+    </div>
   </main>
+
+  <!-- 오방색 띠 (하단) -->
+  <div class="saekdong-band"></div>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
