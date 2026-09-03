@@ -8,91 +8,167 @@
 </head>
 <body class="dogam-page human">
 
-  <!-- 헤더 -->
+  <!-- 헤더 (검정 바 127px) -->
   <header class="dogam-header">
-    <a class="icon left" href="index.html" aria-label="홈으로">←</a>
+    <a class="icon left" href="index.html" aria-label="홈으로">
+      <img src="images/dogam2-icon-back.svg" alt="" />
+    </a>
     <h1 class="dogam-brand">귀신 도감</h1>
-    <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+    <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+      <img src="images/dogam2-icon-menu.svg" alt="" />
+    </button>
   </header>
 
-  <!-- 오방색 띠 -->
-  <div class="saekdong-band"></div>
+  <!-- 오방색 띠 (상단) -->
+  <div class="saekdong-band top"></div>
 
   <main class="dogam-main">
 
-    <!-- 검색바 -->
-    <div class="dogam-search">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="2" />
-        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-      </svg>
-      <input id="dogam-search-input" type="text" placeholder="귀신 이름 검색" />
-    </div>
-
-    <!-- 카드 그리드 -->
+    <!-- 카드 그리드 (4열 × 2줄) -->
     <div class="dogam-grid" id="dogam-grid">
 
-      <a class="dogam-card" href="human-encyclopedia-susalgwi.html">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-susalgwi.png" alt="수살귀" /></span>
-        <span class="dogam-card-name">수살귀</span>
-        <img class="dogam-knot" src="images/knot-red.svg" alt="" />
+      <!--
+        카드 한 장의 구조 설명
+        .dogam-photo      : 206×231 크기의 "창"입니다. 넘치는 부분은 잘라냅니다.
+        .dogam-photo-img  : 원본 그림(4096×2304)을 786.41% × 394.48%로 크게 늘린 뒤
+                            left/top 값만큼 밀어서, 피그마와 똑같은 위치가 보이게 합니다.
+                            → 카드마다 left/top 값이 달라서 style 속성으로 직접 적었습니다.
+        .dogam-frame      : 사진 안쪽 10px 자리에 그리는 검정 사각 테두리
+        .dogam-corner     : 네 귀퉁이의 작은 재단(크롭) 표시
+
+        카드에 class="reveal"이 붙으면 마우스를 올렸을 때
+        정체가 드러나는 그림/이름/노리개로 스르륵(dissolve) 바뀝니다.
+      -->
+
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=susalgwi" aria-label="수살귀">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-2.png" alt="" style="left: -342.98%; top: -65.81%;" />
+          <!-- 호버 상태 그림 (평소엔 투명, 마우스 올리면 나타남) -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-susalgwi.png" alt="" aria-hidden="true" style="left: -342.98%; top: -76.43%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">@#$%</span>
+          <span class="name-hover">수살귀</span>
+        </span>
+        <!-- 호버 상태에만 보이는 빨간 노리개 (카드 아래로 늘어집니다) -->
+        <img class="dogam-knot" src="images/dogam2-knot-red.svg" alt="" aria-hidden="true" style="left: 156px; width: 84.639px; height: 154px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-maehwa.png" alt="매화귀신" /></span>
-        <span class="dogam-card-name">매화귀신</span>
-        <img class="dogam-knot" src="images/knot-green.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=geolsin" aria-label="걸신">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-3.png" alt="" style="left: -342.98%; top: -73.05%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-geolsin.png" alt="" aria-hidden="true" style="left: -342.98%; top: -76.43%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">$^#%</span>
+          <span class="name-hover">걸신</span>
+        </span>
+        <!-- 초록 노리개 — 빨간 것보다 좁아서 가운데를 맞추려고 left 값이 다릅니다 -->
+        <img class="dogam-knot" src="images/dogam2-knot-green.svg" alt="" aria-hidden="true" style="left: 166.82px; width: 63px; height: 155px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-golchul.png" alt="골출귀" /></span>
-        <span class="dogam-card-name">골출귀</span>
-        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=jigwi" aria-label="지귀">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-7.png" alt="" style="left: -342.98%; top: -61.59%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-jigwi.png" alt="" aria-hidden="true" style="left: -343.06%; top: -59.96%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">#$^!</span>
+          <span class="name-hover">지귀</span>
+        </span>
+        <img class="dogam-knot" src="images/dogam2-knot-yellow.svg" alt="" aria-hidden="true" style="left: 159.32px; width: 78px; height: 154px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-jigwi.png" alt="지귀" /></span>
-        <span class="dogam-card-name">지귀</span>
-        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=singiwonyo" aria-label="신기원요">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-9.png" alt="" style="left: -342.97%; top: -71.39%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-singiwonyo.png" alt="" aria-hidden="true" style="left: -353.06%; top: -74.75%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">#@%</span>
+          <span class="name-hover">신기원요</span>
+        </span>
+        <img class="dogam-knot" src="images/dogam2-knot-red.svg" alt="" aria-hidden="true" style="left: 156px; width: 84.639px; height: 154px;" />
       </a>
 
-      <a class="dogam-card" href="human-encyclopedia-susalgwi.html">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-susalgwi.png" alt="수살귀" /></span>
-        <span class="dogam-card-name">수살귀</span>
-        <img class="dogam-knot" src="images/knot-red.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=baekgwi" aria-label="백귀">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-5.png" alt="" style="left: -351.77%; top: -71.84%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-baekgwi.png" alt="" aria-hidden="true" style="left: -343.34%; top: -81.56%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">@$&amp;^%</span>
+          <span class="name-hover">백귀</span>
+        </span>
+        <img class="dogam-knot" src="images/dogam2-knot-green.svg" alt="" aria-hidden="true" style="left: 166.82px; width: 63px; height: 155px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-maehwa.png" alt="매화귀신" /></span>
-        <span class="dogam-card-name">매화귀신</span>
-        <img class="dogam-knot" src="images/knot-green.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=arang" aria-label="아랑">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-6.png" alt="" style="left: -342.98%; top: -70.03%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-arang.png" alt="" aria-hidden="true" style="left: -339.22%; top: -77.4%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">*#^%</span>
+          <span class="name-hover">아랑</span>
+        </span>
+        <img class="dogam-knot" src="images/dogam2-knot-yellow.svg" alt="" aria-hidden="true" style="left: 159.32px; width: 78px; height: 154px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-golchul.png" alt="골출귀" /></span>
-        <span class="dogam-card-name">골출귀</span>
-        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=maehwa" aria-label="매화귀신">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-4.png" alt="" style="left: -342.98%; top: -73.05%;" />
+          <!-- 호버 상태 그림 (이 카드는 잘라내는 위치가 다릅니다) -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-maehwa.png" alt="" aria-hidden="true" style="left: -361.69%; top: -86.54%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">!#$%</span>
+          <span class="name-hover">매화귀신</span>
+        </span>
+        <!-- 초록 노리개 (걸신과 같은 매듭) -->
+        <img class="dogam-knot" src="images/dogam2-knot-green.svg" alt="" aria-hidden="true" style="left: 166.82px; width: 63px; height: 155px;" />
       </a>
 
-      <a class="dogam-card" href="#">
-        <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        <span class="dogam-card-img"><img src="images/dogam-jigwi.png" alt="지귀" /></span>
-        <span class="dogam-card-name">지귀</span>
-        <img class="dogam-knot" src="images/knot-yellow.svg" alt="" />
+      <a class="dogam-card reveal" href="human-encyclopedia-detail.html?ghost=cheonggun" aria-label="청군여귀">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img" src="images/dogam2-8.png" alt="" style="left: -339.6%; top: -97.4%;" />
+          <!-- 호버 상태 그림 -->
+          <img class="dogam-photo-img on-hover" src="images/dogam2-hover-cheonggun.png" alt="" aria-hidden="true" style="left: -341.76%; top: -97.41%;" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name">
+          <span class="name-base">$#%@</span>
+          <span class="name-hover">청군여귀</span>
+        </span>
+        <img class="dogam-knot" src="images/dogam2-knot-yellow.svg" alt="" aria-hidden="true" style="left: 159.32px; width: 78px; height: 154px;" />
       </a>
 
     </div>
   </main>
 
+
   <!-- 오방색 띠 (하단) -->
-  <div class="saekdong-band"></div>
+  <div class="saekdong-band bottom"></div>
 
   <script src="js/script.js"></script>
 </body>

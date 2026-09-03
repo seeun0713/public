@@ -1,7 +1,8 @@
 /* =========================================================
-   공통 메뉴 (☰ 햄버거 → 전체 페이지 이동)
-   JS(setupMenu)가 오버레이를 만들고, class="menu-toggle"인
-   버튼을 누르면 열립니다. 모든 페이지에서 동작합니다.
+   공통 사이드 메뉴 (☰ 햄버거 → 오른쪽에서 나오는 검정 사이드바)
+   Figma 프레임 "Desktop - 120" (node 373:3588) 기준.
+   JS(setupMenu)가 만들어 붙이고, class="menu-toggle"인 버튼을
+   누르면 열립니다. 메뉴 아이콘이 있는 모든 페이지에서 동작합니다.
    ========================================================= */
 button.menu-toggle {
   background: none;
@@ -10,55 +11,97 @@ button.menu-toggle {
   font: inherit;
 }
 
-.nav-overlay {
+/* 화면을 덮는 틀. 위쪽은 그 페이지 머리말 높이만큼 비워둡니다
+   (--side-nav-top 값은 메뉴가 열릴 때 JS가 재서 넣어줍니다). */
+.side-nav {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: none;
+  top: var(--side-nav-top, 0px);
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 1000;
-}
-.nav-overlay.open {
   display: flex;
   justify-content: flex-end;
 }
-.nav-menu {
-  background: #111;
-  color: #fff;
-  width: 300px;
-  max-width: 82vw;
-  height: 100%;
-  padding: 20px 22px 40px;
+.side-nav[hidden] { display: none; }
+
+/* 뒤쪽 내용을 살짝 어둡게 덮는 막 */
+.side-nav-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 오른쪽 검정 패널 (피그마: 폭 362, 좌우 여백 48, 위 여백 16) */
+.side-nav-panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 362px;
+  max-width: 85vw;
+  background: #000;
+  padding: 16px 48px 48px;
   overflow-y: auto;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
+  /* 피그마엔 없지만, 귀신 쪽 검정 배경 페이지에서 패널 경계가 안 보여서
+     구분선과 같은 색으로 왼쪽에 머리카락 굵기 선을 하나 넣었습니다. */
+  border-left: 1px solid #545454;
 }
-.nav-menu .nav-close {
-  background: none;
-  border: 0;
-  color: #fff;
-  font-size: 26px;
-  cursor: pointer;
-  float: right;
-  line-height: 1;
+.side-nav-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
 }
-.nav-menu h3 {
-  clear: both;
-  color: #8a8a8a;
-  font-size: 13px;
-  letter-spacing: 1px;
-  margin: 22px 0 6px;
+.side-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 분류 제목 — 피그마 원본은 'ON 월인석보' 손글씨체(웹폰트가 없어 대체) */
+.side-nav h2 {
+  margin: 0;
   padding: 0;
   border: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #7c7c7c;
 }
-.nav-menu a {
+/* 지금 보고 있는 페이지가 속한 분류는 흰색 */
+.side-nav h2.current { color: #fff; }
+
+.side-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.side-nav a {
   display: block;
-  color: #fff;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #545454;
   text-decoration: none;
-  padding: 11px 12px;
-  border-radius: 8px;
-  font-size: 16px;
 }
-.nav-menu a:hover { background: #242424; }
-.nav-menu a.home { font-weight: 700; margin-bottom: 4px; }
+/* 지금 보고 있는 페이지, 그리고 마우스를 올린 항목은 흰색 */
+.side-nav a.current,
+.side-nav a:hover,
+.side-nav a:focus-visible { color: #fff; }
+
+/* 분류 사이 구분선 */
+.side-nav hr {
+  width: 100%;
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #545454;
+}
+
+@media (max-width: 560px) {
+  .side-nav-panel { padding: 16px 24px 32px; }
+}
 
 
 /* ===== 공통 기본 =====
@@ -405,229 +448,6 @@ body.home {
 .choice-desc {
   font-size: 13px;
   opacity: 0.85;
-}
-
-
-/* =========================================================
-   귀신 도감 상세 페이지 (예: human-encyclopedia-susalgwi.html)
-   Figma "수살귀" 디자인 기준. 빨강 헤더 + 오방색 띠 +
-   좌측 일러스트 + 우측 정보/능력치 + 하단 스토리.
-   ========================================================= */
-
-body.detail {
-  background: #000;
-  color: #fff;
-}
-
-/* 페이지 전체를 감싸 중앙 정렬하고 최대 1440px 로 제한 */
-.detail-wrap {
-  position: relative;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding-bottom: 24px;
-  overflow: hidden;
-}
-
-/* 오방색(색동) 띠 — 7색을 가로로 반복 */
-.saekdong-band {
-  height: 12px;
-  background: repeating-linear-gradient(
-    to right,
-    #ff0004 0 24px,
-    #ffffff 24px 48px,
-    #002bff 48px 72px,
-    #e60084 72px 96px,
-    #ffe400 96px 120px,
-    #c000e2 120px 144px,
-    #00e926 144px 168px
-  );
-}
-
-/* ----- 헤더 ----- */
-.detail-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 105px;
-  background: #d51313;
-  border: 2px solid #000;
-}
-
-.detail-header .detail-title {
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 48px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 2px;
-}
-
-/* 헤더 양쪽 아이콘 버튼 (뒤로가기 / 메뉴) */
-.detail-header .header-icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
-}
-.detail-header .header-icon.left { left: 28px; }
-.detail-header .header-icon.right { right: 28px; }
-
-/* ----- 본문 2단 (이미지 + 정보) ----- */
-.detail-main {
-  display: flex;
-  flex-wrap: wrap;
-  border: 2px solid #000;
-}
-
-/* 좌측: 귀신 일러스트 영역 */
-.ghost-figure {
-  flex: 1 1 320px;
-  position: relative;
-  background: #fff;
-  border: 2px solid #000;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 659px;
-  overflow: hidden;
-}
-.ghost-figure img {
-  height: 100%;
-  max-height: 659px;
-  object-fit: contain;
-}
-
-/* 우측: 정보 패널 */
-.info-panel {
-  width: 827px;
-  max-width: 100%;
-  background: #000;
-  border: 2px solid #000;
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-/* 정보 한 줄 (라벨 + 값) */
-.info-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px 21px;
-  padding: 15px 28px;
-  font-size: 18px;
-  background: #fff;
-  color: #000;
-}
-.info-row .label { font-weight: 700; }
-.info-row .value { font-weight: 400; }
-
-/* 줄별 배경색 (Figma 디자인 색상) */
-.info-row.blue   { background: #002bff; color: #fff; }
-.info-row.yellow { background: #ffe400; color: #000; }
-.info-row.red    { background: #d51313; color: #fff; }
-
-/* 위험도 별 */
-.danger-stars {
-  letter-spacing: 4px;
-  font-size: 18px;
-}
-
-/* ----- 능력치 (레이더 차트) ----- */
-.stats {
-  position: relative;
-  background: #000;
-  padding: 20px 28px;
-  border: 4px solid #000;
-}
-.stats .stats-label {
-  font-weight: 700;
-  font-size: 18px;
-  color: #fff;
-}
-.radar {
-  display: block;
-  margin: 0 auto;
-  max-width: 360px;
-  width: 100%;
-  height: auto;
-}
-
-/* ----- 특성 및 스토리 ----- */
-.detail-story {
-  background: #fff;
-  color: #000;
-  border: 2px solid #000;
-  padding: 27px 28px;
-  margin-top: 20px;
-}
-.detail-story h2 {
-  font-size: 19px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  border: none;
-  padding: 0;
-}
-.detail-story p {
-  font-size: 19px;
-  line-height: 1.55;
-  margin-bottom: 12px;
-}
-
-/* ----- 장식 레이어 (텍스처 / 노리개 / 핏자국) ----- */
-.detail-decor {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 5;
-  overflow: hidden;
-}
-.detail-decor .decor-bg {
-  position: absolute;
-  inset: -60px;
-  width: calc(100% + 120px);
-  height: calc(100% + 120px);
-  object-fit: cover;
-  opacity: 0.12;
-  mix-blend-mode: plus-lighter;
-}
-.detail-decor .decor-ink {
-  position: absolute;
-  opacity: 0.55;
-  mix-blend-mode: color-burn;
-}
-.detail-decor .ink-1 { top: 180px; left: 200px; width: 360px; transform: rotate(-13deg); }
-.detail-decor .ink-2 { top: 200px; left: 960px; width: 300px; transform: rotate(-25deg); }
-.detail-decor .knot {
-  position: absolute;
-  top: 120px;
-  right: 60px;
-  width: 158px;
-}
-.detail-decor .blood-drip {
-  position: absolute;
-  top: 90px;
-  left: 92px;
-  width: 60px;
-}
-
-/* 정보/이미지/스토리는 장식 위로 */
-.detail-header,
-.detail-main,
-.detail-story,
-.saekdong-band { position: relative; z-index: 10; }
-
-/* 좁은 화면에서는 위로 쌓기 */
-@media (max-width: 880px) {
-  .info-panel { width: 100%; }
-  .detail-header .detail-title { font-size: 36px; }
-  .detail-decor .knot { width: 110px; right: 16px; }
 }
 
 
@@ -1456,17 +1276,18 @@ body.ordinance-page {
 
 /* =========================================================
    귀신 도감 목록 페이지 (human-encyclopedia.html)
-   Figma 디자인. 검정 헤더 + 오방색 띠 + 한지 배경 +
-   검색바 + 검정 카드(흰 모서리 + 노리개) 4×2 그리드.
+   Figma 프레임 "Desktop - 119" (node 373:2980) 그대로 옮긴 것.
+   검정 헤더(127px) + 오방색 띠 + 한지 배경 + 검정 카드 4×2 그리드.
+   카드 사진은 큰 원본 그림을 확대해서 일부만 보이도록 "잘라낸" 형태입니다.
    ========================================================= */
 
 body.dogam-page {
-  background: #efe6cf url("../images/parchment.jpg") center / cover fixed;
-  color: #1a1a1a;
+  background: #000;          /* 종이 배경 아래쪽은 검정으로 이어집니다 */
+  color: #fff;
   min-height: 100vh;
 }
 
-/* 헤더 (검정 바) */
+/* 헤더 (검정 바 127px) */
 .dogam-header {
   position: relative;
   display: flex;
@@ -1476,112 +1297,217 @@ body.dogam-page {
   background: #000;
 }
 .dogam-header .dogam-brand {
+  /* 피그마 원본은 'ON 월인석보' 손글씨체인데 웹폰트가 없어 굵은 기본 폰트로 대체 */
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 40px;
+  font-size: 48px;
   font-weight: 800;
   letter-spacing: 4px;
   color: #fff;
 }
 .dogam-header .icon {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
+  top: 42px;                 /* 피그마: 위에서 42px */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
+.dogam-header .icon img { display: block; width: 24px; height: 24px; }
 .dogam-header .icon.left { left: 40px; }
 .dogam-header .icon.right { right: 40px; }
 
-/* 본문 */
+/* 오방색 띠 — 이 페이지는 16px 높이 + 아래(위)에 검정 2px 선 */
+.dogam-page .saekdong-band {
+  box-sizing: border-box;
+  height: 16px;
+  background: repeating-linear-gradient(
+    to right,
+    #ff0004 0 29.43px,
+    #ffffff 29.43px 58.86px,
+    #002bff 58.86px 88.29px,
+    #e60084 88.29px 117.71px,
+    #ffe400 117.71px 147.14px,
+    #c000e2 147.14px 176.57px,
+    #00e926 176.57px 206px
+  );
+}
+.dogam-page .saekdong-band.top { border-bottom: 2px solid #000; }
+.dogam-page .saekdong-band.bottom { border-top: 2px solid #000; }
+
+/* 본문 — 한지(종이) 배경 */
 .dogam-main {
-  max-width: 1302px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
+  background: #e9e0cd url("../images/dogam2-bg.jpg") center / cover;
+  padding: 62px 24px 200px;
 }
 
-/* 검색바 */
-.dogam-search {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #000;
-  border-radius: 10px;
-  padding: 14px 20px;
-  margin-bottom: 44px;
-}
-.dogam-search svg { flex: none; }
-.dogam-search input {
-  flex: 1;
-  background: none;
-  border: 0;
-  color: #fff;
-  font-size: 16px;
-  outline: none;
-}
-.dogam-search input::placeholder { color: #9a9a9a; }
-
-/* 카드 그리드 (4열) */
+/* 카드 그리드 (246px 카드 4열, 가로 간격 106 / 세로 간격 83) */
 .dogam-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 90px 40px;
+  grid-template-columns: repeat(4, 246px);
+  gap: 83px 106px;
+  justify-content: center;
 }
 
-/* 카드 한 장 */
+/* 카드 한 장 — 검정 배경, 안쪽 여백 20px, 사진과 이름 사이 23px */
 .dogam-card {
+  /* 호버로 바뀌는 데 걸리는 시간. 피그마 프로토타입 원본 값은 600ms 입니다. */
+  --reveal-time: 200ms;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background: #000;
+  gap: 23px;
+  width: 246px;
+  box-sizing: border-box;
   padding: 20px;
+  background: #000;
   text-decoration: none;
-  color: #fff;
-}
-.dogam-card-img {
-  height: 231px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dogam-card-img img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-}
-.dogam-card-name {
-  font-size: 21px;
-  font-weight: 700;
 }
 
-/* 카드 흰색 모서리 장식 (CSS L자 브래킷) */
+/* 사진 창(206×231) — 넘치는 부분은 잘라냅니다 */
+.dogam-photo {
+  position: relative;
+  display: block;
+  width: 206px;
+  height: 231px;
+  overflow: hidden;
+}
+/* 원본 그림을 크게 늘린 뒤 밀어서 원하는 부분만 보이게 (left/top은 HTML에서 지정) */
+.dogam-photo-img {
+  position: absolute;
+  width: 786.41%;
+  height: 394.48%;
+  max-width: none;
+}
+
+/* 사진 안쪽 검정 사각 테두리 */
+.dogam-frame {
+  position: absolute;
+  top: 10px; left: 10px; right: 9px; bottom: 9px;
+  box-sizing: border-box;
+  border: 1px solid #000;
+}
+
+/* 네 귀퉁이 재단(크롭) 표시 — 위 테두리와 겹쳐 작은 격자 모양이 됩니다 */
 .dogam-corner {
   position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 0 solid #fff;
+  box-sizing: border-box;
+  border: 0 solid #000;
 }
-.dogam-corner.tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
-.dogam-corner.tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
-.dogam-corner.bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
-.dogam-corner.br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+.dogam-corner.tl { top: 0; left: 0; width: 21px; height: 21px; border-right-width: 1px; border-bottom-width: 1px; }
+.dogam-corner.tr { top: 0; right: 0; width: 20px; height: 21px; border-left-width: 1px; border-bottom-width: 1px; }
+.dogam-corner.bl { bottom: 0; left: 0; width: 21px; height: 20px; border-right-width: 1px; border-top-width: 1px; }
+.dogam-corner.br { bottom: 0; right: 0; width: 20px; height: 20px; border-left-width: 1px; border-top-width: 1px; }
 
-/* 노리개 매듭 (카드 우하단에 매달림) */
+/* 이미 이름이 알려진 귀신(유명한 한국 귀신)의 카드 그림은
+   잘라내기 값 없이 칸에 꽉 채웁니다 */
+.dogam-photo-img.fit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+/* 이름 — 아직 정체를 모르는 귀신이라 회색 깨진 글자 */
+.dogam-card-name {
+  position: relative;
+  display: block;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #919191;
+  word-break: break-word;
+}
+/* 이미 알려진 귀신은 이름을 흰색으로 바로 보여줍니다 */
+.dogam-card-name.known { color: #fff; }
+
+/* =========================================================
+   카드 호버 — 정체가 드러나는 연출 (dissolve)
+   그림 두 장을 겹쳐 두고 위쪽 그림의 투명도만 바꿔 부드럽게 교차시킵니다.
+   이름과 노리개도 같은 시간 동안 함께 나타납니다.
+   ========================================================= */
+
+/* 호버용 그림: 평소엔 투명, 기본 그림 위에 겹쳐져 있습니다 */
+.dogam-photo-img.on-hover {
+  opacity: 0;
+  transition: opacity var(--reveal-time) ease;
+}
+.dogam-card.reveal:hover .dogam-photo-img.on-hover { opacity: 1; }
+
+/* 이름 교차 — 진짜 이름은 흰색 */
+.dogam-card-name .name-base,
+.dogam-card-name .name-hover {
+  display: block;
+  transition: opacity var(--reveal-time) ease;
+}
+.dogam-card-name .name-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  color: #fff;
+}
+.dogam-card.reveal:hover .name-base { opacity: 0; }
+.dogam-card.reveal:hover .name-hover { opacity: 1; }
+
+/* 노리개 — 카드 오른쪽 아래에서 밖으로 늘어집니다.
+   매듭마다 색과 크기가 달라서 left/width/height는 HTML에 직접 적었습니다. */
 .dogam-knot {
   position: absolute;
-  bottom: -56px;
-  right: 14px;
-  width: 60px;
+  top: 231px;
+  opacity: 0;
+  transition: opacity var(--reveal-time) ease;
   pointer-events: none;
 }
+.dogam-card.reveal:hover .dogam-knot { opacity: 1; }
 
-@media (max-width: 1000px) {
-  .dogam-grid { grid-template-columns: repeat(2, 1fr); gap: 80px 24px; }
+/* 늘어진 노리개가 아랫줄 카드에 가리지 않도록 위로 올립니다 */
+.dogam-card.reveal:hover { z-index: 5; }
+
+/* 애니메이션을 줄이도록 설정한 사용자에게는 즉시 전환 */
+@media (prefers-reduced-motion: reduce) {
+  .dogam-card { --reveal-time: 0ms; }
 }
-@media (max-width: 560px) {
-  .dogam-grid { grid-template-columns: 1fr; }
+
+/* 그리드 아래 검정 여백에 얹힌 흐릿한 손글씨 낙서 */
+.dogam-graffiti {
+  position: relative;
+  height: 240px;
+  background: #000;
+  overflow: hidden;
+}
+.dogam-graffiti p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  /* 피그마: 화면 가운데에서 오른쪽으로 284px, -27.84도 기울임 */
+  transform: translate(calc(-50% + 284px), -50%) rotate(-27.84deg);
+  font-size: 40px;
+  line-height: 1.55;
+  color: #fff;
+  opacity: 0.06;
+  white-space: nowrap;
+}
+
+/* 화면이 좁아지면 열 수만 줄입니다 (카드 크기는 그대로여야 사진이 안 틀어집니다) */
+@media (max-width: 1360px) {
+  .dogam-grid { grid-template-columns: repeat(3, 246px); gap: 83px 60px; }
+}
+@media (max-width: 1000px) {
+  .dogam-grid { grid-template-columns: repeat(2, 246px); gap: 60px 40px; }
+  .dogam-graffiti { height: 180px; }
+  .dogam-graffiti p { transform: translate(-50%, -50%) rotate(-27.84deg); font-size: 30px; }
+}
+@media (max-width: 620px) {
+  .dogam-grid { grid-template-columns: 246px; gap: 48px; }
+  .dogam-main { padding: 40px 12px 64px; }
   .dogam-header .dogam-brand { font-size: 30px; }
+  .dogam-header .icon.left { left: 12px; }
+  .dogam-header .icon.right { right: 12px; }
 }
 
 
@@ -1785,4 +1711,495 @@ body.entry-page {
   }
   .entry-name { font-size: 60px; }
   .entry-side.ghost .cloud-ornament { width: 130px; }
+}
+
+
+/* =========================================================
+   귀신 도감 상세 페이지 (human-encyclopedia-detail.html)
+   Figma 프레임 "Desktop - 110" (node 356:14976) 기준.
+   배경은 세로 오방색 줄무늬이고, 그 위에 검정 테두리 상자들이
+   20px 간격으로 쌓입니다. 그 틈으로 줄무늬가 보입니다.
+   ========================================================= */
+
+/* 화면이 1440px보다 넓을 때 양옆에 남는 자리는 도감 목록 페이지와
+   똑같이 검정으로 둡니다. 오방색 줄무늬는 본문 틀 안에서만 보입니다. */
+body.gd-page {
+  margin: 0;
+  color: #000;
+  background: #000;
+  min-height: 100vh;
+}
+
+.gd-wrap {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 20px;
+  /* 세로 오방색 줄무늬 — 7색 × 29.43px = 206px 한 묶음이 반복됩니다.
+     상자와 상자 사이 20px 틈으로 이 줄무늬가 비쳐 보입니다. */
+  background: repeating-linear-gradient(
+    to right,
+    #ff0004 0 29.43px,
+    #ffffff 29.43px 58.86px,
+    #002bff 58.86px 88.29px,
+    #e60084 88.29px 117.71px,
+    #ffe400 117.71px 147.14px,
+    #c000e2 147.14px 176.57px,
+    #00e926 176.57px 206px
+  );
+}
+
+/* --- 헤더 --- */
+.gd-header {
+  position: relative;
+  box-sizing: border-box;
+  height: 127px;
+  background: #000;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.gd-title {
+  /* 피그마 원본은 'ON 월인석보' 손글씨체(웹폰트가 없어 대체) */
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #fff;
+  margin: 0;
+}
+.gd-header .icon {
+  position: absolute;
+  top: 40px;
+  display: flex;
+  padding: 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.gd-header .icon img { display: block; width: 24px; height: 24px; }
+.gd-header .icon.left { left: 38px; }
+.gd-header .icon.right { right: 52px; }
+
+/* --- 위쪽 본문: 왼쪽 그림(613) + 오른쪽 정보(827) --- */
+.gd-main {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  border: 2px solid #000;
+  min-height: 767px;
+}
+
+.gd-figure {
+  position: relative;
+  flex: none;
+  width: 613px;
+  margin: 0;
+  background: #fff;
+  overflow: hidden;
+}
+/* 큰 그림 자리 — <img> 든 <video> 든 같은 방식으로 채웁니다 */
+.gd-figure .ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: transparent;
+}
+.gd-figure .ghost[hidden] { display: none; }
+.gd-figure .paper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  opacity: 0.89;
+  pointer-events: none;
+}
+
+.gd-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+/* --- 정보 한 줄 (이름 / 생전 / 죽음 / 한 …) --- */
+.gd-row {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+  box-sizing: border-box;
+  min-height: 59px;
+  padding: 15px 28px;
+  font-size: 19px;
+  overflow: hidden;
+}
+.gd-row .k {
+  flex: none;
+  width: 33px;
+  font-weight: 700;
+}
+.gd-row .v {
+  flex: 1 1 0;
+  min-width: 0;
+  line-height: 1.55;
+}
+.gd-row.white  { background: #fff;     color: #000; }
+.gd-row.blue   { background: #002bff;  color: #fff; }
+.gd-row.yellow { background: #ffe400;  color: #000; }
+
+/* 공존 난이도 줄 — 이름표가 길어서 폭을 고정하지 않습니다 */
+.gd-row.red {
+  background: #d51313;
+  color: #fff;
+  min-height: 53px;
+}
+.gd-row.red .k { width: auto; white-space: nowrap; }
+.gd-row .stars { font-size: 19px; letter-spacing: 2px; }
+
+/* --- 능력치 (검정 상자 + 오각형 그래프) --- */
+.gd-stats {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 355px;
+  background: #000;
+  border: 4px solid #000;
+  padding: 20px 28px;
+  display: flex;
+  gap: 111px;
+  align-items: flex-start;
+  overflow: hidden;
+}
+.gd-stats-label {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+/* 배경에 흩뿌린 옛 문양 (아주 옅게) */
+.gd-pattern {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 35.43px);
+  grid-auto-rows: 35.43px;
+  gap: 40px 80px;
+  align-content: center;
+  justify-content: center;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.gd-pattern i {
+  background-image: url("../images/detail-pattern.png");
+  background-size: 187.65px 187.65px;
+  background-repeat: no-repeat;
+}
+/* 문양 4종을 번갈아 씁니다 (피그마의 잘라내기 위치 그대로) */
+.gd-pattern i:nth-child(4n + 1) { background-position: -97.56px -16.23px; }
+.gd-pattern i:nth-child(4n + 2) { background-position: -16.63px -14.25px; }
+.gd-pattern i:nth-child(4n + 3) { background-position: -16.83px -138.55px; }
+.gd-pattern i:nth-child(4n + 4) { background-position: -138.76px -15.44px; }
+
+.gd-radar {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 390px;
+  height: 312px;
+  margin-top: 7px;
+}
+
+/* --- 아래쪽 설명 상자 (공존 방법 / 주의 사항) --- */
+.gd-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.gd-section {
+  box-sizing: border-box;
+  border: 2px solid #000;
+  padding: 27px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+  font-size: 19px;
+  color: #000;
+  overflow: hidden;
+}
+.gd-section.white  { background: #fff; }
+.gd-section.yellow { background: #ffe400; }
+.gd-section h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.gd-section .body { display: flex; flex-direction: column; }
+.gd-section p { margin: 0; line-height: 1.55; }
+
+/* 아직 글이 없는 귀신일 때 정보표 자리에 보여주는 안내 */
+.gd-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 27px 28px;
+  color: #7c7c7c;
+  font-size: 19px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+/* --- 헤더에서 늘어지는 빨간 노리개 --- */
+.gd-norigae {
+  position: absolute;
+  left: 41px;
+  top: 52px;
+  width: 180px;
+  height: 440.17px;
+  z-index: 5;
+  pointer-events: none;
+}
+.gd-norigae img { display: block; width: 100%; height: 100%; }
+.gd-norigae .bead {
+  position: absolute;
+  left: 89px;
+  top: -9px;
+  width: 28px;
+  height: 32px;
+}
+
+/* --- 좁은 화면 --- */
+@media (max-width: 1100px) {
+  .gd-main { flex-direction: column; min-height: 0; }
+  .gd-figure { width: 100%; height: 420px; }
+  .gd-stats { flex-direction: column; gap: 20px; align-items: center; }
+  .gd-stats-label { align-self: flex-start; }
+}
+@media (max-width: 620px) {
+  .gd-title { font-size: 30px; }
+  .gd-header .icon.left { left: 12px; }
+  .gd-header .icon.right { right: 12px; }
+  .gd-row, .gd-section, .gd-empty { font-size: 16px; padding-left: 16px; padding-right: 16px; }
+  .gd-radar { width: 300px; height: 240px; }
+  .gd-norigae { display: none; }
+}
+
+
+/* =========================================================
+   유명한 한국 귀신 — 상세 페이지 (famous-encyclopedia-detail.html)
+   Figma 프레임 "Desktop - 113" (node 360:11599) 기준.
+   앞의 귀신 도감과 달리 한지 배경 위에 검정 글씨 + 두꺼운
+   검정 테두리로 짜여 있습니다.
+   ========================================================= */
+
+body.fg-page {
+  margin: 0;
+  color: #000;
+  background: #ded4bd url("../images/famous-paper2.png") center / cover fixed;
+}
+
+.fg-wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  border: 6px solid #000;
+  padding-bottom: 20px;
+}
+
+/* --- 헤더 --- */
+.fg-header {
+  position: relative;
+  height: 127px;
+  border: 10px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.fg-title {
+  /* 피그마 원본은 'ON 월인석보' 손글씨체(웹폰트가 없어 대체) */
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #000;
+  margin: 0;
+}
+.fg-header .icon {
+  position: absolute;
+  top: 27px;
+  display: flex;
+  padding: 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.fg-header .icon img { display: block; width: 24px; height: 24px; }
+.fg-header .icon.left { left: 25px; }
+.fg-header .icon.right { right: 39px; }
+
+/* --- 위쪽: 그림(716) + 정보표(726) --- */
+.fg-main {
+  display: flex;
+  align-items: stretch;
+  height: 555px;
+}
+
+.fg-figure {
+  position: relative;
+  flex: none;
+  width: 716px;
+  margin: 0;
+  overflow: hidden;
+}
+/* 그림 — 피그마의 잘라내기 값 그대로 확대해서 밀어 넣습니다 */
+.fg-figure .art {
+  position: absolute;
+  left: -16.15%;
+  top: 0;
+  width: 132.3%;
+  height: 120.52%;
+  max-width: none;
+}
+/* 아래로 갈수록 짙어지는 분홍 물빛 */
+.fg-figure .tint {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 714px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(230, 0, 132, 0) 11.213%, #e60084 114.69%);
+  mix-blend-mode: multiply;
+  opacity: 0.31;
+}
+/* 옅은 격자 장식 두 겹 */
+.fg-figure .decor {
+  position: absolute;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.fg-figure .decor-1 { left: 94px; top: 0; width: 515px; height: 555px; }
+.fg-figure .decor-2 { left: -8px; top: 67px; width: 719px; height: 412px; }
+/* 네 모서리를 비스듬히 잘라내는 검정 덮개 */
+.fg-figure .cut {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 716px;
+  height: 555px;
+  pointer-events: none;
+}
+
+/* --- 정보표 --- */
+.fg-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+.fg-row {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+  min-height: 59px;
+  padding: 15px 28px;
+  font-size: 19px;
+  color: #000;
+}
+.fg-row .k { flex: none; width: 33px; font-weight: 700; }
+/* 이름표가 긴 줄(생김새·특징·위험도)은 폭을 고정하지 않습니다 */
+.fg-row.wide .k { width: auto; white-space: nowrap; }
+.fg-row .v { flex: 1 1 0; min-width: 0; line-height: 1.55; }
+.fg-row .stars { font-size: 19px; letter-spacing: 2px; }
+
+/* --- 아래쪽: 설명 글 + 막대 그래프 --- */
+.fg-bottom {
+  display: flex;
+  align-items: stretch;
+  border: 10px solid #000;
+}
+.fg-texts {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+  padding: 27px 28px;
+  font-size: 19px;
+  color: #000;
+}
+.fg-texts section { display: flex; flex-direction: column; gap: 16px; }
+.fg-texts h2 { margin: 0; padding: 0; border: 0; font-size: 19px; font-weight: 700; }
+.fg-texts p { margin: 0; line-height: 1.55; }
+
+.fg-bars {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 27px 28px;
+  /* 왼쪽 글과 나누는 세로 선 (피그마 Line 29) */
+  border-left: 6px solid #000;
+}
+.fg-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 19px;
+  color: #000;
+}
+.fg-bar .k {
+  flex: none;
+  width: 33px;
+  font-weight: 700;
+}
+/* 회색 바탕(전체) 위에 검정 막대(값)를 얹습니다 */
+.fg-bar .track {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.15);
+}
+.fg-bar .fill {
+  height: 100%;
+  background: #000;
+}
+
+/* --- 좁은 화면 --- */
+@media (max-width: 1180px) {
+  .fg-main { flex-direction: column; height: auto; }
+  .fg-figure { width: 100%; height: 420px; }
+  .fg-figure .cut,
+  .fg-figure .decor,
+  .fg-figure .tint { display: none; }
+  .fg-figure .art { position: static; width: 100%; height: 100%; object-fit: cover; }
+  .fg-bottom { flex-direction: column; }
+  .fg-bars { border-left: 0; border-top: 6px solid #000; }
+}
+@media (max-width: 620px) {
+  .fg-title { font-size: 30px; }
+  .fg-header .icon.left { left: 8px; }
+  .fg-header .icon.right { right: 8px; }
+  .fg-row, .fg-texts, .fg-bars, .fg-bar { font-size: 16px; }
+  .fg-row { padding-left: 16px; padding-right: 16px; }
 }

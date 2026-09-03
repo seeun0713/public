@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>유명한 한국 귀신</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<!--
+  유명한 한국 귀신 — 목록 페이지
+
+  앞서 만든 "귀신 도감" 목록(human-encyclopedia.html)과 같은 틀을 씁니다.
+  검정 헤더 + 오방색 띠 + 한지 배경 + 검정 카드 그리드.
+  다른 점은 이 귀신들은 이미 널리 알려진 존재라서
+  이름이 깨진 글자가 아니라 흰 글씨로 바로 보인다는 것입니다.
+-->
+<body class="dogam-page human">
+
+  <!-- 헤더 (검정 바 127px) -->
+  <header class="dogam-header">
+    <a class="icon left" href="index.html" aria-label="홈으로">
+      <img src="images/dogam2-icon-back.svg" alt="" />
+    </a>
+    <h1 class="dogam-brand">유명한 한국 귀신</h1>
+    <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+      <img src="images/dogam2-icon-menu.svg" alt="" />
+    </button>
+  </header>
+
+  <!-- 오방색 띠 (상단) -->
+  <div class="saekdong-band top"></div>
+
+  <main class="dogam-main">
+    <div class="dogam-grid">
+
+      <a class="dogam-card" href="famous-encyclopedia-detail.html?ghost=gumiho">
+        <span class="dogam-photo">
+          <img class="dogam-photo-img fit" src="images/famous-gumiho.png" alt="구미호" />
+          <i class="dogam-frame"></i>
+          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
+        </span>
+        <span class="dogam-card-name known">구미호</span>
+      </a>
+
+    </div>
+  </main>
+
+  <!-- 그리드 아래 검정 여백 + 흐릿한 손글씨 낙서 -->
+  <div class="dogam-graffiti">
+    <p>이름은 알아도, 얼굴은 모른다.</p>
+  </div>
+
+  <!-- 오방색 띠 (하단) -->
+  <div class="saekdong-band bottom"></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

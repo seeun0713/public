@@ -419,61 +419,115 @@ function setupMenu() {
   var toggles = document.querySelectorAll(".menu-toggle");
   if (toggles.length === 0) return; // 메뉴 버튼이 없는 페이지면 중단
 
-  // 메뉴에 들어갈 링크 목록 (제목, 주소)
-  var links = [
-    { label: "🏠 홈", href: "index.html", home: true },
-    { group: "인간" },
-    { label: "귀신 도감", href: "human-encyclopedia.html" },
-    { label: "귀신 대응 규칙", href: "human-rules.html" },
-    { label: "귀신 유형 테스트", href: "human-test.html" },
-    { group: "귀신" },
-    { label: "착한 귀신 아카이브", href: "ghost-archive.html" },
-    { label: "인간 세상 규칙 (공존에 관한 조례)", href: "ghost-rules.html" },
-    { label: "인간 유사도 시험", href: "ghost-exam.html" },
+  /* 사이드바에 들어갈 항목.
+     title 은 큰 글씨(분류), links 는 그 아래 작은 글씨(페이지)입니다.
+     same 에는 "이 페이지도 같은 항목으로 친다"는 상세 페이지 주소를 적습니다.
+     "유명 한국 괴물"은 아직 페이지가 없어서 제목만 있습니다. */
+  var sections = [
+    {
+      title: "악의 없는 귀신",
+      links: [
+        { label: "귀신 도감", href: "human-encyclopedia.html", same: ["human-encyclopedia-detail.html"] },
+        { label: "귀신 대응 규칙", href: "human-rules.html" },
+        { label: "귀신 유형 테스트", href: "human-test.html", same: ["human-test-result.html"] },
+      ],
+    },
+    {
+      title: "착한 귀신",
+      links: [
+        { label: "착한 귀신상", href: "ghost-archive.html", same: ["ghost-archive-dongjasam.html"] },
+        { label: "공존에 관한 조례", href: "ghost-rules.html" },
+        { label: "인간 유사도 시험", href: "ghost-exam.html", same: ["ghost-exam-result.html"] },
+      ],
+    },
+    { title: "유명 한국 괴물", links: [] },
   ];
 
-  // 오버레이 + 메뉴 만들기
-  var overlay = document.createElement("div");
-  overlay.className = "nav-overlay";
+  // 지금 보고 있는 페이지 파일 이름 (예: "human-encyclopedia.html")
+  var here = location.pathname.split("/").pop() || "index.html";
 
-  var menu = document.createElement("nav");
-  menu.className = "nav-menu";
+  /* --- 사이드바 만들기 --- */
+  var wrap = document.createElement("div");
+  wrap.className = "side-nav";
+  wrap.hidden = true;
 
-  var closeBtn = document.createElement("button");
-  closeBtn.type = "button";
-  closeBtn.className = "nav-close";
-  closeBtn.textContent = "✕";
-  closeBtn.setAttribute("aria-label", "메뉴 닫기");
-  menu.appendChild(closeBtn);
+  var dim = document.createElement("div"); // 뒤쪽을 살짝 어둡게 덮는 막
+  dim.className = "side-nav-dim";
+  wrap.appendChild(dim);
 
-  links.forEach(function (item) {
-    if (item.group) {
-      var h = document.createElement("h3");
-      h.textContent = item.group;
-      menu.appendChild(h);
-    } else {
-      var a = document.createElement("a");
-      a.href = item.href;
-      a.textContent = item.label;
-      if (item.home) a.className = "home";
-      menu.appendChild(a);
+  var panel = document.createElement("nav"); // 오른쪽 검정 패널
+  panel.className = "side-nav-panel";
+  panel.setAttribute("aria-label", "사이트 메뉴");
+
+  var inner = document.createElement("div");
+  inner.className = "side-nav-inner";
+  panel.appendChild(inner);
+
+  sections.forEach(function (section, i) {
+    if (i > 0) inner.appendChild(document.createElement("hr")); // 항목 사이 구분선
+
+    var box = document.createElement("div");
+    box.className = "side-nav-group";
+
+    var title = document.createElement("h2");
+    title.textContent = section.title;
+    box.appendChild(title);
+
+    if (section.links.length > 0) {
+      var list = document.createElement("ul");
+      section.links.forEach(function (item) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = item.href;
+        a.textContent = item.label;
+
+        // 지금 보고 있는 페이지면 흰색으로 강조하고, 그 분류 제목도 함께 흰색으로
+        var isHere = item.href === here || (item.same || []).indexOf(here) !== -1;
+        if (isHere) {
+          a.classList.add("current");
+          a.setAttribute("aria-current", "page");
+          title.classList.add("current");
+        }
+
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      box.appendChild(list);
     }
+
+    inner.appendChild(box);
   });
 
-  overlay.appendChild(menu);
-  document.body.appendChild(overlay);
+  wrap.appendChild(panel);
+  document.body.appendChild(wrap);
 
-  function openMenu() { overlay.classList.add("open"); }
-  function closeMenu() { overlay.classList.remove("open"); }
+  /* --- 열고 닫기 --- */
+  function openMenu(fromButton) {
+    // 패널은 머리말(헤더) 바로 아래에서 시작합니다. 페이지마다 헤더 높이가
+    // 달라서, 누른 버튼이 속한 <header>의 아래쪽 위치를 그때그때 재서 씁니다.
+    var header = fromButton && fromButton.closest("header");
+    var top = header ? Math.max(header.getBoundingClientRect().bottom, 0) : 0;
+    wrap.style.setProperty("--side-nav-top", top + "px");
 
-  // ☰ 버튼들 → 열기
+    wrap.hidden = false;
+    toggles.forEach(function (btn) { btn.setAttribute("aria-expanded", "true"); });
+  }
+  function closeMenu() {
+    wrap.hidden = true;
+    toggles.forEach(function (btn) { btn.setAttribute("aria-expanded", "false"); });
+  }
+
   toggles.forEach(function (btn) {
-    btn.addEventListener("click", openMenu);
+    btn.setAttribute("aria-expanded", "false");
+    // ☰ 를 다시 누르면 닫히도록 (열림/닫힘 토글)
+    btn.addEventListener("click", function () {
+      if (wrap.hidden) openMenu(btn); else closeMenu();
+    });
   });
-  // ✕ 또는 바깥 어두운 영역 클릭 → 닫기
-  closeBtn.addEventListener("click", closeMenu);
-  overlay.addEventListener("click", function (e) {
-    if (e.target === overlay) closeMenu();
+
+  dim.addEventListener("click", closeMenu); // 어두운 곳을 누르면 닫기
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu();    // Esc 키로도 닫기
   });
 }
 
@@ -501,10 +555,410 @@ function setupDogamSearch() {
 
 
 /* ===========================================================
+   7. 귀신 도감 상세 페이지 (human-encyclopedia-detail.html)
+
+   GHOSTS 에 귀신별 내용을 적어 두고, 주소의 ?ghost=... 값에
+   맞는 것을 골라 화면을 채웁니다.
+
+   ★ 새 귀신을 추가하려면 GHOSTS 에 한 덩어리만 더 적으면 됩니다.
+     rows   : 정보표 줄. color 는 white / blue / yellow 중 하나.
+     level  : 공존 난이도 (별 5개 중 몇 개)
+     stats  : 능력치. [힘, 서사성, 개성, 지능, 친화력] 순서로 0~1 사이 값.
+     texts  : 아래쪽 설명 상자. color 는 white / yellow.
+   =========================================================== */
+var GHOSTS = {
+  singiwonyo: {
+    name: "신기원요",
+    image: "images/dogam2-hover-singiwonyo.png",
+    // 동영상 파일을 images/ 에 넣으면 그림 대신 이 영상이 재생됩니다.
+    // (파일이 없으면 위 image 가 그대로 보입니다.)
+    video: "images/singiwonyo.mp4",
+    rows: [
+      { label: "이름", value: "신기원요", color: "white" },
+      { label: "생전", value: "관아에 소속되어 사신들을 대접하던 관기(기생)였다.", color: "blue" },
+      { label: "죽음", value: "한밤중 화장실에 가던 중 아전에게 성폭력을 당할 위기에 처했고, 이에 저항하다 살해되었다. 이후 시신은 토막 나 땅에 묻혔다.", color: "white" },
+      { label: "한", value: "억울하게 죽임을 당한 것과 자신의 죽음을 아무도 밝혀주지 못한 억울함이 한으로 남아 이승을 떠나지 못했다.", color: "yellow" },
+    ],
+    level: 4,
+    stats: [1, 1, 1, 1, 1],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "신기원요가 전하는 이야기를 외면하지 않고 죽음의 진실을 밝혀주는 것이 가장 중요하다.",
+          "그의 한이 어디에서 비롯되었는지 이해하고 억울함을 풀어주는 것이 공존의 시작이다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "신기원요는 자신의 죽음에 대한 억울함을 품고 있는 존재이므로, 그의 사연을 가볍게 여기거나 함부로 자극하지 않는다.",
+          "귀신 자체를 두려워하기보다 그가 전하려는 이야기에 귀 기울이는 것이 중요하다.",
+        ],
+      },
+    ],
+  },
+
+  susalgwi: {
+    name: "수살귀",
+    image: "images/dogam2-hover-susalgwi.png",
+    rows: [
+      { label: "이름", value: "수살귀", color: "white" },
+      { label: "지역", value: "불특정", color: "blue" },
+      { label: "죽음", value: "익사", color: "white" },
+      { label: "목적", value: "자신을 대체할 희생양 찾기, 외로움에 친구 찾기", color: "yellow" },
+    ],
+    level: 5,
+    stats: [1, 1, 1, 1, 1],
+    texts: [
+      {
+        title: "특성 및 스토리",
+        color: "white",
+        lines: [
+          "몸에서 물 떨어짐, 긴머리, 물비린내, 한기. 활동범위-물을 벗어날 수 없음. 비나 홍수로 인해 활동범위가 늘어날 수 있음.",
+          "익사시키는 방법은 크게 3가지로 회오리를 일으키거나 발을 잡아 물 안에 가두는 방법, 햇빛으로 수면을 반짝여 유혹하는 방법, 흐리거나 비오는 날 울음소리를 이용해 홀리는 방법이 있다.",
+        ],
+      },
+    ],
+  },
+
+  /* 아래 여섯 마리는 아직 설명 글을 받지 못했습니다.
+     이름/그림만 있고, 글이 들어오면 위와 같은 모양으로 채우면 됩니다. */
+  geolsin:   { name: "걸신",     image: "images/dogam2-hover-geolsin.png" },
+  jigwi:     { name: "지귀",     image: "images/dogam2-hover-jigwi.png" },
+  baekgwi:   { name: "백귀",     image: "images/dogam2-hover-baekgwi.png" },
+  arang:     { name: "아랑",     image: "images/dogam2-hover-arang.png" },
+  maehwa:    { name: "매화귀신", image: "images/dogam2-hover-maehwa.png" },
+  cheonggun: { name: "청군여귀", image: "images/dogam2-hover-cheonggun.png" },
+};
+
+function setupGhostDetail() {
+  var infoBox = document.getElementById("gd-info");
+  if (!infoBox) return; // 상세 페이지가 아니면 중단
+
+  // 주소에서 ?ghost=... 값을 꺼냅니다. 없으면 수살귀를 보여줍니다.
+  var key = new URLSearchParams(location.search).get("ghost") || "susalgwi";
+  var ghost = GHOSTS[key] || GHOSTS.susalgwi;
+
+  // 제목
+  document.title = ghost.name + " — 귀신 도감";
+  document.getElementById("gd-title").textContent = ghost.name;
+
+  // 왼쪽 큰 그림 — 동영상(video)이 있으면 동영상, 없으면 그림(image)
+  var img = document.getElementById("gd-image");
+  var video = document.getElementById("gd-video");
+  img.src = ghost.image;
+  img.alt = ghost.name + " 일러스트";
+
+  if (ghost.video) {
+    video.src = ghost.video;
+    video.poster = ghost.image;   // 동영상이 뜨기 전/못 찾을 때 보여줄 그림
+    video.setAttribute("aria-label", ghost.name + " 영상");
+    video.hidden = false;
+    img.hidden = true;
+
+    // 움직임을 줄이도록 설정한 사용자에게는 자동재생하지 않고 그림만 보여줍니다
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      video.autoplay = false;
+      video.removeAttribute("autoplay");
+      video.pause();
+    }
+  }
+
+  // --- 정보표 만들기 ---
+  (ghost.rows || []).forEach(function (row) {
+    var line = document.createElement("div");
+    line.className = "gd-row " + row.color;
+
+    var k = document.createElement("span");
+    k.className = "k";
+    k.textContent = row.label;
+
+    var v = document.createElement("span");
+    v.className = "v";
+    v.textContent = row.value;
+
+    line.appendChild(k);
+    line.appendChild(v);
+    infoBox.appendChild(line);
+  });
+
+  // 공존 난이도 (빨간 줄 + 별)
+  if (ghost.level) {
+    var levelRow = document.createElement("div");
+    levelRow.className = "gd-row red";
+    var lk = document.createElement("span");
+    lk.className = "k";
+    lk.textContent = "공존 난이도";
+    var lv = document.createElement("span");
+    lv.className = "stars";
+    // 채운 별 + 빈 별 (예: ★★★★☆)
+    lv.textContent = "★".repeat(ghost.level) + "☆".repeat(5 - ghost.level);
+    levelRow.appendChild(lk);
+    levelRow.appendChild(lv);
+    infoBox.appendChild(levelRow);
+  }
+
+  // 능력치 상자
+  if (ghost.stats) {
+    var stats = document.createElement("div");
+    stats.className = "gd-stats";
+
+    // 배경 문양 4줄 × 7개
+    var pattern = document.createElement("div");
+    pattern.className = "gd-pattern";
+    for (var i = 0; i < 28; i++) pattern.appendChild(document.createElement("i"));
+    stats.appendChild(pattern);
+
+    var label = document.createElement("p");
+    label.className = "gd-stats-label";
+    label.textContent = "능력치";
+    stats.appendChild(label);
+
+    stats.appendChild(makeRadar(ghost.stats));
+    infoBox.appendChild(stats);
+  }
+
+  // 아직 글을 받지 못한 귀신이면, 빈 검정 화면 대신 안내를 보여줍니다
+  if (!ghost.rows) {
+    var empty = document.createElement("div");
+    empty.className = "gd-empty";
+    empty.textContent = ghost.name + "의 기록은 아직 정리 중입니다.";
+    infoBox.appendChild(empty);
+  }
+
+  // --- 아래쪽 설명 상자 ---
+  var sectionBox = document.getElementById("gd-sections");
+  (ghost.texts || []).forEach(function (text) {
+    var section = document.createElement("section");
+    section.className = "gd-section " + text.color;
+
+    var h2 = document.createElement("h2");
+    h2.textContent = text.title;
+    section.appendChild(h2);
+
+    var body = document.createElement("div");
+    body.className = "body";
+    text.lines.forEach(function (line) {
+      var p = document.createElement("p");
+      p.textContent = line;
+      body.appendChild(p);
+    });
+    section.appendChild(body);
+
+    sectionBox.appendChild(section);
+  });
+}
+
+/* ===========================================================
+   8. 유명한 한국 귀신 상세 페이지 (famous-encyclopedia-detail.html)
+
+   ★ 새 귀신을 추가하려면 FAMOUS 에 한 덩어리만 더 적으면 됩니다.
+     rows  : 정보 줄. wide: true 면 이름표 폭을 넓게 씁니다.
+     level : 위험도 (별 5개 중 몇 개)
+     texts : 왼쪽 아래 설명 글
+     bars  : 오른쪽 아래 막대 그래프. 0~100 사이 값.
+   =========================================================== */
+var FAMOUS = {
+  gumiho: {
+    name: "구미호",
+    image: "images/famous-gumiho.png",
+    rows: [
+      { label: "이름", value: "구미호" },
+      { label: "종류", value: "요괴" },
+      { label: "지역", value: "산 · 숲 주변" },
+      { label: "능력", value: "둔갑 / 매혹 / 장수 / 여우구슬" },
+      { label: "생김새", wide: true, value: "아홉 개의 꼬리를 가진 여우의 모습으로 알려져 있다. 사람의 모습으로 둔갑할 수 있으며, 특히 아름다운 여성으로 변신하는 이야기가 널리 전해진다." },
+      { label: "특징", wide: true, value: "오랜 세월을 살아온 여우가 신령한 힘을 얻어 인간의 모습으로 변신한 존재로 전해진다. 인간의 모습을 자유롭게 오가는 능력과 뛰어난 지혜를 가진 것이 특징이다." },
+    ],
+    level: 5,
+    texts: [
+      {
+        title: "인간과의 관계",
+        body: "전통 설화에서는 인간을 속이거나 해치는 요괴로 등장하는 경우가 많지만, 모든 이야기에서 동일하게 악한 존재로 그려지는 것은 아니다. 현대의 이야기에서는 인간과 사랑하고 가족을 이루거나 인간 사회에서 살아가는 존재로 재해석되기도 한다.",
+      },
+      {
+        title: "대표적인 이야기",
+        body: "구미호는 인간이 되기 위해 오랜 시간 수행하거나 인간과 관계를 맺는 존재로 여러 이야기에서 등장한다. 특히 인간으로 변신한 구미호가 사람과 사랑에 빠지거나 인간이 되고자 하는 욕망을 품는 이야기는 현대적으로도 반복해서 재해석되고 있다.",
+      },
+    ],
+    bars: [
+      { label: "한", value: 43 },
+      { label: "공포", value: 66 },
+      { label: "힘", value: 93 },
+      { label: "출몰", value: 36 },
+      { label: "개성", value: 85 },
+    ],
+  },
+};
+
+function setupFamousDetail() {
+  var infoBox = document.getElementById("fg-info");
+  if (!infoBox) return; // 이 페이지가 아니면 중단
+
+  var key = new URLSearchParams(location.search).get("ghost") || "gumiho";
+  var ghost = FAMOUS[key] || FAMOUS.gumiho;
+
+  document.title = ghost.name + " — 유명한 한국 귀신";
+  document.getElementById("fg-title").textContent = ghost.name;
+
+  var img = document.getElementById("fg-image");
+  img.src = ghost.image;
+  img.alt = ghost.name + " 일러스트";
+
+  // 정보 줄
+  ghost.rows.forEach(function (row) {
+    var line = document.createElement("div");
+    line.className = "fg-row" + (row.wide ? " wide" : "");
+
+    var k = document.createElement("span");
+    k.className = "k";
+    k.textContent = row.label;
+
+    var v = document.createElement("span");
+    v.className = "v";
+    v.textContent = row.value;
+
+    line.appendChild(k);
+    line.appendChild(v);
+    infoBox.appendChild(line);
+  });
+
+  // 위험도 (별)
+  if (ghost.level) {
+    var levelRow = document.createElement("div");
+    levelRow.className = "fg-row wide";
+    var lk = document.createElement("span");
+    lk.className = "k";
+    lk.textContent = "위험도";
+    var lv = document.createElement("span");
+    lv.className = "stars";
+    lv.textContent = "★".repeat(ghost.level) + "☆".repeat(5 - ghost.level);
+    levelRow.appendChild(lk);
+    levelRow.appendChild(lv);
+    infoBox.appendChild(levelRow);
+  }
+
+  // 왼쪽 아래 설명 글
+  var textBox = document.getElementById("fg-texts");
+  ghost.texts.forEach(function (text) {
+    var section = document.createElement("section");
+    var h2 = document.createElement("h2");
+    h2.textContent = text.title;
+    var p = document.createElement("p");
+    p.textContent = text.body;
+    section.appendChild(h2);
+    section.appendChild(p);
+    textBox.appendChild(section);
+  });
+
+  // 오른쪽 아래 막대 그래프
+  var barBox = document.getElementById("fg-bars");
+  ghost.bars.forEach(function (bar) {
+    var row = document.createElement("div");
+    row.className = "fg-bar";
+
+    var k = document.createElement("span");
+    k.className = "k";
+    k.textContent = bar.label;
+
+    var track = document.createElement("span");
+    track.className = "track";
+    var fill = document.createElement("span");
+    fill.className = "fill";
+    fill.style.width = bar.value + "%";
+    track.appendChild(fill);
+
+    row.appendChild(k);
+    row.appendChild(track);
+    barBox.appendChild(row);
+  });
+}
+
+
+/* 능치 오각형 그래프를 그립니다.
+   values 는 [힘, 서사성, 개성, 지능, 친화력] 순서의 0~1 값입니다. */
+function makeRadar(values) {
+  // 그림판은 가로가 조금 더 넓습니다. 좌우에 축 이름("친화력", "서사성")이
+  // 들어갈 자리를 비워둬야 글자가 잘리지 않기 때문입니다.
+  var W = 400;
+  var H = 320;
+  var CX = 200;
+  var CY = 165;
+  var RADIUS = 130;    // 가장 바깥 오각형까지의 거리
+  var NAMES = ["힘", "서사성", "개성", "지능", "친화력"];
+  // 축 이름을 어느 쪽에 붙일지 (가운데 / 오른쪽으로 / 왼쪽으로)
+  var ANCHORS = ["middle", "start", "middle", "middle", "end"];
+  var NS = "http://www.w3.org/2000/svg";
+
+  // 꼭짓점 좌표 구하기 (맨 위에서 시작해 시계 방향으로 5개)
+  function point(index, ratio) {
+    var angle = (Math.PI * 2 * index) / 5 - Math.PI / 2;
+    return [
+      CX + Math.cos(angle) * RADIUS * ratio,
+      CY + Math.sin(angle) * RADIUS * ratio,
+    ];
+  }
+  function polygonPoints(ratios) {
+    return ratios
+      .map(function (r, i) { return point(i, r).map(Math.round).join(","); })
+      .join(" ");
+  }
+
+  var svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "gd-radar");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+
+  function add(tag, attrs, text) {
+    var el = document.createElementNS(NS, tag);
+    for (var name in attrs) el.setAttribute(name, attrs[name]);
+    if (text) el.textContent = text;
+    svg.appendChild(el);
+    return el;
+  }
+
+  // 1) 실제 능력치 오각형 (흰색으로 꽉 채움)
+  add("polygon", { points: polygonPoints(values), fill: "#ffffff", stroke: "#ffffff", "stroke-width": 2 });
+
+  // 2) 그 위에 눈금이 되는 동심 오각형과 축
+  [1, 0.75, 0.5, 0.25].forEach(function (r) {
+    add("polygon", { points: polygonPoints([r, r, r, r, r]), fill: "none", stroke: "#c9c9c9", "stroke-width": 1 });
+  });
+  for (var i = 0; i < 5; i++) {
+    var p = point(i, 1);
+    add("line", { x1: CX, y1: CY, x2: Math.round(p[0]), y2: Math.round(p[1]), stroke: "#c9c9c9", "stroke-width": 1 });
+  }
+  add("circle", { cx: CX, cy: CY, r: 3, fill: "#000000" });
+
+  // 3) 축 이름 — 오각형보다 조금 바깥(1.15배)에 놓습니다
+  NAMES.forEach(function (name, i) {
+    var p = point(i, 1.15);
+    add(
+      "text",
+      {
+        x: Math.round(p[0]),
+        y: Math.round(p[1]) + 7,
+        fill: "#ffffff",
+        "font-size": 19,
+        "font-family": "Pretendard Variable, Pretendard, sans-serif",
+        "text-anchor": ANCHORS[i],
+      },
+      name
+    );
+  });
+
+  return svg;
+}
+
+
+/* ===========================================================
    페이지가 열리면 알맞은 기능을 실행합니다.
    (각 함수는 자기 페이지가 아니면 알아서 중단됩니다.)
    =========================================================== */
 document.addEventListener("DOMContentLoaded", function () {
+  setupGhostDetail();
   startHumanTest();
   showHumanResult();
   startGhostExam();

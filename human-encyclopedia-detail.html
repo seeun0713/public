@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>귀신 상세 — 귀신 도감</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<!--
+  귀신 도감 상세 페이지 (Figma "Desktop - 110", node 356:14976)
+
+  이 파일 하나로 귀신 8마리를 모두 보여줍니다.
+  주소 뒤에 ?ghost=... 를 붙이면 그 귀신의 내용이 채워집니다.
+    예) human-encyclopedia-detail.html?ghost=singiwonyo
+
+  귀신별 글(이름/생전/죽음/한/공존 방법…)은 js/script.js 맨 위의
+  GHOSTS 목록에 들어 있습니다. 새 귀신을 추가하려면 거기에
+  한 덩어리만 더 적으면 됩니다.
+-->
+<body class="gd-page">
+
+  <div class="gd-wrap">
+
+    <!-- 헤더 (검정 바 127px) -->
+    <header class="gd-header">
+      <a class="icon left" href="human-encyclopedia.html" aria-label="도감으로 돌아가기">
+        <img src="images/dogam2-icon-back.svg" alt="" />
+      </a>
+      <h1 class="gd-title" id="gd-title">귀신</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/dogam2-icon-menu.svg" alt="" />
+      </button>
+    </header>
+
+    <!-- 위쪽: 왼쪽 그림 + 오른쪽 정보표 -->
+    <div class="gd-main">
+      <figure class="gd-figure">
+        <!--
+          동영상이 있는 귀신은 <video>가, 없으면 <img>가 보입니다.
+          동영상 파일을 아직 못 찾았을 때는 poster(=그림)가 그대로 보이므로
+          화면이 비지 않습니다.
+        -->
+        <video class="ghost" id="gd-video" hidden autoplay loop muted playsinline></video>
+        <img class="ghost" id="gd-image" src="" alt="" />
+        <!-- 한지 질감을 곱하기(multiply)로 덮어 낡은 종이 느낌을 냅니다 -->
+        <img class="paper" src="images/dogam2-bg.jpg" alt="" aria-hidden="true" />
+      </figure>
+
+      <div class="gd-info" id="gd-info">
+        <!-- 정보 줄과 능력치는 JS가 채웁니다 -->
+      </div>
+    </div>
+
+    <!-- 아래쪽: 공존 방법 / 주의 사항 -->
+    <div class="gd-sections" id="gd-sections"></div>
+
+    <!-- 헤더에서 늘어지는 빨간 노리개 -->
+    <div class="gd-norigae" aria-hidden="true">
+      <img src="images/detail-knot-red.svg" alt="" />
+      <img class="bead" src="images/detail-knot-bead.svg" alt="" />
+    </div>
+
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
