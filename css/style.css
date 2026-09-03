@@ -1400,7 +1400,7 @@ body.dogam-page {
 .dogam-corner.bl { bottom: 0; left: 0; width: 21px; height: 20px; border-right-width: 1px; border-top-width: 1px; }
 .dogam-corner.br { bottom: 0; right: 0; width: 20px; height: 20px; border-left-width: 1px; border-top-width: 1px; }
 
-/* 이미 이름이 알려진 귀신(유명한 한국 귀신)의 카드 그림은
+/* 이미 이름이 알려진 존재(유명 한국 괴물)의 카드 그림은
    잘라내기 값 없이 칸에 꽉 채웁니다 */
 .dogam-photo-img.fit {
   position: absolute;
@@ -1409,6 +1409,9 @@ body.dogam-page {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
+  /* 이 그림들은 배경이 비어 있는 검정 실루엣이라,
+     검정 카드 위에서는 안 보입니다. 한지 바탕을 깔아 줍니다. */
+  background: #ecdfc9 url("../images/famous-paper2.png") center / cover;
 }
 
 /* 이름 — 아직 정체를 모르는 귀신이라 회색 깨진 글자 */
@@ -2002,7 +2005,7 @@ body.gd-page {
 
 
 /* =========================================================
-   유명한 한국 귀신 — 상세 페이지 (famous-encyclopedia-detail.html)
+   유명 한국 괴물 — 상세 페이지 (famous-encyclopedia-detail.html)
    Figma 프레임 "Desktop - 113" (node 360:11599) 기준.
    앞의 귀신 도감과 달리 한지 배경 위에 검정 글씨 + 두꺼운
    검정 테두리로 짜여 있습니다.
@@ -2181,6 +2184,7 @@ body.fg-page {
   background: rgba(0, 0, 0, 0.15);
 }
 .fg-bar .fill {
+  display: block;   /* <span>은 그냥 두면 너비가 먹지 않습니다 */
   height: 100%;
   background: #000;
 }

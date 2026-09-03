@@ -421,8 +421,7 @@ function setupMenu() {
 
   /* 사이드바에 들어갈 항목.
      title 은 큰 글씨(분류), links 는 그 아래 작은 글씨(페이지)입니다.
-     same 에는 "이 페이지도 같은 항목으로 친다"는 상세 페이지 주소를 적습니다.
-     "유명 한국 괴물"은 아직 페이지가 없어서 제목만 있습니다. */
+     same 에는 "이 페이지도 같은 항목으로 친다"는 상세 페이지 주소를 적습니다. */
   var sections = [
     {
       title: "악의 없는 귀신",
@@ -440,7 +439,12 @@ function setupMenu() {
         { label: "인간 유사도 시험", href: "ghost-exam.html", same: ["ghost-exam-result.html"] },
       ],
     },
-    { title: "유명 한국 괴물", links: [] },
+    {
+      title: "유명 한국 괴물",
+      links: [
+        { label: "괴물 도감", href: "famous-encyclopedia.html", same: ["famous-encyclopedia-detail.html"] },
+      ],
+    },
   ];
 
   // 지금 보고 있는 페이지 파일 이름 (예: "human-encyclopedia.html")
@@ -606,32 +610,217 @@ var GHOSTS = {
     image: "images/dogam2-hover-susalgwi.png",
     rows: [
       { label: "이름", value: "수살귀", color: "white" },
-      { label: "지역", value: "불특정", color: "blue" },
-      { label: "죽음", value: "익사", color: "white" },
-      { label: "목적", value: "자신을 대체할 희생양 찾기, 외로움에 친구 찾기", color: "yellow" },
+      { label: "생전", value: "물가 가까이에서 살던 평범한 사람이었다. 이름도 사연도 물에 씻겨 남아 있지 않다.", color: "blue" },
+      { label: "죽음", value: "물에 빠져 익사했다. 죽은 뒤로도 몸에서는 물이 떨어지고, 긴 머리에서 물비린내와 한기가 가시지 않는다.", color: "white" },
+      { label: "한", value: "혼자 남겨진 외로움과, 제 자리를 대신해 줄 누군가를 아직 찾지 못했다는 미련이 그를 물가에 붙들어 두었다.", color: "yellow" },
     ],
     level: 5,
-    stats: [1, 1, 1, 1, 1],
+    stats: [0.85, 0.5, 0.55, 0.6, 0.15],
     texts: [
       {
-        title: "특성 및 스토리",
+        title: "공존 방법",
         color: "white",
         lines: [
-          "몸에서 물 떨어짐, 긴머리, 물비린내, 한기. 활동범위-물을 벗어날 수 없음. 비나 홍수로 인해 활동범위가 늘어날 수 있음.",
-          "익사시키는 방법은 크게 3가지로 회오리를 일으키거나 발을 잡아 물 안에 가두는 방법, 햇빛으로 수면을 반짝여 유혹하는 방법, 흐리거나 비오는 날 울음소리를 이용해 홀리는 방법이 있다.",
+          "본래 물을 벗어날 수 없는 존재이므로, 물가에서 한 걸음 떨어져 있는 것만으로 대부분 피할 수 있다.",
+          "다만 비가 오거나 홍수로 물이 불어나면 활동 범위가 함께 넓어진다. 물이 불어난 날에는 물가 자체를 멀리한다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "햇빛에 반짝이는 수면, 흐린 날 들려오는 울음소리, 발목을 붙드는 감각. 셋 중 하나라도 느껴지면 곧바로 물에서 나온다.",
+          "사람을 해하려는 목적만을 가진 악귀다. 사연을 들어주거나 한을 풀어주는 방식으로 달랠 수 있는 상대가 아니다.",
         ],
       },
     ],
   },
 
-  /* 아래 여섯 마리는 아직 설명 글을 받지 못했습니다.
-     이름/그림만 있고, 글이 들어오면 위와 같은 모양으로 채우면 됩니다. */
-  geolsin:   { name: "걸신",     image: "images/dogam2-hover-geolsin.png" },
-  jigwi:     { name: "지귀",     image: "images/dogam2-hover-jigwi.png" },
-  baekgwi:   { name: "백귀",     image: "images/dogam2-hover-baekgwi.png" },
-  arang:     { name: "아랑",     image: "images/dogam2-hover-arang.png" },
-  maehwa:    { name: "매화귀신", image: "images/dogam2-hover-maehwa.png" },
-  cheonggun: { name: "청군여귀", image: "images/dogam2-hover-cheonggun.png" },
+  arang: {
+    name: "아랑",
+    image: "images/dogam2-hover-arang.png",
+    rows: [
+      { label: "이름", value: "아랑", color: "white" },
+      { label: "생전", value: "조선 명종 대 밀양에 살던 여인으로, 아름답고 기품 있기로 이름이 났다. 16세기 미혼 여성이 입던 긴 저고리 한복 차림이었다.", color: "blue" },
+      { label: "죽음", value: "관청 통인이 품은 흑심에 저항하다 억울하게 살해당했다. 그 죽음의 진상은 오래도록 묻힌 채였다.", color: "white" },
+      { label: "한", value: "사법 체계가 끝내 밝히지 못한 자신의 죽음과 살인범의 정체를 세상에 알리지 못한 것이 한으로 남았다.", color: "yellow" },
+    ],
+    level: 2,
+    stats: [0.35, 1, 0.7, 0.85, 0.6],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "새로 부임한 부사들처럼 등을 돌리지 말고 그의 말을 끝까지 듣는다. 아랑이 원하는 것은 복수가 아니라 증언이다.",
+          "밝혀지지 않은 죽음의 진상을 함께 좇아 기록으로 남기면, 그는 더 나타날 이유가 없어져 조용히 물러난다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "가슴에 칼을 꽂은 모습에 놀라 달아나면, 그는 다음 사람 앞에 다시 같은 모습으로 서야 한다. 겉모습만 보고 악귀로 단정하지 않는다.",
+          "소복 차림의 처녀귀신으로 뭉뚱그려 부르는 것을 싫어한다. 그는 16세기를 살았던 한 사람으로 기억되기를 바란다.",
+        ],
+      },
+    ],
+  },
+
+  maehwa: {
+    name: "매화귀신",
+    image: "images/dogam2-hover-maehwa.png",
+    rows: [
+      { label: "이름", value: "매화귀신", color: "white" },
+      { label: "생전", value: "백 년 넘게 한자리를 지켜 온 매화나무였다. 오랜 세월이 쌓여 영물이 되었다.", color: "blue" },
+      { label: "죽음", value: "사람처럼 죽어 귀신이 된 것이 아니라, 나무인 채로 령을 얻어 백발 노인의 모습을 갖추었다. 피부는 나무껍질처럼 검고 깡말랐으며, 흰 머리와 수염이 옷의 윗부분을 모두 가릴 만큼 길다.", color: "white" },
+      { label: "한", value: "만물에 령이 깃들어 있음을 잊은 세상, 그리고 사람의 무분별한 자연 파괴와 무례함에 대한 서운함이 남아 있다.", color: "yellow" },
+    ],
+    level: 3,
+    stats: [0.8, 0.6, 0.9, 0.75, 0.45],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "먼저 예를 갖추면 그에 걸맞은 대우가 돌아온다. 오래된 나무 앞에서 옷매무새를 고치고 인사하던 옛 습관이 곧 공존의 방법이다.",
+          "꽃가지를 꺾지 않고, 뿌리 주변을 함부로 파헤치지 않는다. 사군자의 매화답게 그는 지켜지는 선을 중요하게 여긴다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "성격이 매우 깐깐하고 고지식하다. 가벼운 반말이나 장난도 무례로 받아들여진다.",
+          "자신을 함부로 대하거나 다치게 한 사람에게는 목숨을 거두는 저주를 내린다. 흰 매화 꽃잎이 유난히 많이 흩날린다면 이미 노한 것이다.",
+        ],
+      },
+    ],
+  },
+
+  geolsin: {
+    name: "걸신",
+    image: "images/dogam2-hover-geolsin.png",
+    rows: [
+      { label: "이름", value: "걸신", color: "white" },
+      { label: "생전", value: "끼니를 잇지 못하고 빌어먹으며 떠돌던 거지였다.", color: "blue" },
+      { label: "죽음", value: "끝내 굶주림을 이기지 못하고 숨을 거두었다. 죽은 뒤에도 배고픔만은 그대로 남았다.", color: "white" },
+      { label: "한", value: "한 번도 배불리 먹어보지 못한 것이 한이 되어, 아무에게나 씌어 그 사람의 입으로 대신 먹으려 한다.", color: "yellow" },
+    ],
+    level: 2,
+    stats: [0.3, 0.4, 0.6, 0.35, 0.7],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "걸신이 들리면 한동안 음식을 계속 먹게 된다. 억지로 굶기려 들지 말고 먹여서 한을 풀어주는 것이 예로부터 전해지는 방법이다.",
+          "조왕신이나 터줏대신처럼 끝내 복을 주지는 않지만, 굶주림을 면하게 해 준다는 점에서 하급 잡귀치고는 너그럽게 받아들여져 왔다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "가리지 않고 씌므로 누구에게 붙었는지를 탓하지 않는다. 특히 영양이 부족한 사람에게 잘 붙는다.",
+          "크게 거슬리는 귀신은 아니지만 폭식이 길어지면 몸이 상한다. 먹이되 끝을 정해 주는 것이 좋다.",
+        ],
+      },
+    ],
+  },
+
+  cheonggun: {
+    name: "청군여귀",
+    image: "images/dogam2-hover-cheonggun.png",
+    rows: [
+      { label: "이름", value: "청군여귀", color: "white" },
+      { label: "생전", value: "생전에 대해 전하는 바가 없다. 『천예록』은 서울 묵정동의 한 흉가에서 그를 마주친 이야기만 남겼다.", color: "blue" },
+      { label: "죽음", value: "어떻게 죽었는지 알려지지 않았다. 다만 제 목숨을 상징하는 물건을 몸 밖에 따로 감추어 두었다.", color: "white" },
+      { label: "한", value: "사람을 곁에 두고 싶지도, 혼자이고 싶지도 않은 마음으로 흉가에 머문다. 눈물을 흘릴 때면 늙고 추한 본모습이 드러난다.", color: "yellow" },
+    ],
+    level: 4,
+    stats: [0.7, 0.55, 0.95, 0.8, 0.25],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "사람을 좋아하지는 않지만 먼저 칼을 휘두르는 일은 많지 않다. 거문고 소리가 들리면 방해하지 말고 조용히 물러난다.",
+          "몸 밖에 감추어 둔 목숨의 물건을 찾아 태우면 온몸의 구멍에서 피를 쏟으며 죽는다. 되돌릴 수 없으니 마지막 수단으로만 생각한다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "키가 사람의 절반만 해서 찬장이나 다락 안에서도 움직인다. 좁은 곳이라고 안심하지 않는다.",
+          "진짜 키를 속여 훨씬 큰 모습으로 보이기도 하고 나무 위로도 잘 올라간다. 눈에 보이는 크기와 높이를 믿지 않는다.",
+        ],
+      },
+    ],
+  },
+
+  baekgwi: {
+    name: "백귀",
+    image: "images/dogam2-hover-baekgwi.png",
+    rows: [
+      { label: "이름", value: "백귀", color: "white" },
+      { label: "생전", value: "사람이었는지조차 분명하지 않다. 『조선왕조실록』 1468년 기록에는 세조가 신하를 놀래려 꾸며 낸 모습으로 처음 등장한다.", color: "blue" },
+      { label: "죽음", value: "죽음의 내력은 전하지 않는다. 태백산 신령 백두옹, 흰옷을 입은 산도깨비 소의산매 등 여러 이름으로 갈라져 전해질 뿐이다.", color: "white" },
+      { label: "한", value: "특정한 원한이라기보다, 사람들이 '가장 무서운 것'을 떠올릴 때마다 되살아나는 형상 그 자체다.", color: "yellow" },
+    ],
+    level: 5,
+    stats: [0.75, 0.9, 0.85, 0.5, 0.1],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "마주치는 것 자체가 위험하다. 오래된 나무 위에서 흰 기운이 피어오르거든 눈을 돌리고 그 자리를 뜬다.",
+          "『임하필기』는 그를 본 사람이 오래 살지 못한다고 적었고, 꿈에 백두옹을 보면 죽는다는 말도 함께 전한다. 보지 않는 것이 최선의 공존이다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "위아래 옷을 벗고 머리를 풀어 헤친 채 머리에 흰 것을 이고 몽둥이를 든 모습. 조선 사람들이 떠올린 가장 무서운 형상이다.",
+          "소의산매처럼 겁 없이 마주 보면 도망친다는 이야기도 있으나, 백두옹의 저주를 받으면 고을 사또가 줄줄이 죽어 나갔다고 한다. 시험하지 않는다.",
+        ],
+      },
+    ],
+  },
+
+  jigwi: {
+    name: "지귀",
+    image: "images/dogam2-hover-jigwi.png",
+    rows: [
+      { label: "이름", value: "지귀", color: "white" },
+      { label: "생전", value: "서라벌에 살던 평범한 남자였다. 선덕여왕을 향한 연심을 품었고, 그 소문이 왕에게까지 닿았다.", color: "blue" },
+      { label: "죽음", value: "영묘사에서 왕을 기다리다 잠이 들어 끝내 깨어나지 못했다. 왕은 금팔찌를 두고 떠났다.", color: "white" },
+      { label: "한", value: "아쉬움과 기쁨이 한데 뒤엉킨 마음에서 불이 일었다. 몽달귀신이면서도 불귀신이 된 것은 그만큼 한이 컸기 때문일 것이다.", color: "yellow" },
+    ],
+    level: 5,
+    stats: [0.9, 0.8, 0.75, 0.4, 0.2],
+    texts: [
+      {
+        title: "공존 방법",
+        color: "white",
+        lines: [
+          "신라에서는 술사에게 의뢰해 만든 주문을 집집마다 붙여 그가 다가오지 못하게 했다. 글로 경계를 긋는 것이 가장 오래된 방법이다.",
+          "그의 불은 미움이 아니라 닿지 못한 마음에서 났다. 마음 자체를 부정하지 않되, 거리는 분명히 지킨다.",
+        ],
+      },
+      {
+        title: "주의 사항",
+        color: "yellow",
+        lines: [
+          "몽달귀신으로 분류되지만 보통의 몽달귀신보다 훨씬 위험하다. 불이 옮아붙으면 되돌릴 수 없다.",
+          "『대동운부군옥』과 『삼국유사』에 남은 이야기로, 실제 사건이 아니라 설화에서 비롯되었다. 이야기를 함부로 각색해 옮기지 않는다.",
+        ],
+      },
+    ],
+  },
 };
 
 function setupGhostDetail() {
@@ -684,6 +873,13 @@ function setupGhostDetail() {
     line.appendChild(v);
     infoBox.appendChild(line);
   });
+
+  // 노리개 매듭 색 — 공존 난이도가 높을수록 붉어집니다
+  // (1 초록 → 2 연두 → 3 노랑 → 4 주황 → 5 빨강)
+  var knot = document.getElementById("gd-knot");
+  if (knot && ghost.level) {
+    knot.src = "images/detail-knot-lv" + ghost.level + ".svg";
+  }
 
   // 공존 난이도 (빨간 줄 + 별)
   if (ghost.level) {
@@ -753,7 +949,7 @@ function setupGhostDetail() {
 }
 
 /* ===========================================================
-   8. 유명한 한국 귀신 상세 페이지 (famous-encyclopedia-detail.html)
+   8. 유명 한국 괴물 상세 페이지 (famous-encyclopedia-detail.html)
 
    ★ 새 귀신을 추가하려면 FAMOUS 에 한 덩어리만 더 적으면 됩니다.
      rows  : 정보 줄. wide: true 면 이름표 폭을 넓게 씁니다.
@@ -801,7 +997,7 @@ function setupFamousDetail() {
   var key = new URLSearchParams(location.search).get("ghost") || "gumiho";
   var ghost = FAMOUS[key] || FAMOUS.gumiho;
 
-  document.title = ghost.name + " — 유명한 한국 귀신";
+  document.title = ghost.name + " — 유명 한국 괴물";
   document.getElementById("fg-title").textContent = ghost.name;
 
   var img = document.getElementById("fg-image");
@@ -878,7 +1074,7 @@ function setupFamousDetail() {
 }
 
 
-/* 능치 오각형 그래프를 그립니다.
+/* 능력치 오각형 그래프를 그립니다.
    values 는 [힘, 서사성, 개성, 지능, 친화력] 순서의 0~1 값입니다. */
 function makeRadar(values) {
   // 그림판은 가로가 조금 더 넓습니다. 좌우에 축 이름("친화력", "서사성")이
@@ -959,6 +1155,7 @@ function makeRadar(values) {
    =========================================================== */
 document.addEventListener("DOMContentLoaded", function () {
   setupGhostDetail();
+  setupFamousDetail();
   startHumanTest();
   showHumanResult();
   startGhostExam();
