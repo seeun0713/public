@@ -514,10 +514,13 @@ function setupMenu() {
     wrap.style.setProperty("--side-nav-top", top + "px");
 
     wrap.hidden = false;
+    // 페이지 장식 중 사이드바와 겹치는 것을 CSS 에서 감출 수 있도록 표시를 남깁니다
+    document.body.classList.add("side-nav-open");
     toggles.forEach(function (btn) { btn.setAttribute("aria-expanded", "true"); });
   }
   function closeMenu() {
     wrap.hidden = true;
+    document.body.classList.remove("side-nav-open");
     toggles.forEach(function (btn) { btn.setAttribute("aria-expanded", "false"); });
   }
 

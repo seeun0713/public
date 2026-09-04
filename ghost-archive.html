@@ -6,56 +6,90 @@
   <title>착한 귀신상 — 착한 귀신 아카이브</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="archive-detail">
+<!--
+  착한 귀신상 목록 (Figma "Desktop - 92", node 306:8043)
+
+  카드 한 장의 구조
+    .ghost-card-img .crop : 236.356 - 좌우 여백 = 158.3px 폭의 "창"입니다.
+                            넘치는 부분은 잘라냅니다.
+    .crop img             : 원본 그림을 크게 늘린 뒤 밀어서 원하는 부분만
+                            보이게 합니다. 카드마다 값이 달라 style 로 직접 적었습니다.
+    .corner-deco          : 네 귀퉁이의 전통 완자 장식
+-->
+<body class="archive-detail archive-list">
   <div class="archive-wrap">
 
     <!-- 헤더 -->
     <header class="archive-header">
-      <a class="icon left" href="index.html" aria-label="홈으로">←</a>
+      <a class="icon left" href="index.html" aria-label="홈으로">
+        <img src="images/arc-icon-back.svg" alt="" />
+      </a>
       <h1 class="archive-brand gradient-text">착한 귀신상</h1>
-      <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/arc-icon-menu.svg" alt="" />
+      </button>
     </header>
 
     <!-- 상단 구름 장식 (좌우) -->
-    <img class="cloud-ornament left" src="images/cloud-ornament.svg" alt="" />
-    <img class="cloud-ornament right" src="images/cloud-ornament.svg" alt="" />
+    <img class="cloud-ornament left" src="images/arc-cloud-l.svg" alt="" aria-hidden="true" />
+    <img class="cloud-ornament right" src="images/arc-cloud-r.svg" alt="" aria-hidden="true" />
 
     <!-- 귀신 카드 목록 -->
     <div class="ghost-grid">
 
       <a class="ghost-card" href="ghost-archive-dongjasam.html">
-        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
-        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
-        <span class="ghost-card-img"><img src="images/list-dongjasam.png" alt="동자삼" /></span>
+        <span class="ghost-card-img">
+          <span class="crop">
+            <img src="images/arc-dongjasam.png" alt="동자삼" style="left: -17.74%; top: 0.25%; width: 135.48%; height: 154.52%;" />
+          </span>
+        </span>
         <span class="ghost-card-name">동자삼</span>
+        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
+        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
       </a>
 
       <a class="ghost-card" href="#">
-        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
-        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
-        <span class="ghost-card-img"><img src="images/list-changbudaesin.png" alt="창부대신" /></span>
+        <span class="ghost-card-img">
+          <span class="crop">
+            <img src="images/arc-changbu.png" alt="창부대신" style="left: -72.82%; top: -8.97%; width: 244.95%; height: 182.99%;" />
+          </span>
+        </span>
         <span class="ghost-card-name">창부대신</span>
+        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
+        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
       </a>
 
       <a class="ghost-card" href="#">
-        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
-        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
-        <span class="ghost-card-img"><img src="images/list-sinjikke.png" alt="신지께" /></span>
+        <span class="ghost-card-img">
+          <span class="crop">
+            <img src="images/arc-sinjikke.png" alt="신지께" style="left: -75.8%; top: 12.75%; width: 251.52%; height: 187.9%;" />
+          </span>
+        </span>
         <span class="ghost-card-name">신지께</span>
+        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
+        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
       </a>
 
       <a class="ghost-card" href="#">
+        <span class="ghost-card-img">
+          <span class="crop">
+            <img src="images/arc-geogugoe.png" alt="거구괴&amp;청의동자" style="left: -73.31%; top: -40.21%; width: 246.36%; height: 184.04%;" />
+          </span>
+        </span>
+        <span class="ghost-card-name">거구괴&amp;청의동자</span>
         <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
         <i class="corner-deco bl"></i><i class="corner-deco br"></i>
-        <span class="ghost-card-img"><img src="images/list-geogugoe.png" alt="거구괴&청의동자" /></span>
-        <span class="ghost-card-name">거구괴&청의동자</span>
       </a>
 
       <a class="ghost-card" href="#">
-        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
-        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
-        <span class="ghost-card-img"><img src="images/list-uureong.png" alt="우렁각시" /></span>
+        <span class="ghost-card-img">
+          <span class="crop">
+            <img src="images/arc-uureong.png" alt="우렁각시" style="left: -63.53%; top: -35.1%; width: 227.06%; height: 169.62%;" />
+          </span>
+        </span>
         <span class="ghost-card-name">우렁각시</span>
+        <i class="corner-deco tl"></i><i class="corner-deco tr"></i>
+        <i class="corner-deco bl"></i><i class="corner-deco br"></i>
       </a>
 
     </div>

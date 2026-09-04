@@ -28,6 +28,31 @@ button.menu-toggle {
 }
 .side-nav[hidden] { display: none; }
 
+/* ----- 메뉴가 열렸을 때의 페이지 장식 -----
+   패널은 머리말 아래에서 시작하므로, 장식이 패널 뒤에 깔리면 머리말 쪽으로
+   삐져나온 윗부분만 남아 잘린 것처럼 보입니다.
+   그래서 메뉴가 열려 있는 동안에는 장식을 패널보다 위로 올려 통째로 보이게 합니다.
+   (메뉴가 열리면 JS 가 <body> 에 side-nav-open 을 붙입니다.) */
+body.side-nav-open .cloud-ornament,      /* 착한 귀신상 목록 · 동자삼 상세 */
+body.side-nav-open .gd-norigae,          /* 귀신 도감 상세 — 노리개 */
+body.side-nav-open .exam-corner,         /* 인간 유사도 시험 */
+body.side-nav-open .ordinance-corner {   /* 공존에 관한 조례 */
+  z-index: 1001;         /* 사이드바(1000)보다 위 */
+  pointer-events: none;  /* 메뉴 항목 클릭을 가로막지 않도록 */
+}
+
+/* 패널 오른쪽에 남는 자리를 패널과 같은 검정으로 메웁니다.
+   글자는 본문 칸에 맞춰 서고, 검정 면은 화면 끝까지 이어집니다. */
+.side-nav::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: max(0px, (100% - var(--page-max)) / 2);
+  background: #000;
+}
+
 /* 뒤쪽 내용을 살짝 어둡게 덮는 막 */
 .side-nav-dim {
   position: absolute;
@@ -44,9 +69,6 @@ button.menu-toggle {
   background: #000;
   padding: 16px 48px 48px;
   overflow-y: auto;
-  /* 피그마엔 없지만, 귀신 쪽 검정 배경 페이지에서 패널 경계가 안 보여서
-     구분선과 같은 색으로 왼쪽에 머리카락 굵기 선을 하나 넣었습니다. */
-  border-left: 1px solid #545454;
 }
 .side-nav-inner {
   display: flex;
@@ -576,13 +598,22 @@ body.archive-detail {
 /* ----- 상단 구름 장식 ----- */
 .cloud-ornament {
   position: absolute;
-  top: 96px;
   width: 244px;
   pointer-events: none;
   z-index: 1;
 }
-.cloud-ornament.left { left: 40px; transform: scaleX(-1); }
-.cloud-ornament.right { right: 40px; }
+.cloud-ornament.left  { left: 40px; top: 96px; transform: scaleX(-1); }
+.cloud-ornament.right { right: 40px; top: 96px; }
+
+/* 착한 귀신상 목록만 시안(node 306:8043) 위치를 그대로 씁니다.
+   같은 클래스를 동자삼 상세·홈에서도 쓰고 있어 범위를 좁혔습니다. */
+.archive-list .cloud-ornament       { height: 53.566px; }
+.archive-list .cloud-ornament.left  { left: 55px;  top: 100px; }
+.archive-list .cloud-ornament.right { right: 53px; top: 107px; }
+
+/* 사이드바가 열렸을 때 구름을 감추는 규칙은 파일 앞쪽
+   "메뉴가 열려 있는 동안 감추는 페이지 장식" 에 모아 두었습니다.
+   시안(node 373:8234)에도 이때 오른쪽 구름이 없습니다. */
 
 /* ----- 큰 제목 (동자삼) ----- */
 .archive-title {
@@ -721,10 +752,10 @@ body.archive-detail {
 /* 카드 그리드 */
 .ghost-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 282px));
+  grid-template-columns: repeat(3, 282.25px);
   justify-content: center;
-  gap: 56px 80px;
-  margin-top: 80px;
+  gap: 81px 141px;
+  margin-top: 100px;   /* 머리말(127) 아래 100px = 시안의 위에서 227px */
 }
 
 /* 카드 한 장 */
@@ -732,11 +763,11 @@ body.archive-detail {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 22px;
-  padding: 23px;
+  gap: 26.389px;
+  width: 282.25px;
+  padding: 17.21px;
   background: #000;
-  border: 5px solid #fffbd4;
+  border: 5.737px solid #fffbd4;
   text-decoration: none;
   color: #fff;
 }
@@ -744,21 +775,28 @@ body.archive-detail {
 
 /* 귀신 이미지 영역 */
 .ghost-card-img {
-  height: 265px;
+  height: 265.04px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 20px;
+  padding: 0 39.01px;
 }
+/* 넘치는 부분을 잘라내는 "창" */
+.ghost-card-img .crop {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+/* 원본을 크게 늘려 밀어 넣습니다 (left/top/width/height 는 HTML 에서 지정) */
 .ghost-card-img img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
+  position: absolute;
+  max-width: none;
 }
 
 /* 이름 */
 .ghost-card-name {
-  font-size: 24px;
+  font-size: 24.09px;
   font-weight: 700;
   text-align: center;
 }
@@ -766,16 +804,19 @@ body.archive-detail {
 /* 4개 모서리 장식 (좌/우 SVG 1개씩, 아래쪽은 뒤집어 사용) */
 .ghost-card .corner-deco {
   position: absolute;
-  width: 56px;
-  height: 56px;
-  background-size: contain;
+  height: 57.625px;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   pointer-events: none;
 }
-.ghost-card .corner-deco.tl { top: 5px; left: 5px; background-image: url("../images/card-corner-l.svg"); }
-.ghost-card .corner-deco.tr { top: 5px; right: 5px; background-image: url("../images/card-corner-r.svg"); }
-.ghost-card .corner-deco.bl { bottom: 5px; left: 5px; background-image: url("../images/card-corner-l.svg"); transform: scaleY(-1); }
-.ghost-card .corner-deco.br { bottom: 5px; right: 5px; background-image: url("../images/card-corner-r.svg"); transform: scaleY(-1); }
+.ghost-card .corner-deco.tl,
+.ghost-card .corner-deco.bl { width: 56.22px; background-image: url("../images/arc-corner-l.svg"); }
+.ghost-card .corner-deco.tr,
+.ghost-card .corner-deco.br { width: 56.92px; background-image: url("../images/arc-corner-r.svg"); }
+.ghost-card .corner-deco.tl { top: 4.59px;    left: 4.59px; }
+.ghost-card .corner-deco.tr { top: 4.59px;    right: 3.89px; transform: scaleX(-1); }
+.ghost-card .corner-deco.bl { bottom: 4.33px; left: 4.59px;  transform: scaleY(-1); }
+.ghost-card .corner-deco.br { bottom: 4.33px; right: 3.89px; transform: scale(-1); }
 
 @media (max-width: 880px) {
   .ghost-grid { margin-top: 48px; gap: 32px; }
