@@ -837,7 +837,34 @@ function setupGhostDetail() {
 
   // 주소에서 ?ghost=... 값을 꺼냅니다. 없으면 수살귀를 보여줍니다.
   var key = new URLSearchParams(location.search).get("ghost") || "susalgwi";
-  var ghost = GHOSTS[key] || GHOSTS.susalgwi;
+  if (!GHOSTS[key]) key = "susalgwi";
+  var ghost = GHOSTS[key];
+
+  // --- 앞/뒤 귀신으로 넘어가기 ---
+  // 도감 목록에 카드가 놓인 순서와 같게 두었습니다.
+  var ORDER = ["susalgwi", "geolsin", "jigwi", "singiwonyo", "baekgwi", "arang", "maehwa", "cheonggun"];
+  var here = ORDER.indexOf(key);
+  // 맨 끝에서 누르면 반대쪽 끝으로 돌아갑니다 (% 는 나머지 연산)
+  var prevKey = ORDER[(here - 1 + ORDER.length) % ORDER.length];
+  var nextKey = ORDER[(here + 1) % ORDER.length];
+
+  function linkTo(el, nameEl, target, label) {
+    if (!el) return;
+    el.href = "human-encyclopedia-detail.html?ghost=" + target;
+    el.setAttribute("aria-label", label + " 귀신: " + GHOSTS[target].name);
+    if (nameEl) nameEl.textContent = GHOSTS[target].name;
+  }
+  var prevEl = document.getElementById("gd-prev");
+  var nextEl = document.getElementById("gd-next");
+  linkTo(prevEl, document.getElementById("gd-prev-name"), prevKey, "이전");
+  linkTo(nextEl, document.getElementById("gd-next-name"), nextKey, "다음");
+
+  // 키보드 ← → 로도 넘어갑니다
+  document.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "ArrowLeft" && prevEl) location.href = prevEl.href;
+    if (e.key === "ArrowRight" && nextEl) location.href = nextEl.href;
+  });
 
   // 제목
   document.title = ghost.name + " — 귀신 도감";

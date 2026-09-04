@@ -2017,32 +2017,36 @@ body.gd-page {
   text-align: center;
 }
 
-/* --- 앞/뒤 귀신으로 넘어가는 좌우 버튼 --- */
+/* --- 앞/뒤 귀신으로 넘어가는 좌우 버튼 ---
+   본문이 1440px를 꽉 채우고 있어 화면 옆에 떠 있으면 글자를 가립니다.
+   그래서 본문 아래에 한 줄로 놓고, 왼쪽 = 이전 / 오른쪽 = 다음 으로 나눴습니다. */
+.gd-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
 .gd-nav {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  background: rgba(0, 0, 0, 0.55);
+  gap: 14px;
+  padding: 20px 28px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  font-size: 19px;
   transition: background 150ms ease;
 }
-/* 화면이 1440px보다 넓으면 본문 바깥 여백에 놓이고,
-   좁아지면 화면 가장자리로 붙습니다. */
-.gd-nav.prev { left:  max(16px, calc((100% - var(--page-max)) / 2 - 72px)); }
-.gd-nav.next { right: max(16px, calc((100% - var(--page-max)) / 2 - 72px)); }
-
-.gd-nav img { display: block; width: 24px; height: 24px; }
+.gd-nav img { display: block; width: 24px; height: 24px; flex: none; }
 .gd-nav.next img { transform: rotate(180deg); }  /* 뒤로 화살표를 뒤집어 씁니다 */
-
+.gd-nav .dir { color: #919191; }
+.gd-nav .name { font-weight: 700; }
 .gd-nav:hover,
-.gd-nav:focus-visible { background: #000; }
+.gd-nav:focus-visible { background: #1c1c1c; }
+
+@media (max-width: 620px) {
+  .gd-nav { padding: 14px 16px; font-size: 16px; gap: 8px; }
+  .gd-nav .dir { display: none; }
+}
 
 /* --- 헤더에서 늘어지는 빨간 노리개 --- */
 .gd-norigae {

@@ -54,14 +54,20 @@
     <!-- 아래쪽: 공존 방법 / 주의 사항 -->
     <div class="gd-sections" id="gd-sections"></div>
 
-    <!-- 앞/뒤 귀신으로 넘어가는 버튼. 주소는 JS 가 채웁니다.
+    <!-- 앞/뒤 귀신으로 넘어가는 버튼. 주소와 이름은 JS 가 채웁니다.
          도감 목록에 놓인 순서대로 넘어가고, 끝에서는 처음으로 돌아옵니다. -->
-    <a class="gd-nav prev" id="gd-prev" href="#">
-      <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
-    </a>
-    <a class="gd-nav next" id="gd-next" href="#">
-      <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
-    </a>
+    <nav class="gd-pager" aria-label="다른 귀신 보기">
+      <a class="gd-nav prev" id="gd-prev" href="#">
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+        <span class="dir">이전</span>
+        <span class="name" id="gd-prev-name"></span>
+      </a>
+      <a class="gd-nav next" id="gd-next" href="#">
+        <span class="name" id="gd-next-name"></span>
+        <span class="dir">다음</span>
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+      </a>
+    </nav>
 
     <!-- 헤더에서 늘어지는 노리개.
          매듭 색은 공존 난이도에 따라 JS가 바꿉니다
