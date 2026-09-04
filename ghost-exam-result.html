@@ -6,18 +6,17 @@
   <title>시험 결과 — 귀신</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="ghost">
-  <header class="site-header">
-    <a class="home-link" href="index.html">← 홈으로</a>
-    <nav class="faction-nav">
-      <a href="ghost-archive.html">착한 귀신 아카이브</a>
-      <a href="ghost-rules.html">인간 세상 규칙</a>
-      <a href="ghost-exam.html">인간 유사도 시험</a>
-    </nav>
-  </header>
+<body class="exam-page ghost">
+  <div class="exam-wrap">
 
-  <main class="page result-page">
-    <h1>시험 결과</h1>
+    <!-- 헤더 — 인간 유사도 시험 페이지와 같은 머리말 -->
+    <header class="exam-header">
+      <a class="icon left" href="ghost-exam.html" aria-label="시험으로 돌아가기">←</a>
+      <h1 class="exam-brand gradient-text">시험 결과</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+    </header>
+
+    <main class="page result-page">
 
     <section class="result-card">
       <p class="result-score">유사도 <span id="result-score">0</span>%</p>
@@ -32,8 +31,10 @@
       <p class="cert-seal">— 귀신 위원회 —</p>
     </section>
 
-    <a class="btn" href="ghost-exam.html">다시 시험보기</a>
-  </main>
+      <a class="btn" href="ghost-exam.html">다시 시험보기</a>
+    </main>
+
+  </div>
 
   <script src="js/script.js"></script>
 </body>

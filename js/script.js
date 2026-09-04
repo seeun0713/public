@@ -574,9 +574,7 @@ var GHOSTS = {
   singiwonyo: {
     name: "신기원요",
     image: "images/dogam2-hover-singiwonyo.png",
-    // 동영상 파일을 images/ 에 넣으면 그림 대신 이 영상이 재생됩니다.
-    // (파일이 없으면 위 image 가 그대로 보입니다.)
-    video: "images/singiwonyo.mp4",
+    video: "assets/videos/신기원요_2.mp4",
     rows: [
       { label: "이름", value: "신기원요", color: "white" },
       { label: "생전", value: "관아에 소속되어 사신들을 대접하던 관기(기생)였다.", color: "blue" },
@@ -608,6 +606,7 @@ var GHOSTS = {
   susalgwi: {
     name: "수살귀",
     image: "images/dogam2-hover-susalgwi.png",
+    video: "assets/videos/수살귀_모션_2.mp4",
     rows: [
       { label: "이름", value: "수살귀", color: "white" },
       { label: "생전", value: "물가 가까이에서 살던 평범한 사람이었다. 이름도 사연도 물에 씻겨 남아 있지 않다.", color: "blue" },
@@ -639,6 +638,7 @@ var GHOSTS = {
   arang: {
     name: "아랑",
     image: "images/dogam2-hover-arang.png",
+    video: "assets/videos/아랑_모션_3.mp4",
     rows: [
       { label: "이름", value: "아랑", color: "white" },
       { label: "생전", value: "조선 명종 대 밀양에 살던 여인으로, 아름답고 기품 있기로 이름이 났다. 16세기 미혼 여성이 입던 긴 저고리 한복 차림이었다.", color: "blue" },
@@ -670,6 +670,7 @@ var GHOSTS = {
   maehwa: {
     name: "매화귀신",
     image: "images/dogam2-hover-maehwa.png",
+    video: "assets/videos/매화귀신_모션.mp4",
     rows: [
       { label: "이름", value: "매화귀신", color: "white" },
       { label: "생전", value: "백 년 넘게 한자리를 지켜 온 매화나무였다. 오랜 세월이 쌓여 영물이 되었다.", color: "blue" },
@@ -701,13 +702,14 @@ var GHOSTS = {
   geolsin: {
     name: "걸신",
     image: "images/dogam2-hover-geolsin.png",
+    video: "assets/videos/걸신_모션.mp4",
     rows: [
       { label: "이름", value: "걸신", color: "white" },
       { label: "생전", value: "끼니를 잇지 못하고 빌어먹으며 떠돌던 거지였다.", color: "blue" },
       { label: "죽음", value: "끝내 굶주림을 이기지 못하고 숨을 거두었다. 죽은 뒤에도 배고픔만은 그대로 남았다.", color: "white" },
       { label: "한", value: "한 번도 배불리 먹어보지 못한 것이 한이 되어, 아무에게나 씌어 그 사람의 입으로 대신 먹으려 한다.", color: "yellow" },
     ],
-    level: 2,
+    level: 1,
     stats: [0.3, 0.4, 0.6, 0.35, 0.7],
     texts: [
       {
@@ -732,6 +734,7 @@ var GHOSTS = {
   cheonggun: {
     name: "청군여귀",
     image: "images/dogam2-hover-cheonggun.png",
+    video: "assets/videos/청군여귀_모션_2.mp4",
     rows: [
       { label: "이름", value: "청군여귀", color: "white" },
       { label: "생전", value: "생전에 대해 전하는 바가 없다. 『천예록』은 서울 묵정동의 한 흉가에서 그를 마주친 이야기만 남겼다.", color: "blue" },
@@ -763,13 +766,14 @@ var GHOSTS = {
   baekgwi: {
     name: "백귀",
     image: "images/dogam2-hover-baekgwi.png",
+    video: "assets/videos/백귀_모션 2_1.mp4",
     rows: [
       { label: "이름", value: "백귀", color: "white" },
       { label: "생전", value: "사람이었는지조차 분명하지 않다. 『조선왕조실록』 1468년 기록에는 세조가 신하를 놀래려 꾸며 낸 모습으로 처음 등장한다.", color: "blue" },
       { label: "죽음", value: "죽음의 내력은 전하지 않는다. 태백산 신령 백두옹, 흰옷을 입은 산도깨비 소의산매 등 여러 이름으로 갈라져 전해질 뿐이다.", color: "white" },
       { label: "한", value: "특정한 원한이라기보다, 사람들이 '가장 무서운 것'을 떠올릴 때마다 되살아나는 형상 그 자체다.", color: "yellow" },
     ],
-    level: 5,
+    level: 4,
     stats: [0.75, 0.9, 0.85, 0.5, 0.1],
     texts: [
       {
@@ -794,6 +798,7 @@ var GHOSTS = {
   jigwi: {
     name: "지귀",
     image: "images/dogam2-hover-jigwi.png",
+    video: "assets/videos/지귀_모션_1.mp4",
     rows: [
       { label: "이름", value: "지귀", color: "white" },
       { label: "생전", value: "서라벌에 살던 평범한 남자였다. 선덕여왕을 향한 연심을 품었고, 그 소문이 왕에게까지 닿았다.", color: "blue" },
@@ -874,11 +879,23 @@ function setupGhostDetail() {
     infoBox.appendChild(line);
   });
 
-  // 노리개 매듭 색 — 공존 난이도가 높을수록 붉어집니다
-  // (1 초록 → 2 연두 → 3 노랑 → 4 주황 → 5 빨강)
+  // 노리개 매듭 — 공존 난이도(별 개수)에 따라 셋 중 하나를 답니다.
+  //   별 4~5개 → 빨강 / 별 2~3개 → 노랑 / 별 0~1개 → 초록
+  // 셋은 색만 다른 게 아니라 매듭 모양과 가로세로 비율이 서로 달라서,
+  // 피그마 원본 크기를 같은 비율(0.4016배)로 줄인 값을 각각 넣어 줍니다.
   var knot = document.getElementById("gd-knot");
-  if (knot && ghost.level) {
-    knot.src = "images/detail-knot-lv" + ghost.level + ".svg";
+  if (knot) {
+    var stars = ghost.level || 0;
+    var knots = {
+      red:    { file: "images/detail-knot-red.svg",    width: 180,   height: 440.7 },
+      yellow: { file: "images/detail-knot-yellow.svg", width: 166.9, height: 443.6 },
+      green:  { file: "images/detail-knot-green.svg",  width: 134,   height: 439.5 },
+    };
+    var pick = knots[stars >= 4 ? "red" : stars >= 2 ? "yellow" : "green"];
+
+    knot.src = pick.file;
+    knot.parentNode.style.width = pick.width + "px";
+    knot.parentNode.style.height = pick.height + "px";
   }
 
   // 공존 난이도 (빨간 줄 + 별)

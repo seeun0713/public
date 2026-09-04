@@ -22,6 +22,9 @@ button.menu-toggle {
   z-index: 1000;
   display: flex;
   justify-content: flex-end;
+  /* 패널 오른쪽 끝을 머리말 ☰ 아이콘과 같은 선(본문 칸의 끝)에 맞춥니다.
+     화면을 어둡게 덮는 막은 padding 안쪽까지 덮으므로 그대로 꽉 찹니다. */
+  padding-right: max(0px, (100% - var(--page-max)) / 2);
 }
 .side-nav[hidden] { display: none; }
 
@@ -103,6 +106,66 @@ button.menu-toggle {
   .side-nav-panel { padding: 16px 24px 32px; }
 }
 
+
+/* =========================================================
+   머리말의 back / menu 아이콘 위치 (모든 페이지 공통)
+
+   아이콘은 화면 맨 끝이 아니라 "본문이 놓이는 칸"의 끝에 붙습니다.
+   화면이 1440px보다 넓어져도 아이콘이 계속 바깥으로 밀려나지 않고
+   본문과 같은 선에 머무릅니다. 덕분에 본문 폭을 제한한 페이지
+   (귀신 상세)와 화면을 꽉 쓰는 페이지(귀신 목록)의 아이콘이
+   화면상 같은 자리에 놓입니다.
+   ========================================================= */
+:root {
+  --page-max: 1440px;    /* 본문이 놓이는 칸의 최대 폭 */
+  --header-inset: 40px;  /* 그 칸의 끝에서 아이콘까지의 거리 */
+}
+
+/* 칸이 화면보다 좁으면 남는 여백의 절반만큼 안쪽으로 들어옵니다 */
+.dogam-header .icon,
+.rules-header .icon,
+.typetest-header .icon,
+.archive-header .icon,
+.exam-header .icon,
+.ordinance-header .icon,
+.gd-header .icon,
+.fg-header .icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* 테두리가 둘러진 머리말은 그 두께만큼 안쪽에서 시작하므로,
+   같은 두께를 빼 줘야 다른 페이지와 화면상 같은 자리에 놓입니다. */
+.gd-header { --frame: 2px; }   /* 머리말 테두리 2px */
+.fg-header { --frame: 16px; }  /* 페이지 테두리 6px + 머리말 테두리 10px */
+
+.dogam-header .icon.left,
+.rules-header .icon.left,
+.typetest-header .icon.left,
+.archive-header .icon.left,
+.exam-header .icon.left,
+.ordinance-header .icon.left,
+.gd-header .icon.left,
+.fg-header .icon.left {
+  left: calc(max(0px, (100% - var(--page-max)) / 2) + max(4px, var(--header-inset) - var(--frame, 0px)));
+}
+
+.dogam-header .icon.right,
+.rules-header .icon.right,
+.typetest-header .icon.right,
+.archive-header .icon.right,
+.exam-header .icon.right,
+.ordinance-header .icon.right,
+.gd-header .icon.right,
+.fg-header .icon.right {
+  right: calc(max(0px, (100% - var(--page-max)) / 2) + max(4px, var(--header-inset) - var(--frame, 0px)));
+}
+
+/* 좁은 화면에서는 여백만 줄입니다 (페이지별로 따로 정하지 않습니다) */
+@media (max-width: 620px) {
+  :root { --header-inset: 12px; }
+}
 
 /* ===== 공통 기본 =====
    색·여백·타이포그래피는 이후 Figma 디자인 기준으로 조정합니다. */
@@ -364,6 +427,7 @@ a.card {
   padding: 32px;
   text-align: center;
   background: #fff;
+  color: #1a1a1a;   /* 검정 배경 페이지 안에서도 흰 종이 위 글씨는 어둡게 */
 }
 
 .cert-grade {
@@ -499,9 +563,6 @@ body.archive-detail {
   letter-spacing: 4px;
 }
 .archive-header .icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   width: 44px;
   height: 44px;
   display: flex;
@@ -511,8 +572,6 @@ body.archive-detail {
   text-decoration: none;
   font-size: 24px;
 }
-.archive-header .icon.left { left: 40px; }
-.archive-header .icon.right { right: 40px; }
 
 /* ----- 상단 구름 장식 ----- */
 .cloud-ornament {
@@ -747,11 +806,12 @@ body.exam-page {
 
 /* 헤더 */
 .exam-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 90px;
-  position: relative;
+  height: 127px;
+  margin: 0 -55px; /* wrap 좌우 패딩 무시하고 꽉 차게 (아카이브와 동일) */
 }
 .exam-brand {
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
@@ -760,15 +820,10 @@ body.exam-page {
   letter-spacing: 3px;
 }
 .exam-header .icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   color: #fff;
   text-decoration: none;
   font-size: 24px;
 }
-.exam-header .icon.left { left: 0; }
-.exam-header .icon.right { right: 0; }
 
 /* 4모서리 장식 (corner-bracket SVG 재사용) */
 .exam-corner {
@@ -905,32 +960,7 @@ body.rules-page {
   min-height: 100vh;
 }
 
-/* 헤더 (검정 바, 화면 꽉 차게) */
-.rules-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 127px;
-  background: #000;
-}
-.rules-header .rules-brand {
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  color: #fff;
-}
-.rules-header .icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
-}
-.rules-header .icon.left { left: 40px; }
-.rules-header .icon.right { right: 40px; }
+/* 헤더는 귀신 도감 목록과 같은 규칙을 씁니다 (.dogam-header 쪽에 함께 정의) */
 
 /* 검은 둥근 규칙 패널 */
 .rules-panel {
@@ -1001,7 +1031,7 @@ body.rules-page {
 }
 
 @media (max-width: 880px) {
-  .rules-header .rules-brand { font-size: 28px; }
+  .rules-header h1 { font-size: 30px; }
   .rules-panel { margin: 28px 12px; padding: 28px 22px; }
   .rules-list li { font-size: 16px; }
   .rules-haunt { display: none; } /* 좁은 화면에선 워터마크 숨김 */
@@ -1020,32 +1050,7 @@ body.typetest-page {
   min-height: 100vh;
 }
 
-/* 헤더 (검정 바) */
-.typetest-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 90px;
-  background: #000;
-}
-.typetest-header .typetest-brand {
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  color: #fff;
-}
-.typetest-header .icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
-}
-.typetest-header .icon.left { left: 40px; }
-.typetest-header .icon.right { right: 40px; }
+/* 헤더는 귀신 도감 목록과 같은 규칙을 씁니다 (.dogam-header 쪽에 함께 정의) */
 
 /* 중앙 퀴즈 컬럼 */
 .typetest-panel {
@@ -1131,7 +1136,7 @@ body.typetest-page {
 .typetest-answer.red { background: #d51313; color: #fff; }
 
 @media (max-width: 880px) {
-  .typetest-header .typetest-brand { font-size: 26px; }
+  .typetest-header h1 { font-size: 30px; }
   .typetest-panel { margin-top: 48px; }
 }
 
@@ -1175,15 +1180,11 @@ body.ordinance-page {
   padding: 0 130px;
 }
 .ordinance-header .icon {
-  position: absolute;
-  top: 42px;
   color: #fff;
   text-decoration: none;
   font-size: 24px;
   z-index: 3;
 }
-.ordinance-header .icon.left { left: 40px; }
-.ordinance-header .icon.right { right: 40px; }
 
 /* 모서리 완자 장식 */
 .ordinance-corner {
@@ -1287,8 +1288,13 @@ body.dogam-page {
   min-height: 100vh;
 }
 
-/* 헤더 (검정 바 127px) */
-.dogam-header {
+/* 헤더 (검정 바 127px)
+   "악의 없는 귀신" 묶음 세 페이지 — 귀신 도감 목록 / 귀신 대응 규칙 /
+   귀신 유형 테스트 — 가 이 규칙 하나를 함께 씁니다.
+   여기만 고치면 세 페이지 머리말이 같이 바뀝니다. */
+.dogam-header,
+.rules-header,
+.typetest-header {
   position: relative;
   display: flex;
   align-items: center;
@@ -1296,7 +1302,9 @@ body.dogam-page {
   height: 127px;
   background: #000;
 }
-.dogam-header .dogam-brand {
+.dogam-header h1,
+.rules-header h1,
+.typetest-header h1 {
   /* 피그마 원본은 'ON 월인석보' 손글씨체인데 웹폰트가 없어 굵은 기본 폰트로 대체 */
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
   font-size: 48px;
@@ -1304,9 +1312,9 @@ body.dogam-page {
   letter-spacing: 4px;
   color: #fff;
 }
-.dogam-header .icon {
-  position: absolute;
-  top: 42px;                 /* 피그마: 위에서 42px */
+.dogam-header .icon,
+.rules-header .icon,
+.typetest-header .icon {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -1314,12 +1322,14 @@ body.dogam-page {
   border: 0;
   cursor: pointer;
 }
-.dogam-header .icon img { display: block; width: 24px; height: 24px; }
-.dogam-header .icon.left { left: 40px; }
-.dogam-header .icon.right { right: 40px; }
+.dogam-header .icon img,
+.rules-header .icon img,
+.typetest-header .icon img { display: block; width: 24px; height: 24px; }
+
 
 /* 오방색 띠 — 이 페이지는 16px 높이 + 아래(위)에 검정 2px 선 */
-.dogam-page .saekdong-band {
+.dogam-page .saekdong-band,
+.typetest-page .saekdong-band {
   box-sizing: border-box;
   height: 16px;
   background: repeating-linear-gradient(
@@ -1333,8 +1343,10 @@ body.dogam-page {
     #00e926 176.57px 206px
   );
 }
-.dogam-page .saekdong-band.top { border-bottom: 2px solid #000; }
-.dogam-page .saekdong-band.bottom { border-top: 2px solid #000; }
+.dogam-page .saekdong-band.top,
+.typetest-page .saekdong-band.top { border-bottom: 2px solid #000; }
+.dogam-page .saekdong-band.bottom,
+.typetest-page .saekdong-band.bottom { border-top: 2px solid #000; }
 
 /* 본문 — 한지(종이) 배경 */
 .dogam-main {
@@ -1470,9 +1482,11 @@ body.dogam-page {
 /* 늘어진 노리개가 아랫줄 카드에 가리지 않도록 위로 올립니다 */
 .dogam-card.reveal:hover { z-index: 5; }
 
-/* 애니메이션을 줄이도록 설정한 사용자에게는 즉시 전환 */
+/* 애니메이션을 줄이도록 설정한 사용자에게는 즉시 전환하고,
+   노리개도 흔들지 않습니다. */
 @media (prefers-reduced-motion: reduce) {
   .dogam-card { --reveal-time: 0ms; }
+  .gd-norigae { animation: none; }
 }
 
 /* 그리드 아래 검정 여백에 얹힌 흐릿한 손글씨 낙서 */
@@ -1508,9 +1522,7 @@ body.dogam-page {
 @media (max-width: 620px) {
   .dogam-grid { grid-template-columns: 246px; gap: 48px; }
   .dogam-main { padding: 40px 12px 64px; }
-  .dogam-header .dogam-brand { font-size: 30px; }
-  .dogam-header .icon.left { left: 12px; }
-  .dogam-header .icon.right { right: 12px; }
+  .dogam-header h1 { font-size: 30px; }
 }
 
 
@@ -1777,8 +1789,6 @@ body.gd-page {
   margin: 0;
 }
 .gd-header .icon {
-  position: absolute;
-  top: 40px;
   display: flex;
   padding: 10px;
   background: none;
@@ -1786,8 +1796,6 @@ body.gd-page {
   cursor: pointer;
 }
 .gd-header .icon img { display: block; width: 24px; height: 24px; }
-.gd-header .icon.left { left: 38px; }
-.gd-header .icon.right { right: 52px; }
 
 /* --- 위쪽 본문: 왼쪽 그림(613) + 오른쪽 정보(827) --- */
 .gd-main {
@@ -1977,11 +1985,22 @@ body.gd-page {
   height: 440.17px;
   z-index: 5;
   pointer-events: none;
+  /* 매달린 지점(맨 위 구슬 자리)을 축으로 좌우로 살랑살랑 흔들립니다 */
+  transform-origin: 49.4% -9px;
+  animation: gd-norigae-sway 4.5s ease-in-out infinite;
+}
+
+/* 진자처럼 한쪽 끝 → 반대쪽 끝을 오갑니다. 각도가 작아야 자연스럽습니다. */
+@keyframes gd-norigae-sway {
+  0%,
+  100% { transform: rotate(-2deg); }
+  50%  { transform: rotate(2deg); }
 }
 .gd-norigae img { display: block; width: 100%; height: 100%; }
+/* 끈 맨 위의 흰 구슬. 매듭 색마다 폭이 달라서 px 대신 비율로 놓습니다. */
 .gd-norigae .bead {
   position: absolute;
-  left: 89px;
+  left: 49.4%;
   top: -9px;
   width: 28px;
   height: 32px;
@@ -1996,8 +2015,6 @@ body.gd-page {
 }
 @media (max-width: 620px) {
   .gd-title { font-size: 30px; }
-  .gd-header .icon.left { left: 12px; }
-  .gd-header .icon.right { right: 12px; }
   .gd-row, .gd-section, .gd-empty { font-size: 16px; padding-left: 16px; padding-right: 16px; }
   .gd-radar { width: 300px; height: 240px; }
   .gd-norigae { display: none; }
@@ -2044,8 +2061,6 @@ body.fg-page {
   margin: 0;
 }
 .fg-header .icon {
-  position: absolute;
-  top: 27px;
   display: flex;
   padding: 10px;
   background: none;
@@ -2053,8 +2068,6 @@ body.fg-page {
   cursor: pointer;
 }
 .fg-header .icon img { display: block; width: 24px; height: 24px; }
-.fg-header .icon.left { left: 25px; }
-.fg-header .icon.right { right: 39px; }
 
 /* --- 위쪽: 그림(716) + 정보표(726) --- */
 .fg-main {
@@ -2202,8 +2215,6 @@ body.fg-page {
 }
 @media (max-width: 620px) {
   .fg-title { font-size: 30px; }
-  .fg-header .icon.left { left: 8px; }
-  .fg-header .icon.right { right: 8px; }
   .fg-row, .fg-texts, .fg-bars, .fg-bar { font-size: 16px; }
   .fg-row { padding-left: 16px; padding-right: 16px; }
 }
