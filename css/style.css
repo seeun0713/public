@@ -2017,6 +2017,33 @@ body.gd-page {
   text-align: center;
 }
 
+/* --- 앞/뒤 귀신으로 넘어가는 좌우 버튼 --- */
+.gd-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: rgba(0, 0, 0, 0.55);
+  transition: background 150ms ease;
+}
+/* 화면이 1440px보다 넓으면 본문 바깥 여백에 놓이고,
+   좁아지면 화면 가장자리로 붙습니다. */
+.gd-nav.prev { left:  max(16px, calc((100% - var(--page-max)) / 2 - 72px)); }
+.gd-nav.next { right: max(16px, calc((100% - var(--page-max)) / 2 - 72px)); }
+
+.gd-nav img { display: block; width: 24px; height: 24px; }
+.gd-nav.next img { transform: rotate(180deg); }  /* 뒤로 화살표를 뒤집어 씁니다 */
+
+.gd-nav:hover,
+.gd-nav:focus-visible { background: #000; }
+
 /* --- 헤더에서 늘어지는 빨간 노리개 --- */
 .gd-norigae {
   position: absolute;
