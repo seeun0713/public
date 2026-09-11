@@ -585,7 +585,7 @@ var GHOSTS = {
       { label: "한", value: "억울하게 죽임을 당한 것과 자신의 죽음을 아무도 밝혀주지 못한 억울함이 한으로 남아 이승을 떠나지 못했다.", color: "yellow" },
     ],
     level: 4,
-    stats: [1, 1, 1, 1, 1],
+    stats: [0.76, 0.53, 0.53, 0.53, 0.15],   // 시안(node 467:11678) 꼭짓점 좌표에서 계산
     texts: [
       {
         title: "공존 방법",
@@ -960,8 +960,13 @@ function setupGhostDetail() {
     label.textContent = "능력치";
     stats.appendChild(label);
 
-    stats.appendChild(makeRadar(ghost.stats));
+    var radar = makeRadar(ghost.stats);
+    stats.appendChild(radar.svg);
     infoBox.appendChild(stats);
+
+    // 페이지에 들어오면 도형이 가운데에서 자라나고, 마우스를 올리면 다시 재생됩니다
+    radar.play();
+    stats.addEventListener("mouseenter", radar.play);
   }
 
   // 아직 글을 받지 못한 귀신이면, 빈 검정 화면 대신 안내를 보여줍니다
@@ -1008,6 +1013,7 @@ var FAMOUS = {
   gumiho: {
     name: "구미호",
     image: "images/famous-gumiho.png",
+    art: { left: 71.1, top: -141.4, width: 583.1, height: 777.4 },
     rows: [
       { label: "이름", value: "구미호" },
       { label: "종류", value: "요괴" },
@@ -1035,6 +1041,102 @@ var FAMOUS = {
       { label: "개성", value: 85 },
     ],
   },
+
+  cheonyeo: {
+    name: "처녀귀신",
+    image: "images/famous-cheonyeo.png",
+    art: { left: 55.0, top: -92.5, width: 536.3, height: 715.1 },
+    rows: [
+      { label: "이름", value: "처녀귀신" },
+      { label: "종류", value: "원귀" },
+      { label: "지역", value: "우물가 · 옛집 · 마을 어귀" },
+      { label: "능력", value: "현신 / 꿈에 들기 / 한의 전이" },
+      { label: "생김새", wide: true, value: "길게 풀어헤친 검은 머리에 흰 소복을 입은 여인의 모습으로 전해진다. 얼굴은 머리카락에 가려 잘 드러나지 않으며, 발이 땅에 닿지 않는다고도 한다." },
+      { label: "특징", wide: true, value: "살아생전 풀지 못한 한을 품고 이승에 머무는 존재다. 먼저 해를 끼치기보다 자신의 사연을 알아줄 사람을 기다리며, 한이 풀리면 조용히 떠난다." },
+    ],
+    level: 4,
+    texts: [
+      {
+        title: "인간과의 관계",
+        body: "무섭게 나타나지만 목적은 해를 입히는 것이 아니라 억울함을 알리는 데 있다. 이야기 속에서 처녀귀신을 만난 사람은 대개 도망치다 화를 입고, 도리어 말을 들어준 사람은 무사히 넘어간다. 두려움을 견디고 사연을 들어주는 것이 유일한 해법으로 전해진다.",
+      },
+      {
+        title: "대표적인 이야기",
+        body: "고을에 부임하는 원님마다 첫날 밤에 죽어 나가던 관아 이야기가 널리 알려져 있다. 겁을 이기고 끝까지 자리를 지킨 새 원님이 나타난 처녀귀신의 사연을 듣고 묻힌 억울함을 밝혀 주자, 그 뒤로는 아무 일도 일어나지 않았다고 한다.",
+      },
+    ],
+    bars: [
+      { label: "한", value: 97 },
+      { label: "공포", value: 74 },
+      { label: "힘", value: 41 },
+      { label: "출몰", value: 68 },
+      { label: "개성", value: 55 },
+    ],
+  },
+
+  dalgyal: {
+    name: "달걀귀신",
+    image: "images/famous-dalgyal.png",
+    art: { left: 63.1, top: -90.9, width: 524.7, height: 699.6 },
+    rows: [
+      { label: "이름", value: "달걀귀신" },
+      { label: "종류", value: "귀신" },
+      { label: "지역", value: "밤길 · 골목 · 외딴집" },
+      { label: "능력", value: "얼굴 감추기 / 혼 빼놓기 / 뒤따라오기" },
+      { label: "생김새", wide: true, value: "눈· 코· 입이 하나도 없이 달걀처럼 매끈한 얼굴을 하고 있다. 몸은 흰옷을 입은 평범한 사람의 모습이라, 마주 서기 전까지는 알아차리기 어렵다." },
+      { label: "특징", wide: true, value: "직접 해를 끼쳤다는 이야기는 드물다. 다만 얼굴이 없다는 사실을 알아차린 순간의 공포가 워낙 커서, 놀라 달아나다 스스로 다치는 경우가 많다고 전해진다." },
+    ],
+    level: 3,
+    texts: [
+      {
+        title: "인간과의 관계",
+        body: "밤길에서 길을 묻거나 우는 소리를 내며 사람을 불러 세운다. 돌아본 사람이 마주하는 것은 아무것도 없는 민얼굴이다. 해치려는 뜻보다는 놀라는 모습을 보려는 장난에 가깝다는 해석도 있어, 못 본 척 지나가면 따라오지 않는다고 한다.",
+      },
+      {
+        title: "대표적인 이야기",
+        body: "밤늦게 돌아가던 사람이 길가에서 우는 여인을 달래다 얼굴을 보고 달아나는 이야기가 가장 널리 퍼져 있다. 가까스로 주막에 뛰어들어 사정을 말하자, 듣고 있던 주인이 \"그 얼굴이 이렇게 생겼습니까\" 하며 돌아보았다는 결말이 붙어 전해진다.",
+      },
+    ],
+    bars: [
+      { label: "한", value: 28 },
+      { label: "공포", value: 88 },
+      { label: "힘", value: 22 },
+      { label: "출몰", value: 54 },
+      { label: "개성", value: 94 },
+    ],
+  },
+
+  eoduksini: {
+    name: "어둑시니",
+    image: "images/famous-eoduksini.png",
+    art: { left: 52.5, top: -165.6, width: 589.4, height: 785.9 },
+    rows: [
+      { label: "이름", value: "어둑시니" },
+      { label: "종류", value: "요괴" },
+      { label: "지역", value: "어두운 골목 · 빈방 · 계단 아래" },
+      { label: "능력", value: "어둠 속 증식 / 크기 변화 / 시선 감지" },
+      { label: "생김새", wide: true, value: "형체가 뚜렷하지 않은 검은 덩어리다. 정해진 크기가 없어, 보는 사람이 올려다볼수록 위로 부풀고 내려다보면 다시 쪼그라든다." },
+      { label: "특징", wide: true, value: "어둠 그 자체가 몸이라 불을 켜면 사라진다. 쳐다보는 시선을 먹고 자라기 때문에, 끝까지 올려다보면 결국 사람을 덮을 만큼 커진다고 전해진다." },
+    ],
+    level: 4,
+    texts: [
+      {
+        title: "인간과의 관계",
+        body: "먼저 다가오지 않고 어두운 자리에 가만히 있는다. 위험해지는 것은 사람이 그것을 알아보고 계속 올려다볼 때다. 반대로 시선을 내리거나 등을 돌리면 저절로 작아지므로, 무서워하지 않는 것이 곧 물리치는 방법이 된다.",
+      },
+      {
+        title: "대표적인 이야기",
+        body: "밤중에 마당 한구석의 검은 그림자를 본 사람이 겁에 질려 자꾸 고개를 들다, 그림자가 지붕을 넘을 만큼 커져 깔릴 뻔했다는 이야기가 전한다. 곁에 있던 노인이 \"내려다보라\" 이르자 그림자는 발밑까지 줄어들어 사라졌다고 한다.",
+      },
+    ],
+    bars: [
+      { label: "한", value: 18 },
+      { label: "공포", value: 95 },
+      { label: "힘", value: 72 },
+      { label: "출몰", value: 61 },
+      { label: "개성", value: 80 },
+    ],
+  },
 };
 
 function setupFamousDetail() {
@@ -1050,6 +1152,14 @@ function setupFamousDetail() {
   var img = document.getElementById("fg-image");
   img.src = ghost.image;
   img.alt = ghost.name + " 일러스트";
+
+  // 그림 확대·위치 (먹이 그려진 영역을 그림 칸 높이에 맞춘 값)
+  if (ghost.art) {
+    img.style.setProperty("--art-left", ghost.art.left + "px");
+    img.style.setProperty("--art-top", ghost.art.top + "px");
+    img.style.setProperty("--art-width", ghost.art.width + "px");
+    img.style.setProperty("--art-height", ghost.art.height + "px");
+  }
 
   // 정보 줄
   ghost.rows.forEach(function (row) {
@@ -1121,8 +1231,12 @@ function setupFamousDetail() {
 }
 
 
-/* 능력치 오각형 그래프를 그립니다.
-   values 는 [힘, 서사성, 개성, 지능, 친화력] 순서의 0~1 값입니다. */
+/* 능력치 오각형 그래프를 그립니다. (Figma node 467:11679 / 467:11678)
+   values 는 [힘, 서사성, 개성, 지능, 친화력] 순서의 0~1 값입니다.
+
+   흰 오각형 판 위에 눈금이 깔리고, 그 위에 파란 능력치 도형이 얹힙니다.
+   { svg, play } 를 돌려주며, play() 를 부르면 도형이 가운데에서
+   제 크기까지 자라나는 모션이 다시 재생됩니다. */
 function makeRadar(values) {
   // 그림판은 가로가 조금 더 넓습니다. 좌우에 축 이름("친화력", "서사성")이
   // 들어갈 자리를 비워둬야 글자가 잘리지 않기 때문입니다.
@@ -1130,10 +1244,12 @@ function makeRadar(values) {
   var H = 320;
   var CX = 200;
   var CY = 165;
-  var RADIUS = 130;    // 가장 바깥 오각형까지의 거리
+  var RADIUS = 130;    // 흰 오각형 판(=최대치)까지의 거리
   var NAMES = ["힘", "서사성", "개성", "지능", "친화력"];
   // 축 이름을 어느 쪽에 붙일지 (가운데 / 오른쪽으로 / 왼쪽으로)
   var ANCHORS = ["middle", "start", "middle", "middle", "end"];
+  // 안쪽 눈금 오각형 (시안의 222.62 / 154.63 / 99.80 / 42.77 를 288.42 로 나눈 비율)
+  var RINGS = [0.772, 0.536, 0.346, 0.148];
   var NS = "http://www.w3.org/2000/svg";
 
   // 꼭짓점 좌표 구하기 (맨 위에서 시작해 시계 방향으로 5개)
@@ -1146,7 +1262,7 @@ function makeRadar(values) {
   }
   function polygonPoints(ratios) {
     return ratios
-      .map(function (r, i) { return point(i, r).map(Math.round).join(","); })
+      .map(function (r, i) { return point(i, r).map(function (n) { return n.toFixed(1); }).join(","); })
       .join(" ");
   }
 
@@ -1162,20 +1278,37 @@ function makeRadar(values) {
     return el;
   }
 
-  // 1) 실제 능력치 오각형 (흰색으로 꽉 채움)
-  add("polygon", { points: polygonPoints(values), fill: "#ffffff", stroke: "#ffffff", "stroke-width": 2 });
+  // 1) 흰 오각형 판 (최대치 자리)
+  add("polygon", { points: polygonPoints([1, 1, 1, 1, 1]), fill: "#ffffff" });
 
-  // 2) 그 위에 눈금이 되는 동심 오각형과 축
-  [1, 0.75, 0.5, 0.25].forEach(function (r) {
-    add("polygon", { points: polygonPoints([r, r, r, r, r]), fill: "none", stroke: "#c9c9c9", "stroke-width": 1 });
+  // 2) 안쪽 눈금 오각형 (가장 바깥 흰 판만 빼고 모두 같은 회색)
+  RINGS.forEach(function (r) {
+    add("polygon", {
+      points: polygonPoints([r, r, r, r, r]),
+      fill: "none",
+      stroke: "#434343",
+      "stroke-width": 1,
+    });
   });
-  for (var i = 0; i < 5; i++) {
-    var p = point(i, 1);
-    add("line", { x1: CX, y1: CY, x2: Math.round(p[0]), y2: Math.round(p[1]), stroke: "#c9c9c9", "stroke-width": 1 });
-  }
-  add("circle", { cx: CX, cy: CY, r: 3, fill: "#000000" });
 
-  // 3) 축 이름 — 오각형보다 조금 바깥(1.15배)에 놓습니다
+  // 3) 가운데 점
+  add("circle", { cx: CX, cy: CY, r: 2, fill: "#000000" });
+
+  // 4) 파란 능력치 도형 + 꼭짓점 점 (모션으로 자라나는 부분)
+  var shape = add("polygon", {
+    class: "gd-radar-shape",
+    points: polygonPoints([0, 0, 0, 0, 0]),
+    fill: "#002bff",
+    "fill-opacity": 0.4,   // 반투명이라 뒤쪽 눈금선이 비쳐 보입니다
+    stroke: "#000000",
+    "stroke-width": 1,
+    "stroke-linejoin": "round",
+  });
+  var dots = values.map(function () {
+    return add("circle", { cx: CX, cy: CY, r: 2, fill: "#000000" });
+  });
+
+  // 5) 축 이름 — 오각형보다 조금 바깥(1.15배)에 놓습니다
   NAMES.forEach(function (name, i) {
     var p = point(i, 1.15);
     add(
@@ -1192,15 +1325,117 @@ function makeRadar(values) {
     );
   });
 
-  return svg;
+  /* t = 0 이면 가운데 한 점, t = 1 이면 제 크기 */
+  function draw(t) {
+    shape.setAttribute("points", polygonPoints(values.map(function (v) { return v * t; })));
+    values.forEach(function (v, i) {
+      var p = point(i, v * t);
+      dots[i].setAttribute("cx", p[0].toFixed(1));
+      dots[i].setAttribute("cy", p[1].toFixed(1));
+    });
+  }
+
+  var running = false;
+  function play() {
+    // 움직임을 줄이도록 설정한 사용자에게는 완성된 모습만 보여줍니다
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      draw(1);
+      return;
+    }
+    if (running) return;   // 재생 중에 또 부르면 무시
+    running = true;
+
+    var DURATION = 700;
+    var startTime = null;
+    function step(now) {
+      if (!running) return;           // 안전장치가 이미 끝냈으면 중단
+      if (startTime === null) startTime = now;
+      var t = Math.min((now - startTime) / DURATION, 1);
+      draw(1 - Math.pow(1 - t, 3));   // 끝으로 갈수록 천천히
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        running = false;
+      }
+    }
+    requestAnimationFrame(step);
+
+    // 안전장치: 어떤 이유로든 프레임이 안 돌면(배경 탭 등) 완성된 모습으로 맞춥니다.
+    setTimeout(function () {
+      if (running) { draw(1); running = false; }
+    }, DURATION + 150);
+  }
+
+  draw(0);
+  return { svg: svg, play: play };
 }
 
+
+/* ===========================================================
+   9. 팝업 열고 닫기
+
+   data-modal-open="아이디" 가 붙은 버튼을 누르면
+   그 아이디의 <dialog> 가 열립니다.
+   Esc 로 닫기와 초점 가두기는 <dialog> 가 알아서 해주고,
+   여기서는 "바깥 어두운 곳 클릭 → 닫기" 만 더해 줍니다.
+   =========================================================== */
+function setupModals() {
+  var buttons = document.querySelectorAll("[data-modal-open]");
+  if (buttons.length === 0) return; // 팝업이 없는 페이지면 중단
+
+  buttons.forEach(function (btn) {
+    var dialog = document.getElementById(btn.getAttribute("data-modal-open"));
+    if (!dialog) return;
+
+    btn.addEventListener("click", function () {
+      dialog.showModal();
+    });
+
+    // 팝업 상자 바깥(어두운 부분)을 누르면 닫습니다.
+    dialog.addEventListener("click", function (e) {
+      var box = dialog.getBoundingClientRect();
+      var inside =
+        e.clientX >= box.left && e.clientX <= box.right &&
+        e.clientY >= box.top && e.clientY <= box.bottom;
+      if (!inside) dialog.close();
+    });
+  });
+}
+
+
+
+/* ===========================================================
+   10. 동자삼 기사 넘기기 (ghost-archive-dongjasam.html)
+   본문 옆 화살표로 1면 ↔ 2면을 오갑니다.
+   =========================================================== */
+function setupStoryPages() {
+  var page1 = document.getElementById("dj-page-1");
+  if (!page1) return; // 이 페이지가 아니면 중단
+
+  var page2 = document.getElementById("dj-page-2");
+  var next = document.getElementById("dj-next");
+  var prev = document.getElementById("dj-prev");
+  var pager = document.getElementById("dj-pager");
+
+  function show(n) {
+    page1.hidden = n !== 1;
+    page2.hidden = n !== 2;
+    next.hidden = n === 2;   // 2면에서는 오른쪽 화살표를 숨기고
+    prev.hidden = n === 1;   // 1면에서는 왼쪽 화살표를 숨깁니다
+    pager.textContent = n;
+  }
+
+  next.addEventListener("click", function () { show(2); });
+  prev.addEventListener("click", function () { show(1); });
+}
 
 /* ===========================================================
    페이지가 열리면 알맞은 기능을 실행합니다.
    (각 함수는 자기 페이지가 아니면 알아서 중단됩니다.)
    =========================================================== */
 document.addEventListener("DOMContentLoaded", function () {
+  setupModals();
+  setupStoryPages();
   setupGhostDetail();
   setupFamousDetail();
   startHumanTest();

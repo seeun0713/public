@@ -3,68 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>동자삼 — 착한 귀신 아카이브</title>
+  <title>동자삼 — 착한 귀신상</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="archive-detail">
+<!--
+  착한 귀신상 상세 — 동자삼 (Figma "Desktop - 109", node 356:14710)
+
+  왼쪽은 전통 모서리 장식을 두른 일러스트, 오른쪽은 신문 기사 형식입니다.
+  일러스트는 원본을 확대해 잘라 넣습니다(값은 style 로 직접 지정).
+-->
+<body class="archive-detail archive-story">
   <div class="archive-wrap">
 
     <!-- 헤더 -->
     <header class="archive-header">
-      <a class="icon left" href="ghost-archive.html" aria-label="아카이브로 돌아가기">←</a>
+      <a class="icon left" href="ghost-archive.html" aria-label="목록으로 돌아가기">
+        <img src="images/arc-icon-back.svg" alt="" />
+      </a>
       <h1 class="archive-brand gradient-text">착한 귀신상</h1>
-      <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/arc-icon-menu.svg" alt="" />
+      </button>
     </header>
-    
+
     <!-- 상단 구름 장식 (좌우) -->
-    <!-- 상단 구름 장식 (좌우) -->
-    <img class="cloud-ornament left" src="images/cloud-ornament.svg" alt="" />
-    <img class="cloud-ornament right" src="images/cloud-ornament.svg" alt="" />
+    <img class="cloud-ornament left" src="images/arc-cloud-l.svg" alt="" aria-hidden="true" />
+    <img class="cloud-ornament right" src="images/arc-cloud-r.svg" alt="" aria-hidden="true" />
 
     <!-- 큰 제목 -->
     <h2 class="archive-title gradient-text">동자삼</h2>
 
-    <!-- 본문: 좌측 일러스트 + 우측 기사 -->
+    <!-- 본문: 왼쪽 일러스트 + 오른쪽 기사 -->
     <div class="archive-body">
-      <figure class="archive-figure">
-        <img class="corner tl" src="images/corner-bracket-l.svg" alt="" />
-        <img class="corner tr" src="images/corner-bracket-l.svg" alt="" />
-        <img class="corner bl" src="images/corner-bracket-l.svg" alt="" />
-        <img class="corner br" src="images/corner-bracket-l.svg" alt="" />
-        <img class="ghost-img" src="images/dongjasam.png" alt="동자삼 일러스트" />
-      </figure>
+
+      <div class="archive-left">
+        <figure class="archive-figure">
+          <img class="corner tl" src="images/dj-corner-l.svg" alt="" aria-hidden="true" />
+          <img class="corner tr" src="images/dj-corner-r.svg" alt="" aria-hidden="true" />
+          <img class="corner bl" src="images/dj-corner-l.svg" alt="" aria-hidden="true" />
+          <img class="corner br" src="images/dj-corner-r.svg" alt="" aria-hidden="true" />
+          <span class="crop">
+            <img src="images/dj-illust.png" alt="동자삼 일러스트"
+                 style="left: -4.99%; top: -4.82%; width: 212.48%; height: 139.06%;" />
+          </span>
+        </figure>
+
+        <button class="detail-btn" type="button" data-modal-open="dj-modal">
+          <span class="gradient-text">자세히 보기</span>
+        </button>
+      </div>
 
       <article class="archive-article">
+        <hr class="rule thick" />
         <p class="article-tag">[돋보이는 자기 희생 정신]</p>
-        <hr class="divider" />
-        <h3 class="article-headline">“사라진 아들, 기적처럼 귀환… 정체는 ‘산삼 요괴’ 의혹”</h3>
-        <p class="article-subhead">강원도 산간 마을에서 기이한 사건 발생</p>
-        <hr class="divider" />
-        <div class="article-text">
-          <p>최근 한 산간 마을에서 죽은 줄 알았던 아이가 멀쩡한 모습으로 돌아오는 기이한 사건이 발생했다.</p>
-          <p>해당 가정은 병든 노모를 살리기 위해 한 승려의 말에 따라 아들을 삶는 극단적 선택을 한 것으로 알려졌다. 그러나 장례를 치르기도 전, 아이는 아무 일도 없었던 듯 귀가했다.</p>
-          <p>마을 주민들 사이에서는 “그 아이는 진짜가 아니었다”는 소문이 퍼지고 있다. 특히 일부 노인들은 “천 년 묵은 산삼이 아이로 변해 시험을 내린 것”이라며 이른바 ‘동자삼’ 설화를 언급하고 있다.</p>
-          <p>전문가들은 이를 민간 신앙과 전설이 결합된 사례로 보고 있으나, 일부는 실제로 설명되지 않는 치유 효과가 있었다는 점에서 추가 조사가 필요하다는 입장이다.</p>
+        <hr class="rule thin" />
+
+        <!-- 1면 -->
+        <div class="article-page" id="dj-page-1">
+          <h3 class="article-headline">“사라진 아들, 기적처럼 귀환… 정체는 ‘산삼 요괴’ 의혹”</h3>
+          <p class="article-subhead">강원도 산간 마을에서 기이한 사건 발생</p>
+          <hr class="rule thin" />
+          <div class="article-text">
+            <p>최근 한 산간 마을에서 죽은 줄 알았던 아이가 멀쩡한 모습으로 돌아오는 기이한 사건이 발생했다.</p>
+            <p>해당 가정은 병든 노모를 살리기 위해 한 승려의 말에 따라 아들을 삶는 극단적 선택을 한 것으로 알려졌다. 그러나 장례를 치르기도 전, 아이는 아무 일도 없었던 듯 귀가했다.</p>
+            <p>마을 주민들 사이에서는 “그 아이는 진짜가 아니었다”는 소문이 퍼지고 있다. 특히 일부 노인들은 “천 년 묵은 산삼이 아이로 변해 시험을 내린 것”이라며 이른바 ‘동자삼’ 설화를 언급하고 있다.</p>
+            <p>전문가들은 이를 민간 신앙과 전설이 결합된 사례로 보고 있으나, 일부는 실제로 설명되지 않는 치유 효과가 있었다는 점에서 추가 조사가 필요하다는 입장이다.</p>
+          </div>
         </div>
+
+        <!-- 2면 (본문은 왼쪽 화살표 자리를 비우려고 들여씁니다) -->
+        <div class="article-page" id="dj-page-2" hidden>
+          <h3 class="article-headline">“밤마다 불 끄던 의문의 남성… 동굴 속 ‘거대 산삼’ 발견 후 재산 급증”</h3>
+          <p class="article-subhead">한 농가 며느리의 집요한 추적 끝에 밝혀진 정체</p>
+          <hr class="rule thin" />
+          <div class="article-text indent">
+            <p>충청 지역 한 농가에서 정체불명의 남성을 추적한 끝에 거대 산삼을 발견했다는 주장이 제기돼 관심이 모이고 있다.</p>
+            <p>해당 사건은 며느리 A씨가 밤마다 반복되는 이상 현상을 의심하면서 시작됐다. A씨에 따르면, 집안의 불이 매일 밤 원인 없이 꺼졌고 그때마다 한 남성이 근처를 서성이는 모습이 목격됐다.이상함을 느낀 A씨는 남성의 옷자락에 몰래 실을 묶어 이동 경로를 추적했다.실은 산속 깊은 동굴까지 이어졌고, 그 끝에서 발견된 것은—사람 크기를 훨씬 웃도는 대형 산삼이었다. A씨는 이를 채취해 집으로 가져왔고, 이후 해당 가정은 급격한 경제적 변화를 겪은 것으로 전해졌다.</p>
+            <p>마을 주민들은 “그 남자는 사람이 아니라 산삼이 변한 존재였을 것”이라며 이른바 ‘동자삼’ 설화를 언급하고 있다. 일부 주민은 “불을 끈 행위 자체가 인간을 시험하기 위한 것이었을 것”이라는 해석도 내놓고 있다.</p>
+            <p>전문가들은 이번 사례가 전통 설화와 민간 신앙이 반영된 이야기일 가능성이 높다고 보면서도, 실제 재산 증가와의 연관성에 대해서는 “설명하기 어려운 부분이 있다”고 밝혔다.</p>
+          </div>
+        </div>
+
+        <p class="archive-pager"><span id="dj-pager">1</span>/2</p>
       </article>
+
     </div>
 
-    <!-- 다음 페이지 화살표 -->
-    <a class="next-arrow" href="#" aria-label="다음">
-      <svg width="28" height="60" viewBox="0 0 28 60" xmlns="http://www.w3.org/2000/svg">
-        <polyline points="4,4 24,30 4,56" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </a>
-
-    <!-- 하단: 버튼 + 페이지네이션 -->
-    <div class="archive-footer">
-      <a class="detail-btn" href="#">
-        <span class="gradient-text">자세히 보기</span>
-      </a>
-      <p class="archive-pager">1/2</p>
-    </div>
+    <!-- 기사 넘기기. 1면에서는 오른쪽 화살표, 2면에서는 왼쪽 화살표가 보입니다. -->
+    <button class="story-arrow next" id="dj-next" type="button" aria-label="다음 기사">
+      <img src="images/dj-next.svg" alt="" aria-hidden="true" />
+    </button>
+    <button class="story-arrow prev" id="dj-prev" type="button" aria-label="이전 기사" hidden>
+      <img src="images/dj-next.svg" alt="" aria-hidden="true" />
+    </button>
 
   </div>
+
+  <!--
+    '자세히 보기' 팝업 (Figma "Desktop - 128", node 464:11601)
+    <dialog> 를 쓰면 Esc 로 닫기와 초점 가두기를 브라우저가 알아서 해줍니다.
+  -->
+  <dialog class="dj-modal" id="dj-modal" aria-label="동자삼 자세히 보기">
+    <i class="corner tl"></i><i class="corner tr"></i>
+    <i class="corner bl"></i><i class="corner br"></i>
+
+    <div class="dj-modal-body">
+      <section>
+        <h4>정체</h4>
+        <ul>
+          <li>어린아이 크기의 산삼이 오랜 세월을 살아 영물화된 존재</li>
+          <li>주로 천 년 이상 생존하거나, 산신령의 주술로 각성</li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>변신 능력</h4>
+        <ul>
+          <li>인간으로 변신 가능 (주로 남자 아이 형태, 드물게 성인 남성)</li>
+          <li>여성으로 변신하는 사례는 보고되지 않음.</li>
+          <li>일반적으로 낮엔 인간, 밤엔 산삼으로 존재하며 단, 반대로 변하는 개체도 존재</li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>행동 및 성향</h4>
+        <ul>
+          <li>인간 친화적이며 호기심이 많음.</li>
+          <li>술, 팥죽 등 인간 음식 선호</li>
+          <li>인간 세계를 체험하는 것을 즐김.</li>
+          <li>일부 개체는 특정 목적 없이 자유롭게 인간 생활을 즐김.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>선별 기준</h4>
+        <ul>
+          <li>효성이 깊은 자, 지혜로운 자에게 접근하며 이후 희생, 판단력, 문제 해결 능력 등의 시험을 부여하고, 시험 통과 시: 재물, 건강, 생명 등의 복을 내림</li>
+        </ul>
+      </section>
+    </div>
+  </dialog>
 
   <script src="js/script.js"></script>
 </body>

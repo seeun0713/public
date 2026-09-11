@@ -9,11 +9,15 @@
 <body class="exam-page ghost">
   <div class="exam-wrap">
 
-    <!-- 헤더 -->
+    <!-- 헤더 (시안: 제목은 그라데이션이 아니라 흰색 48px) -->
     <header class="exam-header">
-      <a class="icon left" href="index.html" aria-label="홈으로">←</a>
-      <h1 class="exam-brand gradient-text">인간 유사도 시험</h1>
-      <button class="icon right menu-toggle" type="button" aria-label="메뉴">☰</button>
+      <a class="icon left" href="index.html" aria-label="홈으로">
+        <img src="images/dogam2-icon-back.svg" alt="" />
+      </a>
+      <h1 class="exam-brand">인간 유사도 시험</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/dogam2-icon-menu.svg" alt="" />
+      </button>
     </header>
 
     <!-- 4모서리 장식 -->
@@ -24,17 +28,24 @@
 
     <!-- 퀴즈 -->
     <main class="exam-panel" id="quiz">
-      <div class="exam-topbar">
-        <button class="exam-prev" id="exam-prev" type="button">← 이전</button>
-        <span class="exam-counter" id="exam-counter">1/10</span>
+      <div class="exam-progress-block">
+        <div class="exam-topbar">
+          <button class="exam-prev" id="exam-prev" type="button">
+            <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+            <span>이전</span>
+          </button>
+          <span class="exam-counter" id="exam-counter">1/10</span>
+        </div>
+
+        <div class="exam-progress">
+          <div class="exam-progress-fill" id="exam-progress-fill"></div>
+        </div>
       </div>
 
-      <div class="exam-progress">
-        <div class="exam-progress-fill" id="exam-progress-fill"></div>
+      <div class="exam-ask">
+        <p class="exam-qnum gradient-text" id="exam-qnum">Q1.</p>
+        <h2 class="exam-question" id="exam-question">질문이 여기에 표시됩니다.</h2>
       </div>
-
-      <p class="exam-qnum gradient-text" id="exam-qnum">Q1.</p>
-      <h2 class="exam-question" id="exam-question">질문이 여기에 표시됩니다.</h2>
 
       <div class="exam-answers" id="exam-answers">
         <!-- 보기 버튼은 js/script.js 에서 생성됩니다 -->

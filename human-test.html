@@ -19,27 +19,50 @@
     </button>
   </header>
 
-  <!-- 오방색 띠 -->
+  <!-- 오방색 띠 (상단) -->
   <div class="saekdong-band top"></div>
 
-  <!-- 퀴즈 -->
-  <main class="typetest-panel">
-    <div class="typetest-topbar">
-      <button class="typetest-prev" id="test-prev" type="button">← 이전</button>
-      <span class="typetest-counter" id="test-counter">1/10</span>
-    </div>
+  <!-- 한지 무대 (좌우 끝은 살짝 어둡게) -->
+  <main class="typetest-stage">
+    <i class="typetest-shade left" aria-hidden="true"></i>
+    <i class="typetest-shade right" aria-hidden="true"></i>
 
-    <div class="typetest-progress">
-      <div class="typetest-progress-fill" id="test-progress-fill"></div>
-    </div>
+    <!-- 퀴즈 (시안: 폭 812, 블록 사이 60px) -->
+    <div class="typetest-panel">
 
-    <p class="typetest-qnum" id="test-qnum">Q1.</p>
-    <h2 class="typetest-question" id="test-question">질문이 여기에 표시됩니다.</h2>
+      <div class="typetest-progress-block">
+        <div class="typetest-topbar">
+          <button class="typetest-prev" id="test-prev" type="button">
+            <img src="images/typetest-icon-prev.svg" alt="" aria-hidden="true" />
+            <span>이전</span>
+          </button>
+          <span class="typetest-counter" id="test-counter">1/10</span>
+        </div>
 
-    <div class="typetest-answers" id="test-answers">
-      <!-- 보기 버튼은 js/script.js 에서 생성됩니다 -->
+        <div class="typetest-progress">
+          <div class="typetest-progress-fill" id="test-progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="typetest-ask">
+        <p class="typetest-qnum" id="test-qnum">Q1.</p>
+        <h2 class="typetest-question" id="test-question">질문이 여기에 표시됩니다.</h2>
+      </div>
+
+      <div class="typetest-answers" id="test-answers">
+        <!-- 보기 버튼은 js/script.js 에서 생성됩니다 -->
+      </div>
+
     </div>
   </main>
+
+  <!-- 오방색 띠 (하단) -->
+  <div class="saekdong-band bottom"></div>
+
+  <!-- 아래 검정 여백 + 흐릿한 손글씨 낙서 -->
+  <div class="dogam-graffiti">
+    <p>이거 안 지켜도 괜찮아.</p>
+  </div>
 
   <script src="js/script.js"></script>
 </body>

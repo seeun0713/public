@@ -602,134 +602,177 @@ body.archive-detail {
   pointer-events: none;
   z-index: 1;
 }
-.cloud-ornament.left  { left: 40px; top: 96px; transform: scaleX(-1); }
-.cloud-ornament.right { right: 40px; top: 96px; }
+.cloud-ornament.left  { left: 55px; top: 100px; height: 53.566px; transform: scaleX(-1); }
+.cloud-ornament.right { right: 50px; top: 107px; height: 53.566px; }
 
 /* 착한 귀신상 목록만 시안(node 306:8043) 위치를 그대로 씁니다.
    같은 클래스를 동자삼 상세·홈에서도 쓰고 있어 범위를 좁혔습니다. */
-.archive-list .cloud-ornament       { height: 53.566px; }
-.archive-list .cloud-ornament.left  { left: 55px;  top: 100px; }
-.archive-list .cloud-ornament.right { right: 53px; top: 107px; }
+.archive-list .cloud-ornament.right { right: 53px; }  /* 목록만 3px 차이 */
 
 /* 사이드바가 열렸을 때 구름을 감추는 규칙은 파일 앞쪽
    "메뉴가 열려 있는 동안 감추는 페이지 장식" 에 모아 두었습니다.
    시안(node 373:8234)에도 이때 오른쪽 구름이 없습니다. */
 
-/* ----- 큰 제목 (동자삼) ----- */
+/* ----- 큰 제목 (동자삼) — 시안: 위에서 192px, 64px ----- */
 .archive-title {
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
   font-size: 64px;
   font-weight: 800;
-  margin: 48px 0 24px;
+  line-height: 1.2;
+  margin: 65px 0 32px;   /* 머리말(127) + 65 = 192 */
+  margin-left: -5px;     /* 시안: 왼쪽 50px */
 }
 
-/* ----- 본문 2단 ----- */
+/* ----- 본문 두 단 -----
+   시안: 왼쪽 칸 55~618(563), 오른쪽 칸 671~1390(719), 사이 53px */
 .archive-body {
   display: flex;
-  flex-wrap: wrap;
-  gap: 60px;
   align-items: flex-start;
+  gap: 53px;
+}
+.archive-left {
+  flex: none;
+  width: 563px;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;      /* 그림 칸 아래 964 → 버튼 1002 */
 }
 
-/* 좌측 일러스트 + 모서리 장식 */
+/* 왼쪽 그림 칸 (563 × 663) */
 .archive-figure {
   position: relative;
-  flex: 1 1 320px;
-  min-width: 300px;
-  padding: 60px;
-  display: flex;
-  justify-content: center;
+  width: 563px;
+  height: 663px;
+  margin: 0;
 }
-.archive-figure > img.ghost-img {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  object-fit: contain;
+/* 그림은 원본을 확대해 잘라 넣습니다 (값은 HTML 에서 지정) */
+.archive-figure .crop {
+  position: absolute;
+  left: 120px;
+  top: 41px;
+  width: 319px;
+  height: 609px;
+  overflow: hidden;
 }
-/* 4개 모서리 장식 (하나의 SVG를 뒤집어 재사용) */
+.archive-figure .crop img {
+  position: absolute;
+  max-width: none;
+}
+/* 네 모서리 장식 120×120 */
 .corner {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: 120px;
+  height: 120px;
   pointer-events: none;
 }
-.corner.tl { top: 0; left: 0; }
-.corner.tr { top: 0; right: 0; transform: scaleX(-1); }
-.corner.bl { bottom: 0; left: 0; transform: scaleY(-1); }
-.corner.br { bottom: 0; right: 0; transform: scale(-1, -1); }
+.corner.tl { top: 0;    left: 0; }
+.corner.tr { top: 0;    right: 0;  transform: scaleX(-1); }
+.corner.bl { bottom: 0; left: 0;   transform: scaleY(-1); }
+.corner.br { bottom: 0; right: 0;  transform: rotate(180deg); }
 
-/* 우측 기사 */
+/* ----- 오른쪽 기사 ----- */
 .archive-article {
-  flex: 2 1 420px;
-  min-width: 300px;
+  flex: none;
+  width: 719px;
+  display: flex;
+  flex-direction: column;
+  min-height: 752px;   /* 301 → 1/2 아래 1053 */
 }
+/* 기사 위 굵은 파스텔 선 / 사이의 흰 얇은 선 */
+.archive-article .rule {
+  border: 0;
+  margin: 0;
+  width: 100%;
+}
+.archive-article .rule.thick { height: 4px; background: var(--pastel); }
+.archive-article .rule.thin  { height: 1px; background: #fff; }
+
 .article-tag {
   font-size: 19px;
   font-weight: 500;
-  margin-bottom: 16px;
+  line-height: 1.55;
+  margin: 16px 0 10.5px;  /* 301+4 → 317 … 아래 선 361 */
 }
 .article-headline {
   font-size: 32px;
   font-weight: 700;
-  line-height: 1.35;
-  margin: 20px 0 12px;
+  line-height: 1.55;
+  margin: 14px 0 10px;    /* 361 → 376 */
 }
 .article-subhead {
   font-size: 19px;
-  margin-bottom: 16px;
+  line-height: 1.55;
+  margin: 0 0 15px;       /* 436 → 480 */
+}
+.article-text {
+  width: 634px;
+  margin-top: 44px;       /* 481 → 525 */
 }
 .article-text p {
   font-size: 19px;
   line-height: 1.55;
-  margin-bottom: 16px;
-}
-/* 파스텔 그라데이션 구분선 */
-.divider {
-  height: 1px;
-  border: 0;
-  background: var(--pastel);
-  margin: 16px 0;
-}
-
-/* ----- 하단 (버튼 + 페이지네이션) ----- */
-.archive-footer {
-  position: relative;
-  margin-top: 40px;
-  text-align: center;
-}
-.detail-btn {
-  display: block;
-  width: 565px;
-  max-width: 100%;
-  padding: 16px;
-  border: 1.8px solid transparent;
-  border-radius: 9px;
-  text-align: center;
-  font-size: 19px;
-  font-weight: 700;
-  text-decoration: none;
-  /* 검정 안쪽 + 파스텔 테두리 (둥근 그라데이션 보더 기법) */
-  background:
-    linear-gradient(#000, #000) padding-box,
-    var(--pastel) border-box;
+  margin: 0 0 29px;       /* 시안의 빈 줄 한 칸 */
 }
 .archive-pager {
-  margin-top: 24px;
+  margin: 44px 0 0;
+  margin-top: auto;    /* 기사 칸 맨 아래(=시안 1024)로 밀어냄 */
   font-size: 19px;
-  letter-spacing: 2.3px;
+  letter-spacing: 2.28px;
+  text-align: center;     /* 본문 634px 폭의 가운데 */
   color: #fff;
 }
 
-/* 다음 페이지 화살표 */
-.next-arrow {
-  position: absolute;
-  top: 55%;
-  right: 8px;
-  color: #fff;
+/* ----- 자세히 보기 버튼 (565 × 58) ----- */
+.detail-btn {
+  /* <button> 이라 브라우저 기본 모양(회색 배경 등)을 지웁니다 */
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 565px;
+  height: 58px;
+  margin-left: -2px;      /* 시안: 왼쪽 53px */
+  border: 1.826px solid #fffbd4;
+  border-radius: 9.13px;
+  font-size: 19.478px;
+  font-weight: 700;
   text-decoration: none;
+}
+
+/* ----- 기사 넘기기 화살표 ----- */
+.story-arrow {
+  position: absolute;
+  top: 646px;
+  width: 24px;
+  height: 77px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
   z-index: 2;
 }
-.next-arrow svg { display: block; }
+.story-arrow[hidden] { display: none; }
+.story-arrow.next { right: 62px; }   /* 시안: 왼쪽에서 1354 */
+.story-arrow.prev { left: 671px; }   /* 시안: 기사 칸 맨 왼쪽 */
+.story-arrow img {
+  display: block;
+  width: 77px;
+  height: 24px;
+}
+/* 원본 꺾쇠는 위를 향하므로 돌려서 씁니다 */
+.story-arrow.next img { transform: rotate(90deg); }
+.story-arrow.prev img { transform: rotate(-90deg); }
+
+/* ----- 기사 면 ----- */
+.article-page[hidden] { display: none; }
+/* 2면은 왼쪽 화살표 자리를 비웁니다 (시안: 본문 왼쪽 762 = 671 + 91) */
+.article-text.indent { margin-left: 91px; }
 
 /* 좁은 화면 대응 */
 @media (max-width: 880px) {
@@ -739,7 +782,8 @@ body.archive-detail {
   .archive-title { font-size: 44px; }
   .article-headline { font-size: 24px; }
   .cloud-ornament { width: 140px; top: 90px; }
-  .next-arrow { display: none; }
+  .story-arrow { display: none; }
+  .article-text.indent { margin-left: 0; }
 }
 
 
@@ -856,125 +900,134 @@ body.exam-page {
 }
 .exam-brand {
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 36px;
+  font-size: 48px;
   font-weight: 800;
   letter-spacing: 3px;
+  color: #fff;   /* 시안 확인: 그라데이션이 아니라 흰색입니다 */
 }
 .exam-header .icon {
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
+.exam-header .icon img { display: block; width: 24px; height: 24px; }
 
 /* 4모서리 장식 (corner-bracket SVG 재사용) */
 .exam-corner {
   position: absolute;
-  width: 90px;
-  height: 90px;
-  background-size: contain;
+  width: 120px;
+  height: 120px;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   pointer-events: none;
 }
-.exam-corner.tl { top: 110px; left: 55px; background-image: url("../images/corner-bracket-l.svg"); }
-.exam-corner.tr { top: 110px; right: 55px; background-image: url("../images/corner-bracket-r.svg"); }
-.exam-corner.bl { bottom: 40px; left: 55px; background-image: url("../images/corner-bracket-l.svg"); transform: scaleY(-1); }
-.exam-corner.br { bottom: 40px; right: 55px; background-image: url("../images/corner-bracket-r.svg"); transform: scaleY(-1); }
+.exam-corner.tl { top: 143px; left: 54px;  background-image: url("../images/corner-bracket-l.svg"); }
+.exam-corner.tr { top: 143px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); }
+.exam-corner.bl { top: 748px; left: 54px;  background-image: url("../images/corner-bracket-l.svg"); transform: scaleY(-1); }
+.exam-corner.br { top: 748px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); transform: scaleY(-1); }
 
 /* 중앙 퀴즈 컬럼 */
 .exam-panel {
-  max-width: 580px;
-  margin: 60px auto 0;
+  position: relative;
+  z-index: 1;
+  max-width: 812px;
+  margin: 46px auto 0;   /* 머리말(127) + 46 = 시안의 173 */
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
 }
+.exam-progress-block { display: flex; flex-direction: column; gap: 8px; }
+.exam-ask { display: flex; flex-direction: column; gap: 40px; text-align: center; }
 
 /* 이전 / 1/10 */
 .exam-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 22px;
 }
 .exam-prev {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
   background: none;
   border: 0;
   color: #fff;
-  font-size: 17px;
+  font-size: 19px;
+  font-weight: 700;
   cursor: pointer;
-  padding: 4px 0;
 }
+.exam-prev img { display: block; width: 24px; height: 24px; }
 .exam-prev:disabled { opacity: 0.35; cursor: default; }
-.exam-counter { font-size: 17px; }
+.exam-counter { padding: 10px; font-size: 19px; font-weight: 700; }
 
 /* 진행바 (둥근 그라데이션 테두리 + 안쪽 검정 + 그라데이션 채움) */
 .exam-progress {
+  box-sizing: border-box;
   height: 22px;
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(#000, #000) padding-box,
-    var(--pastel) border-box;
+  border: 2px solid #fffbd4;
+  border-radius: 41px;
+  background: #000;
   overflow: hidden;
 }
 .exam-progress-fill {
   height: 100%;
   width: 10%;
-  border-radius: 999px;
+  min-width: 18px;
+  border-radius: 41px;
   background: var(--pastel);
   transition: width 0.25s ease;
 }
 
 /* Q 번호 */
 .exam-qnum {
-  margin-top: 56px;
-  text-align: center;
-  font-size: 32px;
-  font-weight: 800;
-  text-shadow: 0 0 12px rgba(253, 208, 243, 0.6);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
 }
 
 /* 질문 */
 .exam-question {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 18px;
+  margin: 0;
+  font-size: 24px;
   font-weight: 700;
+  color: #fff;
 }
 
 /* 보기 버튼 */
 .exam-answers {
-  margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
 }
 .exam-answer {
+  box-sizing: border-box;
   width: 100%;
-  padding: 20px;
-  border: 1.6px solid transparent;
-  border-radius: 12px;
-  background:
-    linear-gradient(#000, #000) padding-box,
-    var(--pastel) border-box;
+  padding: 20px 60px;
+  border: 2px solid #fffbd4;
+  border-radius: 10px;
+  background: #000;
   color: #fff;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.12s ease;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 .exam-answer:hover {
   transform: translateY(-2px);
-  background:
-    linear-gradient(rgba(253, 208, 243, 0.12), rgba(159, 255, 202, 0.12)) padding-box,
-    var(--pastel) border-box;
+  background: #141414;
 }
 
 @media (max-width: 880px) {
   .exam-wrap { padding: 0 20px 60px; }
   .exam-brand { font-size: 26px; }
-  .exam-corner { width: 56px; height: 56px; left: 16px; right: 16px; }
-  .exam-corner.tl, .exam-corner.tr { top: 96px; }
-  .exam-corner.tr { left: auto; right: 16px; }
-  .exam-corner.br { left: auto; right: 16px; }
+  .exam-corner { display: none; }
+  .exam-panel { gap: 40px; margin-top: 32px; }
+  .exam-qnum { font-size: 32px; }
+  .exam-question { font-size: 19px; }
+  .exam-answer { padding: 16px 24px; font-size: 17px; }
 }
 
 
@@ -989,13 +1042,13 @@ body.rules-page {
   background:
     repeating-linear-gradient(
       90deg,
-      #ff0004 0 52px,
-      #ffffff 52px 104px,
-      #002bff 104px 156px,
-      #e60084 156px 208px,
-      #ffe400 208px 260px,
-      #c000e2 260px 312px,
-      #00e926 312px 364px
+      #ff0004 0 52.2px,
+      #ffffff 52.2px 104.4px,
+      #002bff 104.4px 156.6px,
+      #e60084 156.6px 208.8px,
+      #ffe400 208.8px 261px,
+      #c000e2 261px 313.2px,
+      #00e926 313.2px 365.41px
     );
   color: #fff;
   min-height: 100vh;
@@ -1007,54 +1060,48 @@ body.rules-page {
 .rules-panel {
   position: relative;
   max-width: 1333px;
-  margin: 52px auto;
+  margin: 51px auto 60px;   /* 머리말(127) + 51 = 시안의 178 */
   background: #000;
   border-radius: 18px;
-  padding: 48px 56px;
+  padding: 56px 62px 66px;  /* 시안: 글 시작 (116, 234) */
   overflow: hidden;
 }
 
 /* 상단 안내 / 마지막 규칙 (※) */
 .rules-note {
-  color: #d8d8d8;
-  font-size: 16px;
-  line-height: 1.7;
-  margin-bottom: 28px;
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-size: 19px;
+  line-height: 1.55;
+  margin-bottom: 40px;   /* 시안: 안내문 끝 292 → 목록 332 */
 }
 .rules-final {
-  color: #d8d8d8;
-  font-size: 16px;
-  line-height: 1.7;
-  margin-top: 32px;
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-size: 19px;
+  line-height: 1.55;
+  margin-top: 48px;      /* 시안: 목록 끝 1292 → 1340 */
 }
 
 /* 번호 규칙 목록 */
 .rules-list {
-  list-style: none;
-  counter-reset: rule;
   position: relative;
   z-index: 2;
+  list-style: decimal;
+  padding-left: 28.5px;   /* 시안: 번호는 오른쪽 맞춤, 글은 28.5px 들여쓰기 */
+  margin: 0;
 }
 .rules-list li {
-  counter-increment: rule;
-  position: relative;
-  padding-left: 40px;
-  margin-bottom: 18px;
-  font-size: 18px;
-  line-height: 1.5;
+  margin: 0;
+  font-size: 19px;
+  line-height: 2.54;      /* 시안 값. 줄 간격이 곧 항목 간격입니다 */
   color: #fff;
 }
-.rules-list li::before {
-  content: counter(rule) ".";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 30px;
-  text-align: right;
-  font-weight: 700;
-}
 .rules-list li strong { font-weight: 700; }
-.rules-list li .sub { color: #cfcfcf; font-weight: 400; }
+/* 시안에서는 굵은 부분 외에도 모두 흰색입니다 */
+.rules-list li .sub { color: #fff; font-weight: 400; }
 
 /* 으스스한 손글씨 워터마크 */
 .rules-haunt {
@@ -1065,9 +1112,11 @@ body.rules-page {
 }
 .rules-haunt span {
   position: absolute;
+  /* 시안 폰트는 Shilla Culture — 웹폰트가 없어 손글씨체 Gaegu 로 대체 */
   font-family: "Gaegu", "Pretendard Variable", cursive;
-  color: rgba(220, 220, 220, 0.18);
-  font-size: 30px;
+  color: rgba(255, 255, 255, 0.24);
+  font-size: 40px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -1086,99 +1135,151 @@ body.rules-page {
    ========================================================= */
 
 body.typetest-page {
-  background: #efe6cf url("../images/parchment.jpg") center / cover fixed;
+  margin: 0;
+  background: #000;          /* 아래쪽 낙서 자리는 검정으로 이어집니다 */
   color: #1a1a1a;
   min-height: 100vh;
 }
 
 /* 헤더는 귀신 도감 목록과 같은 규칙을 씁니다 (.dogam-header 쪽에 함께 정의) */
 
-/* 중앙 퀴즈 컬럼 */
+/* ----- 한지 무대 (시안: 머리말 아래 143 ~ 894, 높이 751) ----- */
+.typetest-stage {
+  position: relative;
+  min-height: 751px;
+  padding: 44px 20px 60px;   /* 띠(143) + 44 = 시안의 퀴즈 시작 187 */
+  background: #e9e0cd url("../images/dogam2-bg.jpg") center / cover;
+  overflow: hidden;
+}
+/* 좌우 끝 171px 를 살짝 어둡게 (시안: 검정 + 오버레이 혼합) */
+.typetest-shade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 171px;
+  background: #000;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.typetest-shade.left  { left: 0; }
+.typetest-shade.right { right: 0; }
+
+/* ----- 가운데 퀴즈 칸 (시안: 폭 812) ----- */
 .typetest-panel {
-  max-width: 580px;
-  margin: 70px auto 0;
-  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+  max-width: 812px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
 }
 
-/* 이전 / 1/10 */
+/* 진행 상황 (이전 / 1-10 / 막대) */
+.typetest-progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .typetest-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
-  color: #1a1a1a;
+  gap: 22px;
+  color: #000;
 }
 .typetest-prev {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
   background: none;
   border: 0;
-  color: #1a1a1a;
-  font-size: 17px;
+  color: #000;
+  font-size: 19px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 4px 0;
 }
+.typetest-prev img { display: block; width: 24px; height: 24px; }
 .typetest-prev:disabled { opacity: 0.35; cursor: default; }
-.typetest-counter { font-size: 17px; font-weight: 600; }
+.typetest-counter {
+  padding: 10px;
+  font-size: 19px;
+  font-weight: 600;
+}
 
-/* 진행바 (회색 트랙 + 빨강 채움) */
+/* 진행 막대 — 회색 트랙 + 빨강 채움, 둘 다 검정 2px 테두리 */
 .typetest-progress {
-  height: 20px;
-  border-radius: 999px;
+  box-sizing: border-box;
+  height: 22px;
+  border: 2px solid #000;
+  border-radius: 41px;
   background: #d9d9d9;
-  overflow: hidden;
 }
 .typetest-progress-fill {
+  box-sizing: border-box;
   height: 100%;
   width: 10%;
-  border-radius: 999px;
+  min-width: 22px;
+  margin: -2px 0 0 -2px;     /* 트랙 테두리에 겹쳐 놓습니다 */
+  border: 2px solid #000;
+  border-radius: 41px;
   background: #d51313;
   transition: width 0.25s ease;
 }
 
-/* Q 번호 (빨강) */
-.typetest-qnum {
-  margin-top: 56px;
+/* 질문 */
+.typetest-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   text-align: center;
-  font-size: 32px;
-  font-weight: 800;
+}
+.typetest-qnum {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
   color: #d51313;
 }
-
-/* 질문 */
 .typetest-question {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1a1a1a;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  color: #000;
 }
 
 /* 보기 버튼 (오방색) */
 .typetest-answers {
-  margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
 }
 .typetest-answer {
+  box-sizing: border-box;
   width: 100%;
-  padding: 18px;
-  border: none;
+  padding: 20px 60px;
+  border: 2px solid #000;
   border-radius: 999px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
+  text-align: center;
   cursor: pointer;
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
   transition: transform 0.12s ease;
 }
 .typetest-answer:hover { transform: translateY(-2px); }
-.typetest-answer.blue { background: #002bff; color: #fff; }
-.typetest-answer.white { background: #ffffff; color: #1a1a1a; }
-.typetest-answer.yellow { background: #ffe400; color: #1a1a1a; }
-.typetest-answer.red { background: #d51313; color: #fff; }
+.typetest-answer.blue   { background: #002bff; color: #fff; }
+.typetest-answer.white  { background: #ffffff; color: #000; }
+.typetest-answer.yellow { background: #ffcc00; color: #000; }
+.typetest-answer.red    { background: #d51313; color: #fff; }
 
 @media (max-width: 880px) {
   .typetest-header h1 { font-size: 30px; }
-  .typetest-panel { margin-top: 48px; }
+  .typetest-stage { padding: 32px 16px 48px; min-height: 0; }
+  .typetest-shade { display: none; }
+  .typetest-panel { gap: 40px; }
+  .typetest-qnum { font-size: 32px; }
+  .typetest-question { font-size: 19px; }
+  .typetest-answer { padding: 16px 24px; font-size: 17px; }
 }
 
 
@@ -1202,117 +1303,165 @@ body.ordinance-page {
   overflow: hidden;
 }
 
-/* 헤더 (검정 + 파스텔 그라데이션 제목) */
+/* 헤더 (검정 127px + 파스텔 그라데이션 제목)
+   시안의 back/menu 아이콘은 다른 페이지와 달리 흰색이 아니라
+   파스텔 그라데이션으로 칠해져 있습니다(전용 svg 두 개). */
 .ordinance-header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 127px;
-  border-bottom: 3px solid;
-  border-image: var(--pastel) 1;
+  background: #000;
+}
+/* 머리말 바로 아래 3px 파스텔 선 (시안 Line 1, y=127) */
+.ordinance-header::after {
+  content: "";
+  position: absolute;
+  left: 55px;
+  right: 50px;
+  bottom: 0;
+  height: 3px;
+  background: var(--pastel);
 }
 .ordinance-brand {
+  /* 피그마 원본은 'ON 월인석보' 손글씨체인데 웹폰트가 없어 굵은 기본 폰트로 대체 */
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
-  font-size: 40px;
+  font-size: 48px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   text-align: center;
   padding: 0 130px;
 }
 .ordinance-header .icon {
-  color: #fff;
-  text-decoration: none;
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  padding: 10px;             /* 시안: 44×44 자리에 24px 아이콘 */
+  background: none;
+  border: 0;
+  cursor: pointer;
   z-index: 3;
 }
+.ordinance-header .icon img { display: block; width: 24px; height: 24px; }
 
-/* 모서리 완자 장식 */
+/* 모서리 완자 장식 (머리말 위로 겹칩니다 — 시안 Vector 12/13) */
 .ordinance-corner {
   position: absolute;
-  top: 10px;
-  width: 106px;
-  height: 106px;
+  top: 9px;
+  width: 106.5px;
+  height: 107px;
   pointer-events: none;
   z-index: 2;
 }
-.ordinance-corner.left { left: 9px; }
-.ordinance-corner.right { right: 9px; transform: scaleX(-1); }
+.ordinance-corner.left { left: 8px; }
+.ordinance-corner.right { right: 8.5px; }
 
-/* 문서 본문 */
+/* 문서 본문
+   시안은 글이 x=54, 구분선이 x=55~1390 에 놓입니다.
+   그래서 좌우 여백을 54 / 50 으로 두고, 구분선만 1px 안쪽에서 시작합니다.
+   세로 간격은 모두 위쪽 margin 하나로만 정합니다(아래 margin 은 0).
+   그래야 간격이 서로 겹쳐 줄어드는 일 없이 시안 좌표와 그대로 맞습니다. */
 .ordinance-doc {
-  max-width: 1335px;
-  margin: 0 auto;
-  padding: 18px 55px 80px;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  padding: 16px 50px 117px 54px;
+  line-height: 1.55;
 }
+.ordinance-doc > * { margin: 0; }
+
+/* 줄 높이는 시안이 쓰는 1.55 를 픽셀로 굳혀 둡니다(19→29, 21→33, 25→39).
+   소수점이 남으면 아래로 갈수록 조금씩 밀려 마지막 조문에서 6px 넘게
+   어긋나서, 시안의 반올림값을 그대로 씁니다. */
+.ordinance-meta,
+.ordinance-clause,
+.ordinance-bullets { line-height: 29px; }
+.ordinance-chapter,
+.ordinance-article { line-height: 33px; }
+.ordinance-part-title { line-height: 39px; }
+
 .ordinance-meta {
   font-size: 19px;
-  margin-bottom: 16px;
+  font-weight: 400;
 }
 
-/* 구분선 */
+/* 구분선 — 굵은 선은 파스텔 3px, 가는 선은 흰색 1px */
+.divider-strong,
+.divider-thin {
+  border: 0;
+  margin-left: 1px;
+}
 .divider-strong {
   height: 3px;
-  border: 0;
   background: var(--pastel);
-  margin: 28px 0;
+  margin-top: 86px;
 }
 .divider-thin {
   height: 1px;
-  border: 0;
-  background: rgba(255, 255, 255, 0.3);
-  margin: 40px 0;
+  background: #fff;
+  margin-top: 60px;
 }
+.ordinance-meta + .divider-thin { margin-top: 15px; }
 
 /* 편/서문 제목 (가운데) */
 .ordinance-part-title {
   text-align: center;
   font-size: 25px;
   font-weight: 700;
-  margin: 28px 0;
+  margin-top: 21px;
 }
+.divider-thin + .ordinance-part-title { margin-top: 61px; }
 
 /* 장 제목 + 설명 */
 .ordinance-chapter {
   font-size: 21px;
   font-weight: 700;
-  margin: 28px 0 18px;
+  margin-top: 47px;
 }
+.ordinance-part-title + .ordinance-chapter { margin-top: 88px; }
 .ordinance-chapter .desc {
   font-size: 19px;
   font-weight: 400;
-  color: #bdbdbd;
-  margin-left: 16px;
+  /* 줄 높이를 물려받으면 이 작은 글씨의 아랫부분이 제목 줄 밖으로 1px 삐져나와
+     설명이 붙은 장 제목만 한 줄이 1px 두꺼워집니다. 29px 로 눌러 둡니다. */
+  line-height: 29px;
+  margin-left: 35px;
 }
 
-/* 조/항목 제목 */
+/* 조/항목 제목 — 서문의 항목은 h3, 편 안의 조는 h4 입니다 */
 .ordinance-article {
   font-size: 21px;
   font-weight: 700;
-  margin: 22px 0 10px;
 }
+h3.ordinance-article { margin-top: 38px; }
+h4.ordinance-article { margin-top: 40px; }
+.ordinance-part-title + .ordinance-article { margin-top: 51px; }
+.ordinance-chapter + .ordinance-article { margin-top: 38px; }
 
-/* 조문 내용 (① ②) */
+/* 조문 내용 (① ②) — 시안에서는 ①②가 한 글상자라 줄 사이가 붙어 있습니다 */
 .ordinance-clause {
   font-size: 19px;
-  line-height: 1.55;
-  margin: 0 0 6px;
+  font-weight: 400;
 }
+.ordinance-article + .ordinance-clause { margin-top: 10px; }
 
-/* 하위 항목 (각 호) */
+/* 하위 항목 (각 호) — 시안: 글머리 칸 x=74, 글자 x=102.5 */
 .ordinance-bullets {
-  margin: 4px 0 10px 28px;
-  padding-left: 20px;
+  margin-top: 10px;
+  margin-left: 20px;
+  padding-left: 28.5px;
   font-size: 19px;
-  line-height: 1.55;
+  font-weight: 400;
 }
-.ordinance-bullets li { margin-bottom: 2px; }
 
 @media (max-width: 880px) {
-  .ordinance-brand { font-size: 22px; padding: 0 64px; }
+  .ordinance-brand { font-size: 26px; padding: 0 64px; letter-spacing: 2px; }
+  .ordinance-header::after { left: 20px; right: 20px; }
   .ordinance-doc { padding: 16px 20px 60px; }
-  .ordinance-corner { width: 60px; height: 60px; }
+  .ordinance-corner { display: none; }
   .ordinance-chapter .desc { display: block; margin-left: 0; margin-top: 4px; }
+  .divider-strong { margin-top: 48px; }
+  .divider-thin { margin-top: 40px; }
+  .divider-thin + .ordinance-part-title { margin-top: 40px; }
+  .ordinance-part-title + .ordinance-chapter { margin-top: 48px; }
 }
 
 
@@ -1854,6 +2003,7 @@ body.gd-page {
   margin: 0;
   background: #fff;
   overflow: hidden;
+  border-right: 2px solid #000;   /* 정보 칸과 나누는 선 */
 }
 /* 큰 그림 자리 — <img> 든 <video> 든 같은 방식으로 채웁니다 */
 .gd-figure .ghost {
@@ -1884,6 +2034,7 @@ body.gd-page {
   display: flex;
   flex-direction: column;
   gap: 13px;
+  border-left: 2px solid #000;    /* 그림 칸과 나누는 선 */
 }
 
 /* --- 정보 한 줄 (이름 / 생전 / 죽음 / 한 …) --- */
@@ -2022,8 +2173,15 @@ body.gd-page {
    그래서 본문 아래에 한 줄로 놓고, 왼쪽 = 이전 / 오른쪽 = 다음 으로 나눴습니다. */
 .gd-pager {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: stretch;   /* 가운데 흰 칸이 버튼과 같은 높이가 되도록 */
+}
+/* 두 버튼 사이를 메우는 흰 칸 */
+.gd-pager-fill {
+  flex: 1 1 auto;
+  background: #fff;
+  /* stroke 는 SVG 전용이라 <span> 에는 듣지 않습니다. HTML 요소는 border 를 씁니다.
+     굵기는 이 페이지의 다른 상자들(공존 방법·주의 사항 등)과 같은 2px 검정입니다. */
+  border: 2px solid #000;
 }
 .gd-nav {
   display: flex;
@@ -2081,7 +2239,13 @@ body.gd-page {
 /* --- 좁은 화면 --- */
 @media (max-width: 1100px) {
   .gd-main { flex-direction: column; min-height: 0; }
-  .gd-figure { width: 100%; height: 420px; }
+  .gd-figure {
+    width: 100%;
+    height: 420px;
+    border-right: 0;
+    border-bottom: 2px solid #000;   /* 세로로 쌓이면 선도 가로로 */
+  }
+  .gd-info { border-left: 0; border-top: 2px solid #000; }
   .gd-stats { flex-direction: column; gap: 20px; align-items: center; }
   .gd-stats-label { align-self: flex-start; }
 }
@@ -2103,15 +2267,60 @@ body.gd-page {
 body.fg-page {
   margin: 0;
   color: #000;
-  background: #ded4bd url("../images/famous-paper2.png") center / cover fixed;
+  background: #000;
 }
 
 .fg-wrap {
+  position: relative;
   max-width: 1440px;
   margin: 0 auto;
   border: 6px solid #000;
   padding-bottom: 20px;
+  overflow: hidden;   /* 배경 두 겹과 세로 획이 밖으로 나가지 않게 */
 }
+
+/* --- 한지 배경 두 겹 (시안: 1618×1083, 왼쪽 -98 / 위 -34) --- */
+.fg-paper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fg-paper img {
+  position: absolute;
+  left: -98px;
+  top: -34px;
+  width: 1618px;
+  height: max(1083px, 100%);
+  object-fit: cover;
+}
+.fg-paper .a { mix-blend-mode: hard-light; }  /* 아래장 — 대비를 만드는 겹 */
+.fg-paper .b { opacity: 0.89; }               /* 위장 — 종이 결 */
+
+/* --- 두 칸을 가르는 세로 획 ---
+   곧은 선이 아니라 손으로 그은 획이라, 굵기가 들쭉날쭉한 원본 SVG를
+   90도 돌려 세웁니다. 6px 폭 안에서만 보이도록 잘라 씁니다. */
+.fg-rule {
+  position: absolute;
+  /* 90도 회전은 요소 "중심"을 기준으로 돕니다.
+     세로 획이 그림 칸(716)과 정보 칸 경계에 서도록,
+     가로로 누운 상태의 중심을 그 자리에 맞춥니다: 713 - 1002/2 = 212 */
+  left: 212px;
+  top: 127px;           /* 머리말 아래부터 */
+  bottom: 0;
+  width: 1002px;
+  height: 6px;
+  margin: auto 0;       /* 위아래 남는 만큼 가운데로 */
+  transform: rotate(90deg);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 배경 위로 내용이 오도록 */
+.fg-header,
+.fg-main,
+.fg-bottom { position: relative; z-index: 1; }
 
 /* --- 헤더 --- */
 .fg-header {
@@ -2155,13 +2364,18 @@ body.fg-page {
   margin: 0;
   overflow: hidden;
 }
-/* 그림 — 피그마의 잘라내기 값 그대로 확대해서 밀어 넣습니다 */
+/* 그림 — 괴물 그림은 배경이 비어 있는 세로(3:4) 먹그림입니다.
+   그림 파일에는 먹이 닿지 않은 빈 여백이 위아래로 13~18% 씩 들어 있어서,
+   파일 전체를 칸에 맞추면 그 빈 자리까지 자리를 차지해 괴물이 작아 보입니다.
+   그래서 파일이 아니라 "먹이 그려진 영역"을 칸 높이에 맞춥니다.
+   괴물마다 먹 영역이 다르므로 확대·위치 값은 FAMOUS 목록에 적어 두고
+   (js/script.js 의 art), JS 가 아래 변수에 넣어 줍니다. */
 .fg-figure .art {
   position: absolute;
-  left: -16.15%;
-  top: 0;
-  width: 132.3%;
-  height: 120.52%;
+  left: var(--art-left, 0px);
+  top: var(--art-top, 0px);
+  width: var(--art-width, 100%);
+  height: var(--art-height, 100%);
   max-width: none;
 }
 /* 아래로 갈수록 짙어지는 분홍 물빛 */
@@ -2182,7 +2396,16 @@ body.fg-page {
   pointer-events: none;
 }
 .fg-figure .decor-1 { left: 94px; top: 0; width: 515px; height: 555px; }
-.fg-figure .decor-2 { left: -8px; top: 67px; width: 719px; height: 412px; }
+/* decor-2 원본 SVG는 세로(415×719)로 내보내져 있어, 눕혀서 씁니다.
+   90도 회전은 요소 중심을 기준으로 돌기 때문에, 최종 자리(left:-8 top:67
+   width:719 height:412)의 중심이 그대로 유지되도록 회전 전 위치를 역산했습니다. */
+.fg-figure .decor-2 {
+  left: 145.5px;
+  top: -86.5px;
+  width: 412px;
+  height: 719px;
+  transform: rotate(90deg);
+}
 /* 네 모서리를 비스듬히 잘라내는 검정 덮개 */
 .fg-figure .cut {
   position: absolute;
@@ -2212,7 +2435,7 @@ body.fg-page {
   font-size: 19px;
   color: #000;
 }
-.fg-row .k { flex: none; width: 33px; font-weight: 700; }
+.fg-row .k { flex: none; width: auto; min-width: 33px; white-space: nowrap; font-weight: 700; }
 /* 이름표가 긴 줄(생김새·특징·위험도)은 폭을 고정하지 않습니다 */
 .fg-row.wide .k { width: auto; white-space: nowrap; }
 .fg-row .v { flex: 1 1 0; min-width: 0; line-height: 1.55; }
@@ -2246,8 +2469,6 @@ body.fg-page {
   justify-content: space-between;
   gap: 20px;
   padding: 27px 28px;
-  /* 왼쪽 글과 나누는 세로 선 (피그마 Line 29) */
-  border-left: 6px solid #000;
 }
 .fg-bar {
   display: flex;
@@ -2281,12 +2502,89 @@ body.fg-page {
   .fg-figure .cut,
   .fg-figure .decor,
   .fg-figure .tint { display: none; }
-  .fg-figure .art { position: static; width: 100%; height: 100%; object-fit: cover; }
+  /* 좁은 화면에서는 확대·위치 값을 쓰지 않고 칸에 통째로 맞춥니다 */
+  .fg-figure .art { position: static; left: auto; top: auto; width: 100%; height: 100%; object-fit: contain; padding: 12px 0; }
   .fg-bottom { flex-direction: column; }
-  .fg-bars { border-left: 0; border-top: 6px solid #000; }
+  .fg-bars { border-top: 6px solid #000; }
+  .fg-rule { display: none; }
 }
 @media (max-width: 620px) {
   .fg-title { font-size: 30px; }
   .fg-row, .fg-texts, .fg-bars, .fg-bar { font-size: 16px; }
   .fg-row { padding-left: 16px; padding-right: 16px; }
+}
+
+
+/* =========================================================
+   '자세히 보기' 팝업 (ghost-archive-dongjasam.html)
+   Figma 프레임 "Desktop - 128" (node 464:11601) 기준.
+   <dialog> 라서 Esc 닫기·초점 가두기는 브라우저가 처리합니다.
+   ========================================================= */
+.dj-modal {
+  box-sizing: border-box;
+  margin: auto;   /* 전역 * { margin: 0 } 이 <dialog> 기본 가운데 정렬을 지워서 다시 넣습니다 */
+  width: 940px;
+  max-width: calc(100vw - 32px);
+  height: 680px;
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 5px solid #fffbd4;
+  background: #000;
+  color: #fff;
+  overflow: visible;   /* 모서리 장식이 잘리지 않게 */
+}
+/* 시안: 뒤 화면을 검정 48%로 덮음 */
+.dj-modal::backdrop { background: rgba(0, 0, 0, 0.48); }
+
+/* 네 모서리 완자 장식 (테두리 안쪽 5px) */
+.dj-modal .corner {
+  position: absolute;
+  width: 96px;
+  height: 98px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.dj-modal .corner.tl,
+.dj-modal .corner.bl { background-image: url("../images/dj-modal-corner-l.svg"); }
+.dj-modal .corner.tr,
+.dj-modal .corner.br { background-image: url("../images/dj-modal-corner-r.svg"); }
+.dj-modal .corner.tl { top: 5px;    left: 5px; }
+.dj-modal .corner.tr { top: 5px;    right: 4px;  transform: scaleX(-1); }
+.dj-modal .corner.bl { bottom: 5px; left: 5px;   transform: scaleY(-1); }
+.dj-modal .corner.br { bottom: 3px; right: 4px;  transform: rotate(180deg); }
+
+/* 글 영역 — 시안: 팝업 안쪽에서 좌우 80 / 위 66, 폭 770 */
+.dj-modal-body {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 66px 80px;
+  overflow-y: auto;
+}
+.dj-modal-body section { margin-bottom: 29px; }   /* 시안의 빈 줄 한 칸 */
+.dj-modal-body section:last-child { margin-bottom: 0; }
+.dj-modal-body h4 {
+  margin: 0 0 0;
+  padding: 0;
+  border: 0;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #fff;
+}
+.dj-modal-body ul {
+  margin: 0;
+  padding-left: 1.5em;
+  list-style: disc;
+}
+.dj-modal-body li {
+  font-size: 19px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .dj-modal .corner { display: none; }
+  .dj-modal-body { padding: 32px 24px; }
+  .dj-modal { height: auto; max-height: calc(100vh - 32px); }
 }
