@@ -434,7 +434,7 @@ function setupMenu() {
     {
       title: "착한 귀신",
       links: [
-        { label: "착한 귀신상", href: "ghost-archive.html", same: ["ghost-archive-dongjasam.html"] },
+        { label: "착한 귀신상", href: "ghost-archive.html", same: ["ghost-archive-detail.html"] },
         { label: "공존에 관한 조례", href: "ghost-rules.html" },
         { label: "인간 유사도 시험", href: "ghost-exam.html", same: ["ghost-exam-result.html"] },
       ],
@@ -842,28 +842,13 @@ function setupGhostDetail() {
 
   // --- 앞/뒤 귀신으로 넘어가기 ---
   // 도감 목록에 카드가 놓인 순서와 같게 두었습니다.
-  var ORDER = ["susalgwi", "geolsin", "jigwi", "singiwonyo", "baekgwi", "arang", "maehwa", "cheonggun"];
-  var here = ORDER.indexOf(key);
-  // 맨 끝에서 누르면 반대쪽 끝으로 돌아갑니다 (% 는 나머지 연산)
-  var prevKey = ORDER[(here - 1 + ORDER.length) % ORDER.length];
-  var nextKey = ORDER[(here + 1) % ORDER.length];
-
-  function linkTo(el, nameEl, target, label) {
-    if (!el) return;
-    el.href = "human-encyclopedia-detail.html?ghost=" + target;
-    el.setAttribute("aria-label", label + " 귀신: " + GHOSTS[target].name);
-    if (nameEl) nameEl.textContent = GHOSTS[target].name;
-  }
-  var prevEl = document.getElementById("gd-prev");
-  var nextEl = document.getElementById("gd-next");
-  linkTo(prevEl, document.getElementById("gd-prev-name"), prevKey, "이전");
-  linkTo(nextEl, document.getElementById("gd-next-name"), nextKey, "다음");
-
-  // 키보드 ← → 로도 넘어갑니다
-  document.addEventListener("keydown", function (e) {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
-    if (e.key === "ArrowLeft" && prevEl) location.href = prevEl.href;
-    if (e.key === "ArrowRight" && nextEl) location.href = nextEl.href;
+  buildPager({
+    order: ["susalgwi", "geolsin", "jigwi", "singiwonyo", "baekgwi", "arang", "maehwa", "cheonggun"],
+    key: key,
+    page: "human-encyclopedia-detail.html",
+    noun: "귀신",
+    nameOf: function (k) { return GHOSTS[k].name; },
+    keys: true,
   });
 
   // 제목
@@ -1144,7 +1129,18 @@ function setupFamousDetail() {
   if (!infoBox) return; // 이 페이지가 아니면 중단
 
   var key = new URLSearchParams(location.search).get("ghost") || "gumiho";
-  var ghost = FAMOUS[key] || FAMOUS.gumiho;
+  if (!FAMOUS[key]) key = "gumiho";
+  var ghost = FAMOUS[key];
+
+  // 아래쪽 '이전 / 다음' 줄 (목록에 놓인 순서대로)
+  buildPager({
+    order: ["gumiho", "cheonyeo", "dalgyal", "eoduksini"],
+    key: key,
+    page: "famous-encyclopedia-detail.html",
+    noun: "괴물",
+    nameOf: function (k) { return FAMOUS[k].name; },
+    keys: true,
+  });
 
   document.title = ghost.name + " — 유명 한국 괴물";
   document.getElementById("fg-title").textContent = ghost.name;
@@ -1372,6 +1368,480 @@ function makeRadar(values) {
 
 
 /* ===========================================================
+   8-0. 상세 페이지 아래의 '이전 / 다음' 줄
+
+   귀신 도감 · 착한 귀신상 · 유명 한국 괴물 세 상세 페이지가
+   똑같은 모양과 동작을 함께 씁니다.
+     order  : 목록 페이지에 놓인 순서 (맨 끝에서는 반대쪽 끝으로 돌아갑니다)
+     page   : 넘어갈 페이지 주소
+     noun   : 읽어 주는 이름에 쓸 말 ("귀신" / "괴물")
+     nameOf : 키로 표시할 이름을 찾는 함수
+     keys   : 키보드 ← → 로도 넘길지
+   =========================================================== */
+function buildPager(opts) {
+  var prevEl = document.getElementById("gd-prev");
+  var nextEl = document.getElementById("gd-next");
+  if (!prevEl || !nextEl) return; // 이 줄이 없는 페이지면 중단
+
+  var order = opts.order;
+  var here = order.indexOf(opts.key);
+  if (here < 0) here = 0;
+  // 맨 끝에서 누르면 반대쪽 끝으로 돌아갑니다 (% 는 나머지 연산)
+  var prevKey = order[(here - 1 + order.length) % order.length];
+  var nextKey = order[(here + 1) % order.length];
+
+  function linkTo(el, nameEl, target, label) {
+    el.href = opts.page + "?ghost=" + target;
+    el.setAttribute("aria-label", label + " " + opts.noun + ": " + opts.nameOf(target));
+    if (nameEl) nameEl.textContent = opts.nameOf(target);
+  }
+  linkTo(prevEl, document.getElementById("gd-prev-name"), prevKey, "이전");
+  linkTo(nextEl, document.getElementById("gd-next-name"), nextKey, "다음");
+
+  // 키보드 ← → 로도 넘어갑니다
+  if (opts.keys) {
+    document.addEventListener("keydown", function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === "ArrowLeft") location.href = prevEl.href;
+      if (e.key === "ArrowRight") location.href = nextEl.href;
+    });
+  }
+}
+
+
+/* ===========================================================
+   8-1. 귀신 도감 목록 카드의 글리치 (human-encyclopedia.html)
+
+   호버 그림과 똑같은 그림 두 장을 더 깔아 둡니다.
+   CSS 가 한 장은 청록, 한 장은 빨강으로 물들여 가로 띠 단위로
+   좌우로 어긋나게 움직입니다 (색이 갈라지는 RGB 분리 효과).
+
+   그림 주소와 잘라내기 위치(left/top)가 카드마다 달라서
+   CSS 만으로는 복제할 수 없어 여기서 복제합니다.
+   원본을 그대로 복제하므로 새로 내려받는 파일은 없습니다.
+   =========================================================== */
+function setupGlitch() {
+  var cards = document.querySelectorAll(".dogam-card.reveal");
+  if (cards.length === 0) return; // 이 페이지가 아니면 중단
+
+  cards.forEach(function (card) {
+    var hoverImg = card.querySelector(".dogam-photo-img.on-hover");
+    if (!hoverImg) return;
+
+    ["a", "b"].forEach(function (which) {
+      var layer = hoverImg.cloneNode(false);   // left/top 이 담긴 style 까지 함께 복사됩니다
+      layer.className = "dogam-photo-img on-hover glitch " + which;
+      layer.setAttribute("aria-hidden", "true");
+      layer.alt = "";
+      hoverImg.parentNode.insertBefore(layer, hoverImg.nextSibling);
+    });
+  });
+}
+
+
+/* ===========================================================
+   8-2. 착한 귀신상 상세 페이지 (ghost-archive-detail.html)
+
+   ★ 새 귀신을 추가하려면 ARCHIVE 에 한 덩어리만 더 적으면 됩니다.
+     art   : 그림을 얼마나 키워서 어디를 보여줄지 (그림창 319×609 기준 %)
+     tag   : 기사 맨 위의 수상 사유 한 줄
+     pages : 신문 기사 1면·2면. indent 는 왼쪽 화살표 자리를 비우는 들여쓰기.
+     modal : '자세히 보기' 팝업 내용
+   =========================================================== */
+var ARCHIVE = {
+  dongjasam: {
+    name: "동자삼",
+    image: "images/dj-illust.png",
+    art: "left: -4.99%; top: -4.82%; width: 212.48%; height: 139.06%;",
+    tag: "[돋보이는 자기 희생 정신]",
+    pages: [
+      {
+        headline: "“사라진 아들, 기적처럼 귀환… 정체는 ‘산삼 요괴’ 의혹”",
+        subhead: "강원도 산간 마을에서 기이한 사건 발생",
+        paras: [
+          "최근 한 산간 마을에서 죽은 줄 알았던 아이가 멀쩡한 모습으로 돌아오는 기이한 사건이 발생했다.",
+          "해당 가정은 병든 노모를 살리기 위해 한 승려의 말에 따라 아들을 삶는 극단적 선택을 한 것으로 알려졌다. 그러나 장례를 치르기도 전, 아이는 아무 일도 없었던 듯 귀가했다.",
+          "마을 주민들 사이에서는 “그 아이는 진짜가 아니었다”는 소문이 퍼지고 있다. 특히 일부 노인들은 “천 년 묵은 산삼이 아이로 변해 시험을 내린 것”이라며 이른바 ‘동자삼’ 설화를 언급하고 있다.",
+          "전문가들은 이를 민간 신앙과 전설이 결합된 사례로 보고 있으나, 일부는 실제로 설명되지 않는 치유 효과가 있었다는 점에서 추가 조사가 필요하다는 입장이다.",
+        ],
+      },
+      {
+        headline: "“밤마다 불 끄던 의문의 남성… 동굴 속 ‘거대 산삼’ 발견 후 재산 급증”",
+        subhead: "한 농가 며느리의 집요한 추적 끝에 밝혀진 정체",
+        indent: true,
+        paras: [
+          "충청 지역 한 농가에서 정체불명의 남성을 추적한 끝에 거대 산삼을 발견했다는 주장이 제기돼 관심이 모이고 있다.",
+          "해당 사건은 며느리 A씨가 밤마다 반복되는 이상 현상을 의심하면서 시작됐다. A씨에 따르면, 집안의 불이 매일 밤 원인 없이 꺼졌고 그때마다 한 남성이 근처를 서성이는 모습이 목격됐다.이상함을 느낀 A씨는 남성의 옷자락에 몰래 실을 묶어 이동 경로를 추적했다.실은 산속 깊은 동굴까지 이어졌고, 그 끝에서 발견된 것은—사람 크기를 훨씬 웃도는 대형 산삼이었다. A씨는 이를 채취해 집으로 가져왔고, 이후 해당 가정은 급격한 경제적 변화를 겪은 것으로 전해졌다.",
+          "마을 주민들은 “그 남자는 사람이 아니라 산삼이 변한 존재였을 것”이라며 이른바 ‘동자삼’ 설화를 언급하고 있다. 일부 주민은 “불을 끈 행위 자체가 인간을 시험하기 위한 것이었을 것”이라는 해석도 내놓고 있다.",
+          "전문가들은 이번 사례가 전통 설화와 민간 신앙이 반영된 이야기일 가능성이 높다고 보면서도, 실제 재산 증가와의 연관성에 대해서는 “설명하기 어려운 부분이 있다”고 밝혔다.",
+        ],
+      },
+    ],
+    modal: [
+      {
+        title: "정체",
+        items: [
+          "어린아이 크기의 산삼이 오랜 세월을 살아 영물화된 존재",
+          "주로 천 년 이상 생존하거나, 산신령의 주술로 각성",
+        ],
+      },
+      {
+        title: "변신 능력",
+        items: [
+          "인간으로 변신 가능 (주로 남자 아이 형태, 드물게 성인 남성)",
+          "여성으로 변신하는 사례는 보고되지 않음.",
+          "일반적으로 낮엔 인간, 밤엔 산삼으로 존재하며 단, 반대로 변하는 개체도 존재",
+        ],
+      },
+      {
+        title: "행동 및 성향",
+        items: [
+          "인간 친화적이며 호기심이 많음.",
+          "술, 팥죽 등 인간 음식 선호",
+          "인간 세계를 체험하는 것을 즐김.",
+          "일부 개체는 특정 목적 없이 자유롭게 인간 생활을 즐김.",
+        ],
+      },
+      {
+        title: "선별 기준",
+        items: [
+          "효성이 깊은 자, 지혜로운 자에게 접근하며 이후 희생, 판단력, 문제 해결 능력 등의 시험을 부여하고, 시험 통과 시: 재물, 건강, 생명 등의 복을 내림",
+        ],
+      },
+    ],
+  },
+
+  changbu: {
+    name: "창부대신",
+    image: "images/arc-changbu.png",
+    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    tag: "[탁월한 액운 차단 능력]",
+    pages: [
+      {
+        headline: "“굿판마다 나타난 흰옷의 악사… 그해 마을 흉년 사라져”",
+        subhead: "전남 일대에서 반복 목격, 주민들 “창부대신” 지목",
+        paras: [
+          "전남 일대 여러 마을에서 굿판이 벌어질 때마다 초대받지 않은 악사가 나타난다는 목격담이 잇따르고 있다.",
+          "주민들에 따르면 이 악사는 흰 도포에 갓을 쓰고 구슬 장식을 늘어뜨린 차림으로, 마당 한쪽에서 조용히 피리를 불다 굿이 끝나면 인사 없이 사라진다. 얼굴을 또렷이 기억하는 사람은 아무도 없었다.",
+          "특이한 점은 그가 다녀간 마을마다 그해 흉년과 역병이 비켜 갔다는 것이다. 한 마을 이장은 “그 소리가 들리는 동안은 아무도 아프지 않았다”고 말했다.",
+          "민속학계는 이를 광대와 악사의 수호신으로 알려진 ‘창부대신’ 신앙이 구전 속에 남은 형태로 보고 있다. 다만 여러 마을에서 같은 날 목격됐다는 증언에 대해서는 설명을 내놓지 못하고 있다.",
+        ],
+      },
+      {
+        headline: "“광대 없는 빈 마당에서 들려온 피리 소리… 돌던 역병 멎어”",
+        subhead: "의원들 “원인을 설명하기 어렵다”",
+        indent: true,
+        paras: [
+          "역병이 번지던 한 고을에서 사흘 밤 내리 피리 소리가 들렸고, 그 뒤 환자가 급격히 줄었다는 기록이 전해져 관심이 모이고 있다.",
+          "당시 마을은 광대패의 출입을 금하고 있었다. 소리가 난 마당에는 아무도 없었으며, 다음 날 아침 멍석 위에 놓인 낡은 피리 한 자루만이 발견됐다는 것이 주민들의 공통된 증언이다.",
+          "주민들은 “창부대신이 대신 놀아 주고 액운을 거둬 간 것”이라고 입을 모은다. 실제로 이 마을에서는 지금도 굿을 시작하기 전에 빈 자리 하나를 비워 두는 관습이 남아 있다.",
+          "의원들은 계절 변화에 따른 자연적 소강 가능성을 제시하면서도, 인접 고을과의 뚜렷한 차이에 대해서는 “설명하기 어려운 부분이 있다”고 밝혔다.",
+        ],
+      },
+    ],
+    modal: [
+      {
+        title: "정체",
+        items: [
+          "광대·악사·예인을 지키는 무속의 신격",
+          "떠돌이 예인이 죽은 뒤 신으로 모셔진 것으로 전해짐",
+        ],
+      },
+      {
+        title: "능력",
+        items: [
+          "소리로 액운을 흩어 놓음.",
+          "역병·흉년·구설 등 마을 단위의 재앙을 미리 걷어 감.",
+          "얼굴이 기억되지 않으며, 같은 시각 여러 곳에서 목격되기도 함.",
+        ],
+      },
+      {
+        title: "행동 및 성향",
+        items: [
+          "흥이 있는 자리를 좋아하며 먼저 나서지 않음.",
+          "사례를 받지 않고 이름을 밝히지 않음.",
+          "굿·잔치·놀이판에 스스로 찾아옴.",
+        ],
+      },
+      {
+        title: "선별 기준",
+        items: [
+          "재주를 뽐내기보다 함께 즐기는 자리를 만든 사람에게 나타나며, 흥을 나눌 줄 아는 마을에 한 해 동안의 액운을 막아 주는 복을 내림",
+        ],
+      },
+    ],
+  },
+
+  sinjikke: {
+    name: "신지께",
+    image: "images/arc-sinjikke.png",
+    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    tag: "[모범적인 인명 구조 활동]",
+    pages: [
+      {
+        headline: "“풍랑 직전 뱃머리 막아선 인어… 어선 열두 척 전원 귀항”",
+        subhead: "거문도 어민들 “신지께가 길을 막았다”",
+        paras: [
+          "남해 먼바다에서 조업 중이던 어선들이 정체불명의 존재에 가로막혀 회항한 뒤, 몇 시간 만에 그 해역에 큰 풍랑이 몰아친 사실이 확인됐다.",
+          "어민들의 증언은 한결같았다. 긴 머리에 흰 저고리를 입은 여인의 상반신이 물 위로 솟아 뱃머리 앞을 가로막고, 손을 들어 뭍 쪽을 가리켰다는 것이다. 허리 아래는 물고기의 지느러미였다고 한다.",
+          "그물을 거두고 돌아선 열두 척은 모두 무사했다. 반면 “미신”이라며 조업을 이어간 배 한 척은 돛대를 잃고 간신히 귀항했다.",
+          "이 지역에서는 예부터 이 존재를 ‘신지께’라 불러 왔다. 어촌계는 “해를 끼친 적이 한 번도 없다”며 신지께를 보면 즉시 뱃머리를 돌린다는 오랜 규칙을 다시 확인했다.",
+        ],
+      },
+      {
+        headline: "“그물에 걸린 신지께 풀어 준 어부, 이듬해 최대 어획”",
+        subhead: "“해치지 않았다” 목격자 증언 잇따라",
+        indent: true,
+        paras: [
+          "지난 겨울 그물에 걸린 신지께를 바다로 돌려보낸 어부 B씨의 사연이 뒤늦게 알려지며 화제가 되고 있다.",
+          "B씨에 따르면 당시 그물에는 사람의 상체를 한 존재가 걸려 있었고, 겁에 질린 선원들이 작살을 들었으나 B씨가 이를 막고 그물을 직접 끊었다고 한다. 풀려난 존재는 물속으로 들어가기 전 잠시 배를 돌아보았다는 것이 선원들의 공통된 진술이다.",
+          "이듬해 B씨의 배는 같은 해역에서 유례없는 어획량을 기록했다. 인근 배들이 빈 그물을 올리는 동안에도 B씨의 그물만은 가득 찼다는 증언이 이어지고 있다.",
+          "어촌계는 “바다가 보답한 것”이라 해석하고 있으나, 수산 당국은 해류 변화에 따른 어군 이동 가능성을 함께 살피고 있다고 밝혔다.",
+        ],
+      },
+    ],
+    modal: [
+      {
+        title: "정체",
+        items: [
+          "남해 먼바다에 사는 인어 형상의 바다 영물",
+          "상반신은 사람, 하반신은 물고기의 모습",
+        ],
+      },
+      {
+        title: "능력",
+        items: [
+          "풍랑·해일 등 바다의 변고를 미리 알아챔.",
+          "뱃길을 막아서는 방식으로 위험을 알림.",
+          "말을 하지 않고 몸짓으로만 뜻을 전함.",
+        ],
+      },
+      {
+        title: "행동 및 성향",
+        items: [
+          "사람을 해치지 않으며 먼저 다가오지도 않음.",
+          "안개 낀 새벽과 해 질 무렵에 주로 나타남.",
+          "붙잡히면 저항하지 않고 가만히 있음.",
+        ],
+      },
+      {
+        title: "선별 기준",
+        items: [
+          "바다를 함부로 대하지 않는 사람, 잡은 것을 되돌려 줄 줄 아는 사람 앞에 나타나며 그 배에 한 해 동안 무사 항해와 넉넉한 어획을 내림",
+        ],
+      },
+    ],
+  },
+
+  geogugoe: {
+    name: "거구괴&청의동자",
+    image: "images/arc-geogugoe.png",
+    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    tag: "[위기 상황 속 기지 발휘]",
+    pages: [
+      {
+        headline: "“아이를 삼킨 거대한 입… 그러나 아이는 멀쩡히 걸어 나왔다”",
+        subhead: "깊은 산길에서 벌어진 기이한 사건",
+        paras: [
+          "산길에서 실종됐던 아이가 하루 만에 아무런 상처 없이 돌아오는 일이 벌어져 주민들이 술렁이고 있다.",
+          "함께 있던 일행은 “산 전체가 입처럼 벌어졌고 아이가 그 안으로 빨려 들어갔다”고 진술했다. 거대한 이빨과 두 눈을 보았다는 증언도 여럿 나왔다.",
+          "돌아온 아이는 “안은 어둡지 않았고, 푸른 옷을 입은 또래 아이가 손을 잡고 길을 알려 줬다”고 말했다. 주민들은 이 아이를 ‘청의동자’라 부르고 있다.",
+          "민속학계는 거구괴를 다른 세계로 통하는 문으로, 청의동자를 그 문을 지키는 길잡이로 보는 해석을 내놓고 있다. 삼켜진 사람이 해를 입었다는 기록은 아직 발견되지 않았다.",
+        ],
+      },
+      {
+        headline: "“괴물의 입속에서 길 잃은 이들 잇따라 구조… 푸른 옷 아이의 정체는”",
+        subhead: "“거구괴는 문(門), 청의동자는 길잡이” 해석 제기",
+        indent: true,
+        paras: [
+          "산에서 조난된 사람들이 거구괴의 입으로 들어갔다가 엉뚱한 마을 어귀로 나왔다는 진술이 잇따르고 있다.",
+          "생환자들의 증언에는 공통점이 있다. 입안은 캄캄하지 않았고, 푸른 옷을 입은 아이가 앞서 걸으며 뒤를 돌아보았다는 것이다. 아이는 말이 없었고, 갈림길마다 한쪽을 손으로 가리켰다고 한다.",
+          "다만 아이를 따라가지 않고 제 길을 고집한 사람은 며칠씩 헤매다 원래 자리로 되돌아왔다는 진술도 함께 나온다. 주민들은 “묻지 말고 따라가야 한다”고 입을 모은다.",
+          "전문가들은 거구괴의 위협적인 겉모습과 실제 역할이 정반대라는 점에 주목하고 있다. 한 연구자는 “겁을 주어 함부로 산에 들지 못하게 하려는 장치였을 것”이라고 설명했다.",
+        ],
+      },
+    ],
+    modal: [
+      {
+        title: "정체",
+        items: [
+          "거구괴: 산 하나를 삼킬 만큼 큰 입을 가진 존재",
+          "청의동자: 그 입안에서 길을 안내하는 푸른 옷의 아이",
+          "둘은 늘 함께 나타나며 따로 목격된 기록이 없음.",
+        ],
+      },
+      {
+        title: "능력",
+        items: [
+          "삼킨 사람을 다른 곳으로 옮겨 놓음.",
+          "안으로 들어간 사람은 시간이 거의 흐르지 않은 채 돌아옴.",
+          "청의동자는 말 없이 손짓만으로 길을 일러 줌.",
+        ],
+      },
+      {
+        title: "행동 및 성향",
+        items: [
+          "겉모습은 험하나 사람을 물거나 씹지 않음.",
+          "길을 잃은 사람, 해가 진 뒤 산에 남은 사람 앞에 나타남.",
+          "따라오지 않는 사람은 억지로 끌지 않음.",
+        ],
+      },
+      {
+        title: "선별 기준",
+        items: [
+          "두려움 속에서도 안내를 믿고 따르는 사람을 무사히 내보내며, 산을 함부로 헤치지 않은 사람에게는 지름길과 산의 은덕을 내림",
+        ],
+      },
+    ],
+  },
+
+  uureong: {
+    name: "우렁각시",
+    image: "images/arc-uureong.png",
+    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    tag: "[묵묵한 헌신의 표본]",
+    pages: [
+      {
+        headline: "“빈집에 차려진 밥상… 주인 없는 부엌의 정체”",
+        subhead: "홀로 살던 농부 A씨 집에서 반복 발생",
+        paras: [
+          "홀로 농사를 짓던 A씨의 집에서 매일 따뜻한 밥상이 차려져 있다는 진정이 접수돼 이웃들의 관심이 쏠리고 있다.",
+          "A씨에 따르면 들일을 마치고 돌아오면 밥과 국이 김을 내고 있었고, 빨래와 마당까지 정돈돼 있었다. 집에는 아무도 드나든 흔적이 없었다.",
+          "이웃들은 A씨가 며칠 전 논에서 주워 와 물독에 넣어 둔 커다란 우렁이를 지목하고 있다. 밥상이 차려지기 시작한 시점과 정확히 일치한다는 것이다.",
+          "민속학계는 이를 ‘우렁각시’ 설화의 전형적인 전개로 보고 있다. 다만 설화에서 우렁각시는 정체가 드러나는 순간 떠나는 것으로 전해져, 이후 상황에 대한 우려도 함께 나오고 있다.",
+        ],
+      },
+      {
+        headline: "“우렁 껍데기 사라진 뒤 여인도 사라져”",
+        subhead: "“기다리지 못한 것이 화근” 주민들 탄식",
+        indent: true,
+        paras: [
+          "밥상의 주인을 확인하려다 여인을 잃었다는 A씨의 사연이 알려지며 안타까움을 사고 있다.",
+          "A씨는 부엌에 숨어 있다가 물독에서 나오는 여인을 발견하고 그 자리에서 껍데기를 감췄다고 진술했다. 여인은 “아직 사흘이 남았다”고 말했으나 A씨는 듣지 않았다는 것이다.",
+          "이튿날 아침 물독의 껍데기는 사라졌고 여인도 함께 자취를 감췄다. 마당에는 마지막으로 차려진 밥상 하나만 식은 채 남아 있었다고 전해진다.",
+          "주민들은 “조금만 더 기다렸으면 될 일”이라며 안타까워하고 있다. 이 마을에서는 지금도 논에서 큰 우렁이를 보면 그대로 두고 지나가는 관습이 남아 있다.",
+        ],
+      },
+    ],
+    modal: [
+      {
+        title: "정체",
+        items: [
+          "오래 묵은 우렁이가 사람의 모습을 얻은 존재",
+          "논·물독 등 물이 고인 자리에 머무름.",
+        ],
+      },
+      {
+        title: "변신 능력",
+        items: [
+          "사람이 없을 때에만 여인의 모습으로 나옴.",
+          "껍데기를 잃으면 사람의 모습을 유지하지 못함.",
+          "정해진 날수를 채워야 완전히 사람이 될 수 있음.",
+        ],
+      },
+      {
+        title: "행동 및 성향",
+        items: [
+          "생색을 내지 않고 살림을 돌봄.",
+          "정체를 드러내는 것을 극도로 꺼림.",
+          "먼저 말을 걸지 않으며, 들키면 곧 떠남.",
+        ],
+      },
+      {
+        title: "선별 기준",
+        items: [
+          "작은 생물을 함부로 대하지 않은 사람의 집에 머무르며, 끝까지 재촉하지 않고 기다린 사람에게만 남아 평생의 살림과 복을 함께함",
+        ],
+      },
+    ],
+  },
+};
+
+function setupArchiveDetail() {
+  var nameBox = document.getElementById("arc-name");
+  if (!nameBox) return; // 이 페이지가 아니면 중단
+
+  var key = new URLSearchParams(location.search).get("ghost") || "dongjasam";
+  if (!ARCHIVE[key]) key = "dongjasam";
+  var ghost = ARCHIVE[key];
+
+  // 아래쪽 '이전 / 다음' 줄 (목록에 놓인 순서대로).
+  // 이 페이지는 본문 옆 화살표로 기사 1면·2면을 넘기기 때문에,
+  // 키보드 ← → 가 어느 쪽을 뜻하는지 헷갈리지 않도록 여기서는 쓰지 않습니다.
+  buildPager({
+    order: ["dongjasam", "changbu", "sinjikke", "geogugoe", "uureong"],
+    key: key,
+    page: "ghost-archive-detail.html",
+    noun: "귀신",
+    nameOf: function (k) { return ARCHIVE[k].name; },
+    keys: false,
+  });
+
+  document.title = ghost.name + " — 착한 귀신상";
+  nameBox.textContent = ghost.name;
+  document.getElementById("arc-tag").textContent = ghost.tag;
+
+  var illust = document.getElementById("arc-illust");
+  illust.src = ghost.image;
+  illust.alt = ghost.name + " 일러스트";
+  illust.setAttribute("style", ghost.art);
+
+  // 신문 기사 1면 · 2면
+  ghost.pages.forEach(function (page, i) {
+    var box = document.getElementById("dj-page-" + (i + 1));
+    if (!box) return;
+
+    var h3 = document.createElement("h3");
+    h3.className = "article-headline";
+    h3.textContent = page.headline;
+
+    var sub = document.createElement("p");
+    sub.className = "article-subhead";
+    sub.textContent = page.subhead;
+
+    var line = document.createElement("hr");
+    line.className = "rule thin";
+
+    var text = document.createElement("div");
+    text.className = "article-text" + (page.indent ? " indent" : "");
+    page.paras.forEach(function (para) {
+      var p = document.createElement("p");
+      p.textContent = para;
+      text.appendChild(p);
+    });
+
+    box.appendChild(h3);
+    box.appendChild(sub);
+    box.appendChild(line);
+    box.appendChild(text);
+  });
+
+  // '자세히 보기' 팝업
+  var modal = document.getElementById("dj-modal");
+  if (modal) modal.setAttribute("aria-label", ghost.name + " 자세히 보기");
+
+  var modalBody = document.getElementById("arc-modal-body");
+  ghost.modal.forEach(function (group) {
+    var section = document.createElement("section");
+
+    var h4 = document.createElement("h4");
+    h4.textContent = group.title;
+
+    var ul = document.createElement("ul");
+    group.items.forEach(function (item) {
+      var li = document.createElement("li");
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+
+    section.appendChild(h4);
+    section.appendChild(ul);
+    modalBody.appendChild(section);
+  });
+}
+
+
+/* ===========================================================
    9. 팝업 열고 닫기
 
    data-modal-open="아이디" 가 붙은 버튼을 누르면
@@ -1405,7 +1875,7 @@ function setupModals() {
 
 
 /* ===========================================================
-   10. 동자삼 기사 넘기기 (ghost-archive-dongjasam.html)
+   10. 기사 넘기기 (ghost-archive-detail.html)
    본문 옆 화살표로 1면 ↔ 2면을 오갑니다.
    =========================================================== */
 function setupStoryPages() {
@@ -1434,6 +1904,8 @@ function setupStoryPages() {
    (각 함수는 자기 페이지가 아니면 알아서 중단됩니다.)
    =========================================================== */
 document.addEventListener("DOMContentLoaded", function () {
+  setupGlitch();
+  setupArchiveDetail();   // 기사·팝업 내용을 먼저 채운 뒤에 넘기기를 붙입니다
   setupModals();
   setupStoryPages();
   setupGhostDetail();

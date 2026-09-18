@@ -1672,11 +1672,140 @@ body.dogam-page {
 /* 늘어진 노리개가 아랫줄 카드에 가리지 않도록 위로 올립니다 */
 .dogam-card.reveal:hover { z-index: 5; }
 
+
+/* =========================================================
+   카드 호버 — 글리치 (신호가 튀는 연출)
+
+   호버 그림과 똑같은 그림 두 장을 JS(setupGlitch)가 더 깔아 둡니다.
+   한 장은 청록, 한 장은 붉은색으로 물들이고 screen 으로 겹쳐서
+   가로 띠 단위로 좌우로 어긋나게 합니다. 색이 어긋나 보이는
+   RGB 분리 효과가 이렇게 만들어집니다.
+
+   steps(1, end) 를 쓰는 이유: 부드럽게 미끄러지면 글리치가 아니라
+   그냥 움직임이 됩니다. 프레임이 뚝뚝 끊겨야 신호 오류처럼 보입니다.
+
+   한 바퀴는 2.8초이고 그 안에서 두 번만 튑니다.
+   한 번 튈 때는 세게 흔들린 뒤(약 340ms) 어긋남을 점점 줄이면서
+   서서히 사라집니다(약 220ms). 그래서 한 번에 0.5초 넘게 이어지고,
+   나머지 시간(1.7초 남짓)은 완전히 꺼져 있습니다.
+   끊기는 움직임은 steps 로, 사라지는 여운은 opacity 를 따로
+   linear 로 돌려서 만듭니다.
+   ========================================================= */
+
+/* 겹친 그림이 페이지 배경과 섞이지 않고 사진 칸 안에서만 섞이게 가둡니다 */
+.dogam-photo { isolation: isolate; }
+
+.dogam-photo-img.glitch {
+  /* 이 그림들은 바탕이 흰색이라 screen 으로 겹치면 아무것도 안 보입니다.
+     multiply 는 흰 바탕을 그대로 두고 머리카락·옷처럼 어두운 곳에서만
+     색이 갈라져, 인쇄가 어긋난 것 같은 글리치가 됩니다. */
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  /* 평소엔 아예 접어 둡니다 (호버 전에는 보이지 않습니다) */
+  clip-path: inset(0 0 100% 0);
+}
+/* sepia 로 한 가지 색조로 만든 뒤 hue-rotate 로 원하는 색에 맞춥니다.
+   원본 그림 색이 무엇이든 청록/빨강으로 확실히 갈라집니다. */
+.dogam-photo-img.glitch.a { filter: sepia(1) hue-rotate(150deg) saturate(3.5) brightness(1.1); }
+.dogam-photo-img.glitch.b { filter: sepia(1) hue-rotate(-40deg) saturate(3.5) brightness(1.1); }
+
+.dogam-card.reveal:hover .dogam-photo-img.glitch.a {
+  animation: dogam-glitch-a 2.8s steps(1, end) infinite,
+             dogam-glitch-fade 2.8s linear infinite;
+}
+.dogam-card.reveal:hover .dogam-photo-img.glitch.b {
+  animation: dogam-glitch-b 2.8s steps(1, end) infinite,
+             dogam-glitch-fade 2.8s linear infinite;
+}
+
+/* 여운 — 세게 흔들린 뒤 서서히 옅어집니다. 두 층이 함께 씁니다.
+   12%→20% 와 64%→72% 구간이 사라지는 꼬리(각 220ms)입니다. */
+@keyframes dogam-glitch-fade {
+  0%, 12%   { opacity: 1; }
+  20%, 51%  { opacity: 0; }
+  52%, 64%  { opacity: 1; }
+  72%, 100% { opacity: 0; }
+}
+
+/* 청록 — 위쪽 띠 위주. 마지막 프레임은 넓은 띠에 작은 어긋남이라
+   흔들림이 잦아드는 것처럼 보입니다. */
+@keyframes dogam-glitch-a {
+  0%   { clip-path: inset(8% 0 74% 0);  transform: translateX(12px); }
+  4%   { clip-path: inset(44% 0 40% 0); transform: translateX(-14px); }
+  8%   { clip-path: inset(68% 0 14% 0); transform: translateX(8px); }
+  12%  { clip-path: inset(20% 0 40% 0); transform: translateX(-4px); }
+  20%  { clip-path: inset(0 0 100% 0);  transform: translateX(0); }
+  52%  { clip-path: inset(26% 0 58% 0); transform: translateX(-11px); }
+  56%  { clip-path: inset(60% 0 26% 0); transform: translateX(13px); }
+  60%  { clip-path: inset(14% 0 72% 0); transform: translateX(-7px); }
+  64%  { clip-path: inset(34% 0 30% 0); transform: translateX(3px); }
+  72%, 100% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+}
+
+/* 빨강 — 아래쪽 띠 위주, 반대쪽으로 밀림 */
+@keyframes dogam-glitch-b {
+  0%   { clip-path: inset(24% 0 60% 0); transform: translateX(-13px); }
+  4%   { clip-path: inset(62% 0 22% 0); transform: translateX(11px); }
+  8%   { clip-path: inset(10% 0 78% 0); transform: translateX(-6px); }
+  12%  { clip-path: inset(46% 0 18% 0); transform: translateX(5px); }
+  20%  { clip-path: inset(0 0 100% 0);  transform: translateX(0); }
+  52%  { clip-path: inset(12% 0 72% 0); transform: translateX(14px); }
+  56%  { clip-path: inset(50% 0 36% 0); transform: translateX(-9px); }
+  60%  { clip-path: inset(74% 0 10% 0); transform: translateX(6px); }
+  64%  { clip-path: inset(28% 0 34% 0); transform: translateX(-3px); }
+  72%, 100% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+}
+
+/* 주사선 — 사진 위에 옅은 가로줄을 깔고 천천히 흘려보냅니다 */
+.dogam-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.11) 0 1px,
+    transparent 1px 3px
+  );
+  transition: opacity var(--reveal-time) ease;
+}
+.dogam-card.reveal:hover .dogam-photo::after {
+  opacity: 1;
+  animation: dogam-scan 2.6s linear infinite;
+}
+@keyframes dogam-scan {
+  from { background-position-y: 0; }
+  to   { background-position-y: 60px; }
+}
+
+/* 이름도 같이 튑니다 — 글자 그림자를 청록/빨강으로 갈라 놓습니다 */
+.dogam-card.reveal:hover .name-hover {
+  animation: dogam-name-glitch 2.8s steps(1, end) infinite;
+}
+@keyframes dogam-name-glitch {
+  0%   { text-shadow: -3px 0 #ff0040, 3px 0 #00e5ff; transform: translateX(2px); }
+  4%   { text-shadow: 3px 0 #ff0040, -3px 0 #00e5ff; transform: translateX(-2px); }
+  8%   { text-shadow: -2px 0 #ff0040, 2px 0 #00e5ff; transform: translateX(1px); }
+  12%  { text-shadow: -1px 0 rgba(255, 0, 64, 0.6), 1px 0 rgba(0, 229, 255, 0.6); transform: translateX(0); }
+  20%  { text-shadow: none; transform: translateX(0); }
+  52%  { text-shadow: 3px 0 #ff0040, -3px 0 #00e5ff; transform: translateX(-2px); }
+  56%  { text-shadow: -3px 0 #ff0040, 3px 0 #00e5ff; transform: translateX(2px); }
+  60%  { text-shadow: 2px 0 #ff0040, -2px 0 #00e5ff; transform: translateX(-1px); }
+  64%  { text-shadow: 1px 0 rgba(255, 0, 64, 0.6), -1px 0 rgba(0, 229, 255, 0.6); transform: translateX(0); }
+  72%, 100% { text-shadow: none; transform: translateX(0); }
+}
+
 /* 애니메이션을 줄이도록 설정한 사용자에게는 즉시 전환하고,
-   노리개도 흔들지 않습니다. */
+   노리개도 흔들지 않고, 글리치도 재생하지 않습니다. */
 @media (prefers-reduced-motion: reduce) {
   .dogam-card { --reveal-time: 0ms; }
   .gd-norigae { animation: none; }
+  .dogam-card.reveal:hover .dogam-photo-img.glitch.a,
+  .dogam-card.reveal:hover .dogam-photo-img.glitch.b,
+  .dogam-card.reveal:hover .dogam-photo::after,
+  .dogam-card.reveal:hover .name-hover { animation: none; }
+  .dogam-photo-img.glitch { display: none; }
 }
 
 /* 그리드 아래 검정 여백에 얹힌 흐릿한 손글씨 낙서 */
@@ -1942,7 +2071,9 @@ body.gd-page {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-bottom: 20px;
+  /* 맨 아래 20px 은 오방색이 비치지 않도록 검정으로 덮습니다.
+     (padding 이면 배경 줄무늬가 그대로 보여서, 같은 두께의 테두리로 바꿨습니다.) */
+  border-bottom: 20px solid #000;
   /* 세로 오방색 줄무늬 — 7색 × 29.43px = 206px 한 묶음이 반복됩니다.
      상자와 상자 사이 20px 틈으로 이 줄무늬가 비쳐 보입니다. */
   background: repeating-linear-gradient(
@@ -2175,10 +2306,10 @@ body.gd-page {
   display: flex;
   align-items: stretch;   /* 가운데 흰 칸이 버튼과 같은 높이가 되도록 */
 }
-/* 두 버튼 사이를 메우는 흰 칸 */
+/* 두 버튼 사이를 메우는 칸 */
 .gd-pager-fill {
   flex: 1 1 auto;
-  background: #fff;
+  background: #000;
   /* stroke 는 SVG 전용이라 <span> 에는 듣지 않습니다. HTML 요소는 border 를 씁니다.
      굵기는 이 페이지의 다른 상자들(공존 방법·주의 사항 등)과 같은 2px 검정입니다. */
   border: 2px solid #000;
@@ -2200,6 +2331,18 @@ body.gd-page {
 .gd-nav .name { font-weight: 700; }
 .gd-nav:hover,
 .gd-nav:focus-visible { background: #1c1c1c; }
+
+/* 귀신 도감 상세는 칸 사이가 20px 씩 벌어지는 틀(.gd-wrap)이 간격을 만들지만,
+   착한 귀신상·유명 한국 괴물 상세는 그런 틀이 없어 여기서 위 간격을 줍니다. */
+.archive-story .gd-pager { margin-top: 48px; }
+/* 유명 한국 괴물 상세는 한지 두 겹이 absolute 로 깔려 있어서,
+   자리를 잡아 주지 않으면 이 줄이 한지 뒤로 들어가 안 보입니다.
+   머리말·본문·아래쪽과 같은 층(z-index 1)에 올립니다. */
+.fg-page .gd-pager {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+}
 
 @media (max-width: 620px) {
   .gd-nav { padding: 14px 16px; font-size: 16px; gap: 8px; }
@@ -2274,9 +2417,27 @@ body.fg-page {
   position: relative;
   max-width: 1440px;
   margin: 0 auto;
-  border: 6px solid #000;
+  /* 실제 테두리는 아래 ::before의 붓 자국 프레임 이미지로 그립니다.
+     border는 색을 투명으로만 두어 자리(레이아웃 폭)만 차지하게 합니다. */
+  border: 6px solid transparent;
   padding-bottom: 20px;
   overflow: hidden;   /* 배경 두 겹과 세로 획이 밖으로 나가지 않게 */
+}
+/* 가장 바깥 테두리 — 곧은 선 대신 붓으로 그은 듯 울퉁불퉁한 사각 테두리.
+   nominal 1440×1149 기준으로 만든 SVG라, 그 비율에서 벗어난 화면 폭에서는
+   살짝 늘어나 보일 수 있습니다(이 컴포넌트의 다른 장식들도 같은 방식입니다). */
+.fg-wrap::before {
+  content: "";
+  position: absolute;
+  left: -7.2px;
+  top: -7.2px;
+  right: -7.2px;
+  bottom: -7.2px;
+  background-image: url(../images/fg-frame-wrap.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 5;   /* .fg-rule(2)·헤더/본문/하단(1)·한지(0) 전부보다 위 */
 }
 
 /* --- 한지 배경 두 겹 (시안: 1618×1083, 왼쪽 -98 / 위 -34) --- */
@@ -2300,17 +2461,27 @@ body.fg-page {
 
 /* --- 두 칸을 가르는 세로 획 ---
    곧은 선이 아니라 손으로 그은 획이라, 굵기가 들쭉날쭉한 원본 SVG를
-   90도 돌려 세웁니다. 6px 폭 안에서만 보이도록 잘라 씁니다. */
+   90도 돌려 세웁니다.
+   원본 SVG의 높이(6px)를 그대로 쓰면 붓의 굵기 변화가 실제 화면에서는
+   1~2px 안에 뭉개져서 그냥 매끈한 직선처럼 보입니다 (안티에일리어싱 때문).
+   그래서 SVG 자체의 높이를 14px로 키워서 붓터치의 울퉁불퉁함이 실제로
+   눈에 보이게 합니다. */
 .fg-rule {
   position: absolute;
   /* 90도 회전은 요소 "중심"을 기준으로 돕니다.
-     세로 획이 그림 칸(716)과 정보 칸 경계에 서도록,
-     가로로 누운 상태의 중심을 그 자리에 맞춥니다: 713 - 1002/2 = 212 */
-  left: 212px;
+     그림 칸(716px)에는 네 모서리를 잘라내는 검정 덮개(.cut)가 있는데,
+     이 덮개가 그림 칸 안쪽 692~716px 구간은 늘 검게 덮고 있어서,
+     원래 중심(713)에 두면 이 획이 그 덮개 속에 파묻혀 위쪽(그림+정보표) 구간에서는
+     전혀 보이지 않습니다.
+     그래서 중심을 정보 칸이 시작되는 경계(716)로 옮겨, 획의 절반은 덮개 속에
+     (안 보여도 무방) 절반은 정보 칸의 한지 위로 나오게 합니다.
+     정보 칸에는 이 덮개가 없어서 위쪽·아래쪽 구간 모두에서 항상 보입니다:
+     716 - 1002/2 = 215 */
+  left: 215px;
   top: 127px;           /* 머리말 아래부터 */
   bottom: 0;
   width: 1002px;
-  height: 6px;
+  height: 14px;
   margin: auto 0;       /* 위아래 남는 만큼 가운데로 */
   transform: rotate(90deg);
   z-index: 2;
@@ -2326,11 +2497,25 @@ body.fg-page {
 .fg-header {
   position: relative;
   height: 127px;
-  border: 10px solid #000;
+  /* 실제 테두리는 ::before의 붓 자국 프레임 이미지로 그립니다 (아래) */
+  border: 10px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+.fg-header::before {
+  content: "";
+  position: absolute;
+  left: -9.9px;
+  top: -9.9px;
+  right: -9.9px;
+  bottom: -9.9px;
+  background-image: url(../images/fg-frame-header.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: -1;   /* 이 칸 안에서는 뒤로 — 아이콘·제목 글자가 위에 오도록 */
 }
 .fg-title {
   /* 피그마 원본은 'ON 월인석보' 손글씨체(웹폰트가 없어 대체) */
@@ -2445,7 +2630,22 @@ body.fg-page {
 .fg-bottom {
   display: flex;
   align-items: stretch;
-  border: 10px solid #000;
+  /* 실제 테두리는 ::before의 붓 자국 프레임 이미지로 그립니다 (아래) */
+  border: 10px solid transparent;
+  overflow: hidden;
+}
+.fg-bottom::before {
+  content: "";
+  position: absolute;
+  left: -9.9px;
+  top: -9.9px;
+  right: -9.9px;
+  bottom: -9.9px;
+  background-image: url(../images/fg-frame-bottom.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: -1;   /* 이 칸 안에서는 뒤로 — 글과 그래프가 위에 오도록 */
 }
 .fg-texts {
   flex: 1 1 0;

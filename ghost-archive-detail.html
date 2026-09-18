@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>착한 귀신상</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<!--
+  착한 귀신상 상세 (Figma "Desktop - 109", node 356:14710)
+
+  왼쪽은 전통 모서리 장식을 두른 일러스트, 오른쪽은 신문 기사 형식입니다.
+  주소 뒤에 ?ghost=... 를 붙이면 그 귀신의 내용이 채워집니다.
+    예) ghost-archive-detail.html?ghost=dongjasam
+
+  귀신별 글·그림·팝업 내용은 js/script.js 의 ARCHIVE 목록에 들어 있습니다.
+-->
+<body class="archive-detail archive-story">
+  <div class="archive-wrap">
+
+    <!-- 헤더 -->
+    <header class="archive-header">
+      <a class="icon left" href="ghost-archive.html" aria-label="목록으로 돌아가기">
+        <img src="images/arc-icon-back.svg" alt="" />
+      </a>
+      <h1 class="archive-brand gradient-text">착한 귀신상</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/arc-icon-menu.svg" alt="" />
+      </button>
+    </header>
+
+    <!-- 상단 구름 장식 (좌우) -->
+    <img class="cloud-ornament left" src="images/arc-cloud-l.svg" alt="" aria-hidden="true" />
+    <img class="cloud-ornament right" src="images/arc-cloud-r.svg" alt="" aria-hidden="true" />
+
+    <!-- 큰 제목 -->
+    <h2 class="archive-title gradient-text" id="arc-name">귀신</h2>
+
+    <!-- 본문: 왼쪽 일러스트 + 오른쪽 기사 -->
+    <div class="archive-body">
+
+      <div class="archive-left">
+        <figure class="archive-figure">
+          <img class="corner tl" src="images/dj-corner-l.svg" alt="" aria-hidden="true" />
+          <img class="corner tr" src="images/dj-corner-r.svg" alt="" aria-hidden="true" />
+          <img class="corner bl" src="images/dj-corner-l.svg" alt="" aria-hidden="true" />
+          <img class="corner br" src="images/dj-corner-r.svg" alt="" aria-hidden="true" />
+          <span class="crop">
+            <img id="arc-illust" src="" alt="" />
+          </span>
+        </figure>
+
+        <button class="detail-btn" type="button" data-modal-open="dj-modal">
+          <span class="gradient-text">자세히 보기</span>
+        </button>
+      </div>
+
+      <article class="archive-article">
+        <hr class="rule thick" />
+        <p class="article-tag" id="arc-tag"></p>
+        <hr class="rule thin" />
+
+        <!-- 1면 / 2면. 안쪽 글은 JS가 채웁니다. -->
+        <div class="article-page" id="dj-page-1"></div>
+        <div class="article-page" id="dj-page-2" hidden></div>
+
+        <p class="archive-pager"><span id="dj-pager">1</span>/2</p>
+      </article>
+
+    </div>
+
+    <!-- 앞/뒤 귀신으로 넘어가는 줄 (귀신 도감 상세와 같은 모양).
+         주소와 이름은 JS 가 채웁니다. 목록에 놓인 순서대로 넘어가고,
+         끝에서는 처음으로 돌아옵니다. -->
+    <nav class="gd-pager" aria-label="다른 귀신 보기">
+      <a class="gd-nav prev" id="gd-prev" href="#">
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+        <span class="dir">이전</span>
+        <span class="name" id="gd-prev-name"></span>
+      </a>
+
+      <!-- 두 버튼 사이를 메우는 칸 -->
+      <span class="gd-pager-fill" aria-hidden="true"></span>
+
+      <a class="gd-nav next" id="gd-next" href="#">
+        <span class="name" id="gd-next-name"></span>
+        <span class="dir">다음</span>
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+      </a>
+    </nav>
+
+    <!-- 기사 넘기기. 1면에서는 오른쪽 화살표, 2면에서는 왼쪽 화살표가 보입니다. -->
+    <button class="story-arrow next" id="dj-next" type="button" aria-label="다음 기사">
+      <img src="images/dj-next.svg" alt="" aria-hidden="true" />
+    </button>
+    <button class="story-arrow prev" id="dj-prev" type="button" aria-label="이전 기사" hidden>
+      <img src="images/dj-next.svg" alt="" aria-hidden="true" />
+    </button>
+
+  </div>
+
+  <!--
+    '자세히 보기' 팝업 (Figma "Desktop - 128", node 464:11601)
+    <dialog> 를 쓰면 Esc 로 닫기와 초점 가두기를 브라우저가 알아서 해줍니다.
+  -->
+  <dialog class="dj-modal" id="dj-modal">
+    <i class="corner tl"></i><i class="corner tr"></i>
+    <i class="corner bl"></i><i class="corner br"></i>
+
+    <div class="dj-modal-body" id="arc-modal-body">
+      <!-- 항목은 JS가 채웁니다 -->
+    </div>
+  </dialog>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

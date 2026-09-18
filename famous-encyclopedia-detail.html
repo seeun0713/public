@@ -65,6 +65,26 @@
       <div class="fg-bars" id="fg-bars"></div>
     </div>
 
+    <!-- 앞/뒤 괴물로 넘어가는 줄 (귀신 도감 상세와 같은 모양).
+         주소와 이름은 JS 가 채웁니다. 목록에 놓인 순서대로 넘어가고,
+         끝에서는 처음으로 돌아옵니다. -->
+    <nav class="gd-pager" aria-label="다른 괴물 보기">
+      <a class="gd-nav prev" id="gd-prev" href="#">
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+        <span class="dir">이전</span>
+        <span class="name" id="gd-prev-name"></span>
+      </a>
+
+      <!-- 두 버튼 사이를 메우는 칸 -->
+      <span class="gd-pager-fill" aria-hidden="true"></span>
+
+      <a class="gd-nav next" id="gd-next" href="#">
+        <span class="name" id="gd-next-name"></span>
+        <span class="dir">다음</span>
+        <img src="images/dogam2-icon-back.svg" alt="" aria-hidden="true" />
+      </a>
+    </nav>
+
   </div>
 
   <script src="js/script.js"></script>
