@@ -2562,6 +2562,8 @@ body.fg-page {
   width: var(--art-width, 100%);
   height: var(--art-height, 100%);
   max-width: none;
+  /* 시안처럼 아주 살짝 기울여 손으로 붙인 느낌을 냅니다 */
+  transform: rotate(-0.47deg);
 }
 /* 아래로 갈수록 짙어지는 분홍 물빛 */
 .fg-figure .tint {
@@ -2574,30 +2576,17 @@ body.fg-page {
   mix-blend-mode: multiply;
   opacity: 0.31;
 }
-/* 옅은 격자 장식 두 겹 */
-.fg-figure .decor {
+/* 팔각 창살 무늬 — 그림 위에 아주 옅게(13%) 덮입니다.
+   시안은 716×561 자리에 그림을 조금 키워 넣었고, 넘치는 부분은
+   .fg-figure 의 overflow:hidden 이 잘라 줍니다. */
+.fg-figure .lattice {
   position: absolute;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-.fg-figure .decor-1 { left: 94px; top: 0; width: 515px; height: 555px; }
-/* decor-2 원본 SVG는 세로(415×719)로 내보내져 있어, 눕혀서 씁니다.
-   90도 회전은 요소 중심을 기준으로 돌기 때문에, 최종 자리(left:-8 top:67
-   width:719 height:412)의 중심이 그대로 유지되도록 회전 전 위치를 역산했습니다. */
-.fg-figure .decor-2 {
-  left: 145.5px;
-  top: -86.5px;
-  width: 412px;
-  height: 719px;
-  transform: rotate(90deg);
-}
-/* 네 모서리를 비스듬히 잘라내는 검정 덮개 */
-.fg-figure .cut {
-  position: absolute;
-  left: 0;
-  top: -1px;
-  width: 716px;
-  height: 555px;
+  left: -26.6px;
+  top: -11px;
+  width: 765.2px;
+  height: 585px;
+  opacity: 0.13;
+  max-width: none;
   pointer-events: none;
 }
 
@@ -2699,8 +2688,7 @@ body.fg-page {
 @media (max-width: 1180px) {
   .fg-main { flex-direction: column; height: auto; }
   .fg-figure { width: 100%; height: 420px; }
-  .fg-figure .cut,
-  .fg-figure .decor,
+  .fg-figure .lattice,
   .fg-figure .tint { display: none; }
   /* 좁은 화면에서는 확대·위치 값을 쓰지 않고 칸에 통째로 맞춥니다 */
   .fg-figure .art { position: static; left: auto; top: auto; width: 100%; height: 100%; object-fit: contain; padding: 12px 0; }

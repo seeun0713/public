@@ -1004,6 +1004,7 @@ var FAMOUS = {
       { label: "종류", value: "요괴" },
       { label: "지역", value: "산 · 숲 주변" },
       { label: "능력", value: "둔갑 / 매혹 / 장수 / 여우구슬" },
+      { label: "위험도", level: true },
       { label: "생김새", wide: true, value: "아홉 개의 꼬리를 가진 여우의 모습으로 알려져 있다. 사람의 모습으로 둔갑할 수 있으며, 특히 아름다운 여성으로 변신하는 이야기가 널리 전해진다." },
       { label: "특징", wide: true, value: "오랜 세월을 살아온 여우가 신령한 힘을 얻어 인간의 모습으로 변신한 존재로 전해진다. 인간의 모습을 자유롭게 오가는 능력과 뛰어난 지혜를 가진 것이 특징이다." },
     ],
@@ -1036,6 +1037,7 @@ var FAMOUS = {
       { label: "종류", value: "원귀" },
       { label: "지역", value: "우물가 · 옛집 · 마을 어귀" },
       { label: "능력", value: "현신 / 꿈에 들기 / 한의 전이" },
+      { label: "위험도", level: true },
       { label: "생김새", wide: true, value: "길게 풀어헤친 검은 머리에 흰 소복을 입은 여인의 모습으로 전해진다. 얼굴은 머리카락에 가려 잘 드러나지 않으며, 발이 땅에 닿지 않는다고도 한다." },
       { label: "특징", wide: true, value: "살아생전 풀지 못한 한을 품고 이승에 머무는 존재다. 먼저 해를 끼치기보다 자신의 사연을 알아줄 사람을 기다리며, 한이 풀리면 조용히 떠난다." },
     ],
@@ -1068,6 +1070,7 @@ var FAMOUS = {
       { label: "종류", value: "귀신" },
       { label: "지역", value: "밤길 · 골목 · 외딴집" },
       { label: "능력", value: "얼굴 감추기 / 혼 빼놓기 / 뒤따라오기" },
+      { label: "위험도", level: true },
       { label: "생김새", wide: true, value: "눈· 코· 입이 하나도 없이 달걀처럼 매끈한 얼굴을 하고 있다. 몸은 흰옷을 입은 평범한 사람의 모습이라, 마주 서기 전까지는 알아차리기 어렵다." },
       { label: "특징", wide: true, value: "직접 해를 끼쳤다는 이야기는 드물다. 다만 얼굴이 없다는 사실을 알아차린 순간의 공포가 워낙 커서, 놀라 달아나다 스스로 다치는 경우가 많다고 전해진다." },
     ],
@@ -1100,6 +1103,7 @@ var FAMOUS = {
       { label: "종류", value: "요괴" },
       { label: "지역", value: "어두운 골목 · 빈방 · 계단 아래" },
       { label: "능력", value: "어둠 속 증식 / 크기 변화 / 시선 감지" },
+      { label: "위험도", level: true },
       { label: "생김새", wide: true, value: "형체가 뚜렷하지 않은 검은 덩어리다. 정해진 크기가 없어, 보는 사람이 올려다볼수록 위로 부풀고 내려다보면 다시 쪼그라든다." },
       { label: "특징", wide: true, value: "어둠 그 자체가 몸이라 불을 켜면 사라진다. 쳐다보는 시선을 먹고 자라기 때문에, 끝까지 올려다보면 결국 사람을 덮을 만큼 커진다고 전해진다." },
     ],
@@ -1157,38 +1161,30 @@ function setupFamousDetail() {
     img.style.setProperty("--art-height", ghost.art.height + "px");
   }
 
-  // 정보 줄
+  // 정보 줄. level: true 인 줄에는 값 대신 별(위험도)이 들어갑니다.
   ghost.rows.forEach(function (row) {
     var line = document.createElement("div");
-    line.className = "fg-row" + (row.wide ? " wide" : "");
+    line.className = "fg-row" + (row.wide || row.level ? " wide" : "");
 
     var k = document.createElement("span");
     k.className = "k";
     k.textContent = row.label;
-
-    var v = document.createElement("span");
-    v.className = "v";
-    v.textContent = row.value;
-
     line.appendChild(k);
-    line.appendChild(v);
+
+    if (row.level) {
+      var stars = document.createElement("span");
+      stars.className = "stars";
+      stars.textContent = "★".repeat(ghost.level) + "☆".repeat(5 - ghost.level);
+      line.appendChild(stars);
+    } else {
+      var v = document.createElement("span");
+      v.className = "v";
+      v.textContent = row.value;
+      line.appendChild(v);
+    }
+
     infoBox.appendChild(line);
   });
-
-  // 위험도 (별)
-  if (ghost.level) {
-    var levelRow = document.createElement("div");
-    levelRow.className = "fg-row wide";
-    var lk = document.createElement("span");
-    lk.className = "k";
-    lk.textContent = "위험도";
-    var lv = document.createElement("span");
-    lv.className = "stars";
-    lv.textContent = "★".repeat(ghost.level) + "☆".repeat(5 - ghost.level);
-    levelRow.appendChild(lk);
-    levelRow.appendChild(lv);
-    infoBox.appendChild(levelRow);
-  }
 
   // 왼쪽 아래 설명 글
   var textBox = document.getElementById("fg-texts");
