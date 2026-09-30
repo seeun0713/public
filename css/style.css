@@ -41,6 +41,14 @@ body.side-nav-open .ordinance-corner {   /* 공존에 관한 조례 */
   pointer-events: none;  /* 메뉴 항목 클릭을 가로막지 않도록 */
 }
 
+/* 단, 오른쪽에 붙는 모서리 장식은 사이드바와 겹치는 자리라
+   메뉴가 열려 있는 동안에는 감춥니다. (왼쪽 것만 위로 올라옵니다.) */
+body.side-nav-open .exam-corner.tr,
+body.side-nav-open .exam-corner.br,
+body.side-nav-open .ordinance-corner.right {
+  visibility: hidden;
+}
+
 /* 패널 오른쪽에 남는 자리를 패널과 같은 검정으로 메웁니다.
    글자는 본문 칸에 맞춰 서고, 검정 면은 화면 끝까지 이어집니다. */
 .side-nav::after {
@@ -188,6 +196,14 @@ body.side-nav-open .ordinance-corner {   /* 공존에 관한 조례 */
 @media (max-width: 620px) {
   :root { --header-inset: 12px; }
 }
+
+/* ===== 임시: 첫 화면(인간/귀신 선택)을 건너뛰는 동안 =====
+   지금은 '귀신 도감' 목록이 첫 화면 역할을 합니다. 그 페이지에서
+   홈 버튼을 누르면 제자리로 돌아올 뿐이라 버튼을 감춰 둡니다.
+   되살릴 때: 이 규칙과 human-encyclopedia.html 의 start-page 클래스,
+   index.html 의 임시 <script> 를 함께 지우면 됩니다. */
+body.start-page .dogam-header .icon.left { display: none; }
+/* ===== 임시 구간 끝 ===== */
 
 /* ===== 공통 기본 =====
    색·여백·타이포그래피는 이후 Figma 디자인 기준으로 조정합니다. */
@@ -416,7 +432,160 @@ a.card {
   color: #fff;
 }
 
-/* ===== 결과 페이지 ===== */
+/* ===== 귀신 유형 테스트 결과 (human-test-result.html) =====
+   검정 바탕 + 파스텔 글씨로, 테스트 페이지와 같은 분위기를 씁니다.
+   결과는 8마리 귀신 중 하나이고, 그림은 도감 목록 카드와 똑같이
+   크게 늘려 인물 쪽만 잘라 보여 줍니다. */
+.typetest-page .result-page {
+  max-width: 812px;
+  margin: 0 auto;
+  padding: 56px 20px 96px;
+  color: #fff;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* --- 그림 창 (도감 카드와 같은 잘라내기 비율) --- */
+.art-window {
+  position: relative;
+  display: block;
+  width: 309px;
+  height: 346.5px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+}
+.art-window.small { width: 154.5px; height: 173.25px; }
+.art-window img {
+  position: absolute;
+  width: 786.41%;
+  height: 394.48%;
+  max-width: none;
+}
+
+/* --- 맨 위 결과 칸 --- */
+.typetest-page .result-card {
+  background: #000;
+  border: 2px solid #fffbd4;
+  border-radius: 0;
+  color: #fff;
+  padding: 40px 32px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+.result-lead {
+  font-size: 17px;
+  color: #919191;
+  margin-bottom: 20px;
+}
+.typetest-page .result-type {
+  margin: 24px 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--pastel, linear-gradient(90deg, #fffbd4, #fdd0f3 41.83%, #9fffca));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.result-ghost {
+  margin: 0 0 16px;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.result-summary {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.result-story {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #d4d4d4;
+  text-align: left;
+}
+.result-more {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 12px 28px;
+  border: 2px solid #fffbd4;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.result-more:hover { background: #141414; }
+
+/* --- 아래 묶음 (이런 사람입니다 / 한마디 / 궁합) --- */
+.result-block { margin-bottom: 48px; }
+.result-block h2 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #545454;
+}
+.result-traits {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.result-traits li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.result-traits li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 8px;
+  height: 8px;
+  background: #fdd0f3;
+}
+.result-advice {
+  font-size: 18px;
+  line-height: 1.75;
+  padding: 20px 24px;
+  border-left: 4px solid #fdd0f3;
+  background: #0d0d0d;
+}
+
+/* --- 궁합 카드 두 장 --- */
+.result-mates {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.result-mate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: #000;
+  border: 2px solid #545454;
+  color: #fff;
+  text-decoration: none;
+}
+.result-mate:hover { border-color: #fffbd4; }
+.result-mate .label { font-size: 15px; color: #919191; }
+.result-mate .name { font-size: 22px; font-weight: 800; margin-top: 4px; }
+.result-mate .type { font-size: 15px; color: #919191; }
+
+@media (max-width: 560px) {
+  .art-window { width: 206px; height: 231px; }
+  .art-window.small { width: 123.6px; height: 138.6px; }
+  .result-ghost { font-size: 32px; }
+  .result-mates { grid-template-columns: 1fr; }
+}
+
+/* ===== (구) 결과 페이지 공용 ===== */
 .result-card {
   background: var(--main);
   color: #fff;
@@ -921,10 +1090,15 @@ body.exam-page {
   background-repeat: no-repeat;
   pointer-events: none;
 }
+/* 오른쪽 둘은 좌우를 뒤집어, 왼쪽 것과 마주 보게 놓습니다.
+   아래 둘은 위아래까지 뒤집습니다(scale(-1) = 좌우+위아래). */
 .exam-corner.tl { top: 143px; left: 54px;  background-image: url("../images/corner-bracket-l.svg"); }
-.exam-corner.tr { top: 143px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); }
-.exam-corner.bl { top: 748px; left: 54px;  background-image: url("../images/corner-bracket-l.svg"); transform: scaleY(-1); }
-.exam-corner.br { top: 748px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); transform: scaleY(-1); }
+.exam-corner.tr { top: 143px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); transform: scaleX(-1); }
+/* 아래 한 쌍은 위에서 몇 px 이 아니라 '페이지 아래에서 42px' 로 붙입니다.
+   (시안 높이 910 기준 위에서 748 과 같은 자리입니다.)
+   내용이 길어져 페이지가 늘어나도 조례 페이지처럼 늘 맨 아래에 놓입니다. */
+.exam-corner.bl { bottom: 42px; left: 54px;  background-image: url("../images/corner-bracket-l.svg"); transform: scaleY(-1); }
+.exam-corner.br { bottom: 42px; right: 53px; background-image: url("../images/corner-bracket-r.svg"); transform: scale(-1); }
 
 /* 중앙 퀴즈 컬럼 */
 .exam-panel {
@@ -1020,9 +1194,152 @@ body.exam-page {
   background: #141414;
 }
 
+
+/* ===== 인간 유사도 시험 결과 (ghost-exam-result.html) =====
+   시험 화면과 같은 검정 바탕 + 크림색(#fffbd4) 테두리를 씁니다.
+   점수 → 8단계 중 하나가 나오고, 아래로 판정 · 조례 · 과제 · 증명서 순서입니다. */
+.exam-result {
+  max-width: 812px;
+  margin: 0 auto;
+  padding: 46px 0 96px;
+  color: #fff;
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+}
+
+/* --- 점수 칸 --- */
+.exam-score-card {
+  border: 2px solid #fffbd4;
+  border-radius: 10px;
+  padding: 40px 32px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+.exam-score-card .label {
+  font-size: 17px;
+  color: #919191;
+  letter-spacing: 2px;
+}
+.exam-score-card .score {
+  margin: 10px 0 4px;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(90deg, #fffbd4, #fdd0f3 41.83%, #9fffca);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.exam-score-card .score .unit { font-size: 40px; }
+.exam-score-card .step {
+  font-size: 17px;
+  color: #919191;
+  margin-bottom: 6px;
+}
+.exam-score-card .grade {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+.exam-score-card .summary {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d4d4d4;
+}
+
+/* --- 판정 · 조례 · 과제 --- */
+.exam-block { margin-bottom: 40px; }
+.exam-block h2 {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #545454;
+}
+.exam-desc {
+  font-size: 18px;
+  line-height: 1.75;
+  color: #d4d4d4;
+}
+.exam-mate {
+  margin-top: 18px;
+  font-size: 17px;
+  color: #919191;
+}
+.exam-mate a {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 2px solid #fdd0f3;
+  padding-bottom: 2px;
+}
+.exam-mate a:hover { color: #fdd0f3; }
+.exam-law,
+.exam-next {
+  font-size: 18px;
+  line-height: 1.75;
+  padding: 18px 22px;
+  background: #0d0d0d;
+  border-left: 4px solid #fffbd4;
+}
+.exam-next { border-left-color: #9fffca; }
+
+/* --- 증명서 --- */
+.exam-cert {
+  border: 2px solid #fffbd4;
+  border-radius: 10px;
+  padding: 40px 32px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.exam-cert .cert-doc {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 22px;
+}
+.exam-cert .cert-line {
+  font-size: 16px;
+  color: #919191;
+  line-height: 1.7;
+}
+.exam-cert .cert-grade {
+  margin: 20px 0;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #fffbd4, #fdd0f3 41.83%, #9fffca);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.exam-cert .cert-seal {
+  font-size: 16px;
+  color: #919191;
+  letter-spacing: 3px;
+}
+
+.exam-retry {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 16px 40px;
+  border: 2px solid #fffbd4;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.exam-retry:hover { background: #141414; }
+
 @media (max-width: 880px) {
   .exam-wrap { padding: 0 20px 60px; }
   .exam-brand { font-size: 26px; }
+  .exam-result { padding: 32px 0 60px; }
+  .exam-score-card .score { font-size: 60px; }
+  .exam-score-card .grade { font-size: 24px; }
   .exam-corner { display: none; }
   .exam-panel { gap: 40px; margin-top: 32px; }
   .exam-qnum { font-size: 32px; }
@@ -1354,7 +1671,12 @@ body.ordinance-page {
   z-index: 2;
 }
 .ordinance-corner.left { left: 8px; }
-.ordinance-corner.right { right: 8.5px; }
+/* 오른쪽은 좌우를 뒤집어 왼쪽 것과 마주 보게 합니다 */
+.ordinance-corner.right { right: 8.5px; transform: scaleX(-1); }
+/* 맨 아래 한 쌍 — 위아래까지 뒤집습니다 */
+.ordinance-corner.bottom { top: auto; bottom: 9px; }
+.ordinance-corner.bottom.left  { transform: scaleY(-1); }
+.ordinance-corner.bottom.right { transform: scale(-1); }
 
 /* 문서 본문
    시안은 글이 x=54, 구분선이 x=55~1390 에 놓입니다.
@@ -1442,6 +1764,37 @@ h4.ordinance-article { margin-top: 40px; }
   font-weight: 400;
 }
 .ordinance-article + .ordinance-clause { margin-top: 10px; }
+
+/* ----- 글자 모션 (js 의 setupOrdinanceMotion 이 걸어 줍니다) -----
+   글자를 <span class="ch"> 로 쪼개 하나씩 움직입니다.
+   숨길 때 opacity 만 쓰기 때문에 글자가 차지하는 자리는 그대로여서
+   줄바꿈이나 문서 높이가 달라지지 않습니다. */
+.om .ch {
+  display: inline-block;
+  will-change: opacity, transform;
+}
+.om-flip { perspective: 420px; }
+
+/* 타이핑 — 앞에서부터 한 글자씩 켜집니다 */
+.om-type .ch { opacity: 0; }
+.om-type.play .ch {
+  animation: om-type-in 1ms steps(1, end) forwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+@keyframes om-type-in {
+  to { opacity: 1; }
+}
+
+/* 뒤집힘 — 무작위로 고른 낱말이 통째로 넘어가고, 그대로 남습니다.
+   (처음엔 똑바로 서 있다가 화면에 들어오면 한 번 뒤집힙니다) */
+.om-flip .ch { transform: rotateX(0deg); }
+.om-flip.play .ch {
+  animation: om-flip-over 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes om-flip-over {
+  to { transform: rotateX(180deg); }
+}
 
 /* 하위 항목 (각 호) — 시안: 글머리 칸 x=74, 글자 x=102.5 */
 .ordinance-bullets {
@@ -1616,7 +1969,7 @@ body.dogam-page {
   background: #ecdfc9 url("../images/famous-paper2.png") center / cover;
 }
 
-/* 이름 — 아직 정체를 모르는 귀신이라 회색 깨진 글자 */
+/* 이름 — 인간 행세를 할 때 쓰는 이름이라 회색 */
 .dogam-card-name {
   position: relative;
   display: block;
@@ -1640,7 +1993,7 @@ body.dogam-page {
   opacity: 0;
   transition: opacity var(--reveal-time) ease;
 }
-.dogam-card.reveal:hover .dogam-photo-img.on-hover { opacity: 1; }
+.dogam-card.reveal:is(:hover, .haunted) .dogam-photo-img.on-hover { opacity: 1; }
 
 /* 이름 교차 — 진짜 이름은 흰색 */
 .dogam-card-name .name-base,
@@ -1655,8 +2008,8 @@ body.dogam-page {
   opacity: 0;
   color: #fff;
 }
-.dogam-card.reveal:hover .name-base { opacity: 0; }
-.dogam-card.reveal:hover .name-hover { opacity: 1; }
+.dogam-card.reveal:is(:hover, .haunted) .name-base { opacity: 0; }
+.dogam-card.reveal:is(:hover, .haunted) .name-hover { opacity: 1; }
 
 /* 노리개 — 카드 오른쪽 아래에서 밖으로 늘어집니다.
    매듭마다 색과 크기가 달라서 left/width/height는 HTML에 직접 적었습니다. */
@@ -1667,10 +2020,10 @@ body.dogam-page {
   transition: opacity var(--reveal-time) ease;
   pointer-events: none;
 }
-.dogam-card.reveal:hover .dogam-knot { opacity: 1; }
+.dogam-card.reveal:is(:hover, .haunted) .dogam-knot { opacity: 1; }
 
 /* 늘어진 노리개가 아랫줄 카드에 가리지 않도록 위로 올립니다 */
-.dogam-card.reveal:hover { z-index: 5; }
+.dogam-card.reveal:is(:hover, .haunted) { z-index: 5; }
 
 
 /* =========================================================
@@ -1709,11 +2062,11 @@ body.dogam-page {
 .dogam-photo-img.glitch.a { filter: sepia(1) hue-rotate(150deg) saturate(3.5) brightness(1.1); }
 .dogam-photo-img.glitch.b { filter: sepia(1) hue-rotate(-40deg) saturate(3.5) brightness(1.1); }
 
-.dogam-card.reveal:hover .dogam-photo-img.glitch.a {
+.dogam-card.reveal:is(:hover, .haunted) .dogam-photo-img.glitch.a {
   animation: dogam-glitch-a 2.8s steps(1, end) infinite,
              dogam-glitch-fade 2.8s linear infinite;
 }
-.dogam-card.reveal:hover .dogam-photo-img.glitch.b {
+.dogam-card.reveal:is(:hover, .haunted) .dogam-photo-img.glitch.b {
   animation: dogam-glitch-b 2.8s steps(1, end) infinite,
              dogam-glitch-fade 2.8s linear infinite;
 }
@@ -1770,7 +2123,7 @@ body.dogam-page {
   );
   transition: opacity var(--reveal-time) ease;
 }
-.dogam-card.reveal:hover .dogam-photo::after {
+.dogam-card.reveal:is(:hover, .haunted) .dogam-photo::after {
   opacity: 1;
   animation: dogam-scan 2.6s linear infinite;
 }
@@ -1780,7 +2133,7 @@ body.dogam-page {
 }
 
 /* 이름도 같이 튑니다 — 글자 그림자를 청록/빨강으로 갈라 놓습니다 */
-.dogam-card.reveal:hover .name-hover {
+.dogam-card.reveal:is(:hover, .haunted) .name-hover {
   animation: dogam-name-glitch 2.8s steps(1, end) infinite;
 }
 @keyframes dogam-name-glitch {
@@ -1801,10 +2154,10 @@ body.dogam-page {
 @media (prefers-reduced-motion: reduce) {
   .dogam-card { --reveal-time: 0ms; }
   .gd-norigae { animation: none; }
-  .dogam-card.reveal:hover .dogam-photo-img.glitch.a,
-  .dogam-card.reveal:hover .dogam-photo-img.glitch.b,
-  .dogam-card.reveal:hover .dogam-photo::after,
-  .dogam-card.reveal:hover .name-hover { animation: none; }
+  .dogam-card.reveal:is(:hover, .haunted) .dogam-photo-img.glitch.a,
+  .dogam-card.reveal:is(:hover, .haunted) .dogam-photo-img.glitch.b,
+  .dogam-card.reveal:is(:hover, .haunted) .dogam-photo::after,
+  .dogam-card.reveal:is(:hover, .haunted) .name-hover { animation: none; }
   .dogam-photo-img.glitch { display: none; }
 }
 

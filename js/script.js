@@ -10,115 +10,218 @@
 
 
 /* ===========================================================
-   1. 성격 유형 테스트 (human-test.html)
-   질문에 답하면 유형(A/B/C) 점수가 쌓이고,
-   가장 높은 유형을 결과 페이지로 넘깁니다.
+   1. 귀신 유형 테스트 (human-test.html)  ─ 8유형 버전
+
+   ▸ 버튼 색은 기존과 같은 의미를 유지합니다.
+       0=파랑(직진) 1=흰색(감성) 2=노랑(자유) 3=빨강(원칙·분석)
+   ▸ 색마다 귀신 2명이 들어 있고, 문항마다 A조 / B조 중 한 조가 나옵니다.
+       A조: 지귀(파랑)  · 아랑(흰색)     · 걸신(노랑) · 신기원요(빨강)
+       B조: 수살귀(파랑) · 청군여귀(흰색) · 백귀(노랑) · 매화귀신(빨강)
+   ▸ A조 5문항, B조 5문항 → 귀신마다 최대 5점.
+   ▸ 가장 많이 고른 귀신이 결과. 동점이면 더 나중 문항에서 고른 귀신.
    =========================================================== */
 
-// 보기 4개의 색(=유형) 순서는 모든 문항에서 동일합니다.
-//  0=파랑(직진형) 1=흰색(감성형) 2=노랑(자유형) 3=빨강(분석형)
 var typeKeys = ["blue", "white", "yellow", "red"];
 
-// 10문항. answers는 항상 [직진, 감성, 자유, 분석] 순서.
+var ghostSets = {
+  A: ["jigwi", "arang", "geolsin", "singiwonyo"],
+  B: ["susalgwi", "cheonggun", "baekgwi", "maehwa"],
+};
+
+// answers 는 항상 [파랑, 흰색, 노랑, 빨강] 순서
 var humanQuestions = [
   {
+    set: "A",
     q: "소중한 사람이 갑자기 연락을 끊었다. 나는?",
     answers: [
-      "계속 연락을 시도한다. 이유를 알아야만 한다.",
-      "언젠가 돌아오길 기다린다. 그 사람을 잊을 수가 없다.",
-      "새로운 인연을 찾아 떠난다. 머물러 있지 않는다.",
-      "이유를 분석하고 내가 할 수 있는 일을 한다.",
+      "그 사람이 올 만한 곳에서 기다린다. 마음이 식질 않는다.",
+      "내 얘기를 한 번만 들어줬으면 좋겠다. 오해는 풀고 싶다.",
+      "일단 맛있는 걸 먹으며 기운부터 차린다.",
+      "무슨 일이 있었는지 하나씩 짚어 진짜 이유를 알아낸다.",
     ],
   },
   {
+    set: "B",
     q: "주말에 갑자기 시간이 비었다. 나는?",
     answers: [
-      "바로 약속을 잡고 나간다.",
-      "추억의 장소를 다시 찾는다.",
-      "즉흥적으로 어디든 떠난다.",
-      "밀린 일을 정리하고 계획을 세운다.",
+      "바로 친구를 불러낸다. 혼자 있는 건 못 견딘다.",
+      "방에서 음악을 듣는다. 그래도 연락은 좀 왔으면.",
+      "아무에게도 말하지 않고 훌쩍 사라진다.",
+      "오래된 나무가 있는 길을 산책하며 하루를 정돈한다.",
     ],
   },
   {
+    set: "B",
     q: "처음 간 모임에서 나는?",
     answers: [
-      "먼저 다가가 말을 건다.",
-      "분위기를 살피며 천천히 마음을 연다.",
-      "편한 사람하고만 어울린다.",
-      "사람들을 관찰하며 파악한다.",
+      "마음에 드는 한 사람 곁에 딱 붙어 있는다.",
+      "구석에 있지만 누가 먼저 말 걸어주길 바란다.",
+      "말은 거의 안 했는데 다들 나를 기억한다.",
+      "인사부터 예의 바르게, 제대로 한다.",
     ],
   },
   {
+    set: "A",
     q: "중요한 결정을 앞두고 있다. 나는?",
     answers: [
-      "일단 저지르고 본다.",
-      "마음이 가는 쪽을 따른다.",
-      "그때그때 느낌대로 정한다.",
-      "장단점을 따져 결정한다.",
+      "마음이 가는 쪽이면 앞뒤 안 가리고 뛰어든다.",
+      "나중에 돌아봐도 떳떳할 선택인지 생각한다.",
+      "지금 당장 제일 끌리는 걸 고른다.",
+      "근거를 모으고 사실부터 확인한다.",
     ],
   },
   {
-    q: "친구가 고민을 털어놓는다. 나는?",
+    set: "A",
+    q: "친구가 억울한 일을 당했다. 나는?",
     answers: [
-      "해결책을 바로 제시한다.",
-      "같이 마음 아파하며 공감한다.",
-      "기분 전환을 시켜준다.",
-      "원인을 짚어 정리해준다.",
+      "당장 달려가 내 일처럼 불같이 화를 낸다.",
+      "친구의 이야기를 끝까지 듣고 믿어준다.",
+      "고기부터 사준다. 배가 불러야 힘이 난다.",
+      "증거를 모아 누가 잘못했는지 밝혀준다.",
     ],
   },
   {
+    set: "B",
     q: "스트레스를 받으면 나는?",
     answers: [
-      "몸을 움직여 푼다.",
-      "음악을 들으며 감정을 흘려보낸다.",
-      "훌쩍 어딘가로 떠난다.",
-      "원인을 찾아 해결한다.",
+      "아무나 붙잡고 끝까지 털어놓는다.",
+      "혼자 울고 나서 아무렇지 않은 척한다.",
+      "연락을 끊고 잠수를 탄다.",
+      "방을 치우고 흐트러진 것부터 바로잡는다.",
     ],
   },
   {
+    set: "A",
     q: "여행 계획을 짤 때 나는?",
     answers: [
-      "일단 표부터 끊는다.",
-      "가고 싶었던 곳을 떠올린다.",
-      "무계획이 곧 계획이다.",
-      "동선과 일정을 꼼꼼히 짠다.",
+      "가고 싶은 곳 딱 하나만 보고 바로 떠난다.",
+      "그곳에 얽힌 옛이야기부터 찾아본다.",
+      "맛집 지도부터 만든다.",
+      "동선과 변수를 꼼꼼하게 확인한다.",
     ],
   },
   {
-    q: "갈등이 생겼을 때 나는?",
+    set: "B",
+    q: "누군가 나에게 선을 넘는 말을 했다. 나는?",
     answers: [
-      "정면으로 부딪혀 푼다.",
-      "서로 상처받지 않게 조심한다.",
-      "거리를 두고 피한다.",
-      "상황을 객관적으로 따진다.",
+      "서운해도 멀어질까 봐 먼저 붙잡는다.",
+      "겉으로는 웃지만 조용히 거리를 둔다.",
+      "싸늘한 눈빛 한 번으로 분위기를 얼린다.",
+      "그 자리에서 정중하지만 단호하게 짚는다.",
     ],
   },
   {
-    q: "새로운 일을 시작할 때 나는?",
+    set: "B",
+    q: "주변 사람들이 말하는 나는?",
     answers: [
-      "부딪히며 배운다.",
-      "의미와 마음을 먼저 본다.",
-      "흥미가 끌리는 대로 한다.",
-      "정보를 모아 준비한다.",
+      "곁에 누가 꼭 있어야 하는 사람",
+      "속을 잘 안 보여주는 사람",
+      "도무지 알 수 없는 사람",
+      "원칙이 분명하고 깐깐한 사람",
     ],
   },
   {
-    q: "하루를 마칠 때 나는?",
+    set: "A",
+    q: "딱 하나의 소원이 이루어진다면?",
     answers: [
-      "내일 할 일을 떠올린다.",
-      "오늘의 감정을 돌아본다.",
-      "별생각 없이 푹 쉰다.",
-      "하루를 점검하고 기록한다.",
+      "좋아하는 사람을 한 번만 더 만나고 싶다.",
+      "내 이야기가 오래도록 기억되면 좋겠다.",
+      "배 터지게 먹고 푹 자고 싶다.",
+      "묻혀 있던 진실이 모두 밝혀지면 좋겠다.",
     ],
   },
 ];
 
-// 유형별 결과 정보 (어울리는 귀신 = 유형 귀신 필터)
+// 유형 결과 (key 는 GHOSTS 와 같음 → 상세 페이지 링크에 그대로 사용 가능)
 var humanTypes = {
-  blue:   { name: "직진형", info: "생각보다 행동이 앞서는 추진력의 소유자입니다.", ghosts: ["몽달귀신", "도깨비"] },
-  white:  { name: "감성형", info: "마음과 추억을 무엇보다 소중히 여기는 사람입니다.", ghosts: ["처녀귀신", "우렁각시"] },
-  yellow: { name: "자유형", info: "얽매이지 않고 흐르는 대로 사는 사람입니다.", ghosts: ["그슨대", "신지께"] },
-  red:    { name: "분석형", info: "차분히 따지고 파악하는 이성적인 사람입니다.", ghosts: ["구미호", "동자삼"] },
+  jigwi: {
+    ghost: "지귀",
+    type: "불꽃 직진형",
+    color: "blue",
+    summary: "한번 마음이 가면 온몸으로 타오르는 사람",
+    story: "선덕여왕을 기다리다 잠든 사이 끝내 닿지 못한 마음이 불이 된 지귀처럼, 당신은 좋아하는 것 앞에서 계산하지 않습니다.",
+    traits: ["몰입과 열정이 누구보다 강하다", "좋아하는 마음을 숨기지 못한다", "기다림이 길어지면 속이 타들어 간다"],
+    advice: "마음은 그대로 두되 거리는 지키세요. 닿지 못한 마음이 나를 태우지 않도록.",
+    good: "arang",
+    bad: "maehwa",
+  },
+  susalgwi: {
+    ghost: "수살귀",
+    type: "끌어당김형",
+    color: "blue",
+    summary: "혼자 남겨지는 게 제일 무서운 사람",
+    story: "물가에 홀로 남아 곁을 채워 줄 누군가를 기다리는 수살귀처럼, 당신은 사람을 곁에 붙잡아 두는 힘이 있습니다.",
+    traits: ["한번 맺은 인연은 끝까지 놓지 않는다", "외로움을 잘 타고 혼자 있는 시간이 힘들다", "사람을 끌어들이는 묘한 매력이 있다"],
+    advice: "붙잡은 손을 가끔 느슨하게 풀어 보세요. 물러서도 떠나지 않는 사람이 진짜 곁입니다.",
+    good: "geolsin",
+    bad: "baekgwi",
+  },
+  arang: {
+    ghost: "아랑",
+    type: "증언자형",
+    color: "white",
+    summary: "나를 정확히 알아주길 바라는 사람",
+    story: "복수보다 증언을 원했던 아랑처럼, 당신은 뭉뚱그려지기보다 한 사람으로서 제대로 이해받고 싶어 합니다.",
+    traits: ["남의 이야기를 끝까지 들어준다", "오해받는 것을 가장 견디기 힘들어한다", "떳떳함과 기품을 중요하게 여긴다"],
+    advice: "당신의 이야기를 들어줄 사람은 생각보다 가까이 있어요. 먼저 말을 꺼내 보세요.",
+    good: "singiwonyo",
+    bad: "susalgwi",
+  },
+  cheonggun: {
+    ghost: "청군여귀",
+    type: "거문고 은둔형",
+    color: "white",
+    summary: "혼자이고 싶지도, 함께이고 싶지도 않은 사람",
+    story: "흉가에서 홀로 거문고를 타면서도 사람을 완전히 밀어내지 못한 청군여귀처럼, 당신은 자기만의 방을 소중히 여기면서도 누군가를 기다립니다.",
+    traits: ["속마음을 쉽게 보여주지 않는다", "혼자만의 취미와 감성이 깊다", "겉모습과 실제 모습 사이에 틈이 있다"],
+    advice: "울어도 괜찮아요. 본모습을 보여줘도 곁에 남는 사람이 있습니다.",
+    good: "maehwa",
+    bad: "susalgwi",
+  },
+  geolsin: {
+    ghost: "걸신",
+    type: "욕구 솔직형",
+    color: "yellow",
+    summary: "채워져야 비로소 웃는 사람",
+    story: "한 번도 배불리 먹어보지 못한 한을 품은 걸신처럼, 당신은 원하는 것에 솔직하고 작은 만족에서 큰 행복을 찾습니다.",
+    traits: ["먹는 것 · 쉬는 것에 진심이다", "원하는 걸 돌려 말하지 않는다", "악의가 없어 미워하기 어렵다"],
+    advice: "채우되 끝을 정해 두세요. 적당히 배부를 때가 가장 행복합니다.",
+    good: "susalgwi",
+    bad: "maehwa",
+  },
+  baekgwi: {
+    ghost: "백귀",
+    type: "미스터리형",
+    color: "yellow",
+    summary: "정체를 알 수 없어서 더 궁금한 사람",
+    story: "여러 이름으로 갈라져 전해질 뿐 정체가 분명하지 않은 백귀처럼, 사람들은 당신을 저마다 다르게 기억합니다.",
+    traits: ["말수는 적지만 존재감이 크다", "얽매이는 걸 싫어하고 불쑥 사라진다", "보는 사람마다 평가가 다르다"],
+    advice: "가끔은 스스로 정체를 밝혀 보세요. 오해가 전설이 되기 전에.",
+    good: "cheonggun",
+    bad: "singiwonyo",
+  },
+  singiwonyo: {
+    ghost: "신기원요",
+    type: "진실 추적형",
+    color: "red",
+    summary: "억울한 일은 끝까지 밝혀야 하는 사람",
+    story: "끔찍한 모습 뒤에 숨은 진실을 알리려 인간에게 도움을 청한 신기원요처럼, 당신은 묻힌 사실을 그냥 넘기지 못합니다.",
+    traits: ["사실 관계를 꼼꼼히 확인한다", "불공정한 일에 누구보다 민감하다", "필요할 땐 도움을 청할 줄 안다"],
+    advice: "진실을 좇는 동안 나 자신도 돌봐 주세요. 모든 짐을 혼자 질 필요는 없어요.",
+    good: "arang",
+    bad: "baekgwi",
+  },
+  maehwa: {
+    ghost: "매화귀신",
+    type: "대쪽 선비형",
+    color: "red",
+    summary: "지켜야 할 선이 분명한 사람",
+    story: "백 년을 한자리에서 버틴 매화나무의 령처럼, 당신은 예의와 원칙을 지키는 사람에게 그만큼의 대우를 돌려줍니다.",
+    traits: ["예의 없는 행동을 참기 어렵다", "한번 정한 원칙은 잘 바꾸지 않는다", "자연과 오래된 것을 아낀다"],
+    advice: "가벼운 농담 하나쯤은 흘려보내도 괜찮아요. 꽃잎이 너무 많이 흩날리지 않게.",
+    good: "cheonggun",
+    bad: "geolsin",
+  },
 };
 
 function startHumanTest() {
@@ -133,7 +236,7 @@ function startHumanTest() {
 
   var total = humanQuestions.length;
   var current = 0;
-  var chosen = []; // 각 문항에서 고른 유형 key 저장 (이전 버튼 지원)
+  var chosen = []; // 각 문항에서 고른 귀신 key
 
   function showQuestion() {
     var item = humanQuestions[current];
@@ -148,10 +251,10 @@ function startHumanTest() {
     item.answers.forEach(function (text, index) {
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "typetest-answer " + typeKeys[index]; // 색(유형)
+      btn.className = "typetest-answer " + typeKeys[index]; // 색
       btn.textContent = text;
       btn.addEventListener("click", function () {
-        chosen[current] = typeKeys[index]; // 고른 유형 저장
+        chosen[current] = ghostSets[item.set][index]; // 고른 귀신 저장
         if (current < total - 1) {
           current += 1;
           showQuestion();
@@ -171,14 +274,17 @@ function startHumanTest() {
   });
 
   function finishHumanTest() {
-    // 가장 많이 고른 유형 찾기
-    var counts = { blue: 0, white: 0, yellow: 0, red: 0 };
-    for (var i = 0; i < chosen.length; i++) counts[chosen[i]] += 1;
-
-    var best = "blue";
-    typeKeys.forEach(function (key) {
-      if (counts[key] > counts[best]) best = key;
+    // 귀신별 점수 세기
+    var counts = {};
+    chosen.forEach(function (key) {
+      counts[key] = (counts[key] || 0) + 1;
     });
+
+    // 가장 높은 점수. 동점이면 뒤쪽 문항에서 고른 귀신이 이깁니다.
+    var best = chosen[chosen.length - 1];
+    for (var i = chosen.length - 1; i >= 0; i--) {
+      if (counts[chosen[i]] > counts[best]) best = chosen[i];
+    }
 
     localStorage.setItem("humanResultType", best);
     window.location.href = "human-test-result.html";
@@ -190,131 +296,301 @@ function startHumanTest() {
 
 /* ===========================================================
    2. 테스트 결과 (human-test-result.html)
-   저장된 유형을 읽어 화면에 표시합니다.
+   저장된 귀신 key 를 읽어 화면에 표시합니다.
+   key 는 GHOSTS 와 같아서 귀신 그림·상세 페이지를 그대로 가져다 씁니다.
    =========================================================== */
+/* 귀신 그림(4096×2304)은 인물이 가운데 작게 그려져 있어 그대로 쓰면
+   흰 여백만 보입니다. 도감 목록 카드와 똑같이 크게 늘려 인물 쪽만
+   잘라 보여 주고, 그 잘라내기 값을 여기 모아 둡니다. */
+var resultArt = {
+  jigwi:      { left: "-343.06%", top: "-59.96%" },
+  susalgwi:   { left: "-342.98%", top: "-76.43%" },
+  arang:      { left: "-339.22%", top: "-77.4%" },
+  cheonggun:  { left: "-341.76%", top: "-97.41%" },
+  geolsin:    { left: "-342.98%", top: "-76.43%" },
+  baekgwi:    { left: "-343.34%", top: "-81.56%" },
+  singiwonyo: { left: "-353.06%", top: "-74.75%" },
+  maehwa:     { left: "-361.69%", top: "-86.54%" },
+};
+
+/* 잘라낸 그림 한 장을 만듭니다. (바깥 칸 크기는 CSS 가 정합니다) */
+function makeGhostArt(key, className) {
+  var box = document.createElement("span");
+  box.className = className;
+
+  var img = document.createElement("img");
+  if (GHOSTS[key]) img.src = GHOSTS[key].image;
+  img.alt = "";
+  if (resultArt[key]) {
+    img.style.left = resultArt[key].left;
+    img.style.top = resultArt[key].top;
+  }
+
+  box.appendChild(img);
+  return box;
+}
+
 function showHumanResult() {
   var typeEl = document.getElementById("result-type");
   if (!typeEl) return; // 이 페이지가 아니면 중단
 
-  var infoEl = document.getElementById("result-info");
+  var key = localStorage.getItem("humanResultType");
+  if (!humanTypes[key]) key = "jigwi"; // 아직 풀지 않았거나 옛 값이면 기본값
+  var data = humanTypes[key];
+
+  // 유형 이름 · 귀신 이름 · 한 줄 요약
+  document.body.setAttribute("data-result-color", data.color);
+  document.title = data.ghost + " — 귀신 유형 테스트 결과";
+  typeEl.textContent = data.type;
+  document.getElementById("result-ghost").textContent = data.ghost;
+  document.getElementById("result-summary").textContent = data.summary;
+  document.getElementById("result-story").textContent = data.story;
+  document.getElementById("result-advice").textContent = data.advice;
+
+  // 결과 귀신 그림
+  var artSlot = document.getElementById("result-art");
+  artSlot.innerHTML = "";
+  artSlot.appendChild(makeGhostArt(key, "art-window"));
+
+  // 내 모습 (특징 세 줄)
+  var traitsEl = document.getElementById("result-traits");
+  traitsEl.innerHTML = "";
+  data.traits.forEach(function (text) {
+    var li = document.createElement("li");
+    li.textContent = text;
+    traitsEl.appendChild(li);
+  });
+
+  // 도감에서 이 귀신 보기
+  var more = document.getElementById("result-more");
+  more.href = "human-encyclopedia-detail.html?ghost=" + key;
+  more.textContent = data.ghost + " 도감 보기";
+
+  // 잘 맞는 귀신 / 상극인 귀신 카드
   var ghostsEl = document.getElementById("result-ghosts");
-
-  var type = localStorage.getItem("humanResultType") || "blue";
-  var data = humanTypes[type];
-
-  typeEl.textContent = data.name;
-  infoEl.textContent = data.info;
-
-  // 어울리는 귀신 카드 만들기
   ghostsEl.innerHTML = "";
-  data.ghosts.forEach(function (name) {
-    var card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML =
-      '<div class="card-image">이미지</div>' +
-      '<h2 class="card-title">' + name + "</h2>";
+  [
+    { label: "잘 맞는 귀신", key: data.good },
+    { label: "상극인 귀신", key: data.bad },
+  ].forEach(function (item) {
+    var mate = humanTypes[item.key];
+    if (!mate) return;
+
+    var card = document.createElement("a");
+    card.className = "result-mate";
+    card.href = "human-encyclopedia-detail.html?ghost=" + item.key;
+
+    var label = document.createElement("span");
+    label.className = "label";
+    label.textContent = item.label;
+
+    var name = document.createElement("span");
+    name.className = "name";
+    name.textContent = mate.ghost;
+
+    var type = document.createElement("span");
+    type.className = "type";
+    type.textContent = mate.type;
+
+    card.appendChild(label);
+    card.appendChild(makeGhostArt(item.key, "art-window small"));
+    card.appendChild(name);
+    card.appendChild(type);
     ghostsEl.appendChild(card);
   });
 }
 
 
 /* ===========================================================
-   3. 인간 유사도 시험 (ghost-exam.html)
-   "인간다운" 답을 고를수록 유사도 점수가 올라갑니다.
+   3. 인간 유사도 시험 (ghost-exam.html)  ─ 귀신 입장 버전
+
+   ▸ 귀신이 인간 세상에서 겪을 만한 상황 10가지.
+   ▸ 보기마다 score(0~10). 높을수록 "인간답다".
+     가장 인간다운 답이 늘 첫 번째에 오지 않도록 순서를 섞어 두었습니다.
+   ▸ 합계(최대 100)가 곧 유사도 %. 8단계 등급으로 나뉩니다.
+   ▸ 상황과 보기는 귀신 도감 · 착한 귀신상 · 공존에 관한 조례를 참고했습니다.
    =========================================================== */
-// 10문항. 각 보기의 score(0~10)가 높을수록 "인간에 가깝다".
 var ghostQuestions = [
   {
-    q: "소중한 사람이 갑자기 연락을 끊었다. 나는?",
+    q: "새벽닭이 울고 해가 뜨기 시작했다. 나는?",
     answers: [
-      { text: "계속 연락을 시도한다. 이유를 알아야만 한다.", score: 8 },
-      { text: "언젠가 돌아오길 기다린다. 그 사람을 잊을 수가 없다.", score: 10 },
-      { text: "새로운 인연을 찾아 떠난다. 머물러 있지 않는다.", score: 5 },
-      { text: "이유를 분석하고 내가 할 수 있는 일을 한다.", score: 7 },
+      { text: "그늘진 다락으로 스르르 물러난다.", score: 2 },
+      { text: "창문을 열고 오늘 할 일을 떠올린다.", score: 10 },
+      { text: "해가 뜨든 말든 우물 속에서 계속 운다.", score: 0 },
+      { text: "이불을 머리끝까지 덮고 5분만 더 누워 있는다.", score: 8 },
     ],
   },
   {
-    q: "길에서 우는 아이를 봤다. 나는?",
+    q: "밤길에서 마주친 사람이 나를 보고 비명을 질렀다. 나는?",
     answers: [
-      { text: "다가가 달래준다.", score: 10 },
-      { text: "부모를 찾아준다.", score: 9 },
-      { text: "왜 우는지 가만히 관찰한다.", score: 6 },
-      { text: "그냥 지나친다.", score: 3 },
+      { text: "더 가까이 다가가 얼굴을 들이민다.", score: 0 },
+      { text: "얼굴이 안 보이게 머리카락을 앞으로 쓸어내린다.", score: 3 },
+      { text: "놀라게 해서 미안하다고 사과하고 길을 비켜 준다.", score: 10 },
+      { text: "뭐가 그렇게 무섭냐며 괜히 서운해한다.", score: 7 },
     ],
   },
   {
-    q: "거울을 봤을 때 가장 먼저 드는 생각은?",
+    q: "거울 앞에 섰다. 나는?",
     answers: [
-      { text: "오늘 표정이 좋아 보이네.", score: 9 },
-      { text: "머리가 떴네, 정리하자.", score: 8 },
-      { text: "별생각 없다.", score: 5 },
-      { text: "거울 속에 내가 없다.", score: 0 },
+      { text: "안색이 너무 창백하니 볼에 혈색을 좀 넣는다.", score: 6 },
+      { text: "거울에 아무것도 비치지 않는다. 늘 그랬다.", score: 0 },
+      { text: "오늘 머리 모양이 마음에 안 든다.", score: 10 },
+      { text: "거울 속 나와 오래도록 눈싸움을 한다.", score: 3 },
     ],
   },
   {
-    q: "친구가 선물을 줬다. 나는?",
+    q: "어쩐지 배가 고픈 것 같다. 나는?",
     answers: [
-      { text: "진심으로 고마워하며 답례를 생각한다.", score: 10 },
-      { text: "어색하지만 고맙다고 한다.", score: 7 },
-      { text: "왜 줬는지 의심한다.", score: 4 },
-      { text: "받고 곧 잊어버린다.", score: 3 },
+      { text: "편의점 삼각김밥과 라면으로 한 끼를 해결한다.", score: 10 },
+      { text: "지나가는 사람에게 씌어 그 입으로 대신 먹는다.", score: 0 },
+      { text: "잔칫집을 기웃거리다 팥죽 한 그릇을 얻어먹는다.", score: 7 },
+      { text: "제사상 향냄새만 맡아도 배가 부르다.", score: 2 },
     ],
   },
   {
-    q: "무서운 영화를 볼 때 나는?",
+    q: "마을에 잔치가 열려 풍악이 울린다. 나는?",
     answers: [
-      { text: "같이 놀라고 소리친다.", score: 10 },
-      { text: "손으로 눈을 가린다.", score: 8 },
-      { text: "별로 안 무섭다.", score: 4 },
-      { text: "귀신 입장이 이해된다.", score: 1 },
+      { text: "지붕 위에서 몰래 내려다본다.", score: 4 },
+      { text: "구경만 하다 누가 손을 끌면 못 이기는 척 들어간다.", score: 8 },
+      { text: "풍악에 맞춰 촛불을 하나씩 꺼 버린다.", score: 0 },
+      { text: "사람들 틈에 섞여 함께 장단을 맞춘다.", score: 10 },
     ],
   },
   {
-    q: "아침에 해가 뜨면?",
+    q: "강가에서 누군가 물에 빠져 허우적거린다. 나는?",
     answers: [
-      { text: "상쾌하게 하루를 시작한다.", score: 10 },
-      { text: "더 자고 싶다.", score: 7 },
-      { text: "커튼을 친다.", score: 4 },
-      { text: "햇빛이 따갑다, 그늘로 숨는다.", score: 1 },
+      { text: "발목을 붙잡는다. 드디어 내 자리를 대신할 사람이다.", score: 0 },
+      { text: "119에 신고하고 주변에 큰 소리로 도움을 청한다.", score: 10 },
+      { text: "뱃길을 막아서서 몸짓으로 위험을 알린다.", score: 6 },
+      { text: "아무 일 없다는 듯 수면 아래로 가라앉는다.", score: 2 },
     ],
   },
   {
-    q: "누군가 내 이름을 부르면?",
+    q: "몰래 밥을 지어 둔 집의 주인이 \"누가 해 줬지?\" 하며 고마워한다. 나는?",
     answers: [
-      { text: "바로 돌아본다.", score: 10 },
-      { text: "누구지? 하고 확인한다.", score: 8 },
-      { text: "모른 척한다.", score: 4 },
-      { text: "이름이 잘 기억나지 않는다.", score: 1 },
+      { text: "숟가락을 공중에 띄워 대답을 대신한다.", score: 0 },
+      { text: "쑥스러워서 다음에 말하기로 한다.", score: 7 },
+      { text: "\"사실 제가 했어요\" 하고 웃으며 인사한다.", score: 10 },
+      { text: "들키기 전에 우렁이 껍데기 속으로 숨는다.", score: 3 },
     ],
   },
   {
-    q: "배고플 때 먹고 싶은 것은?",
+    q: "해 진 산길에서 길 잃은 아이를 만났다. 나는?",
     answers: [
-      { text: "따뜻한 집밥.", score: 10 },
-      { text: "매운 떡볶이.", score: 9 },
-      { text: "아무거나.", score: 5 },
-      { text: "향(香)이나 정성.", score: 0 },
+      { text: "말없이 손짓으로 내려가는 길을 알려 준다.", score: 6 },
+      { text: "아이 뒤를 조용히 따라가며 이름을 부른다.", score: 0 },
+      { text: "큰 입을 벌려 한 번에 마을까지 옮겨 준다.", score: 3 },
+      { text: "손을 꼭 잡고 마을 입구까지 데려다준다.", score: 10 },
     ],
   },
   {
-    q: "비 오는 날 기분은?",
+    q: "누군가 나에게 \"무슨 사연이 있나요?\" 하고 묻는다. 나는?",
     answers: [
-      { text: "차분하고 좋다.", score: 9 },
-      { text: "빈대떡이 먹고 싶다.", score: 9 },
-      { text: "그냥 그렇다.", score: 6 },
-      { text: "활동하기 좋은 날이다.", score: 2 },
+      { text: "하고 싶은 말은 많은데 자꾸 눈물부터 난다.", score: 8 },
+      { text: "대답 대신 내가 죽던 날의 모습으로 나타난다.", score: 2 },
+      { text: "차 한 잔을 앞에 두고 천천히 털어놓는다.", score: 10 },
+      { text: "새로 부임한 사또처럼 기절시킨다.", score: 0 },
     ],
   },
   {
-    q: "사람들과 함께 있을 때 나는?",
+    q: "딱 하루, 진짜 사람이 될 수 있다면?",
     answers: [
-      { text: "대화를 즐기며 잘 어울린다.", score: 10 },
-      { text: "조용히 듣는 편이다.", score: 7 },
-      { text: "혼자가 편하다.", score: 4 },
-      { text: "사람 곁에 있으면 기운이 빠진다.", score: 1 },
+      { text: "굳이? 귀신으로 사는 게 편하다.", score: 1 },
+      { text: "그리운 사람을 찾아가 못다 한 말을 전한다.", score: 9 },
+      { text: "사람들 사는 모습을 먼발치에서 구경만 한다.", score: 5 },
+      { text: "친구들과 떡볶이를 먹고 노래방에서 목이 쉬도록 논다.", score: 10 },
     ],
   },
 ];
+
+/* 8단계 등급.  min 이상이면 그 단계입니다 (위에서부터 가장 높은 단계를 찾음).
+     ghost : 닮은 귀신 (link 로 도감 · 착한 귀신상 상세에 연결)
+     doc   : 귀신 위원회가 발급하는 서류 이름
+     law   : 공존에 관한 조례와 엮은 한 줄 판정
+     next  : 다음 단계로 가기 위한 과제 (마지막 단계는 축하 문구) */
+var ghostLevels = [
+  {
+    step: 1, min: 0, name: "원형 그대로의 귀신",
+    ghost: "백귀", link: "human-encyclopedia-detail.html?ghost=baekgwi",
+    doc: "인간 세계 출입 제한 통지서",
+    summary: "사람들이 떠올리는 '가장 무서운 것' 그 자체",
+    desc: "인간 흉내는커녕, 보는 것만으로 사람을 얼어붙게 만드는 존재감을 지녔습니다. 인간 세상보다는 전설 속이 더 편한 단계입니다.",
+    law: "제5조(외형 제한) · 제6조(공포 강도 조절) 위반 우려",
+    next: "공포 강도를 한 단계만 낮춰 보세요. 머리를 묶는 것부터 시작입니다.",
+  },
+  {
+    step: 2, min: 13, name: "물가의 외톨이",
+    ghost: "수살귀", link: "human-encyclopedia-detail.html?ghost=susalgwi",
+    doc: "인간 접촉 주의 경고장",
+    summary: "곁에 있고 싶은데, 방법이 '붙잡기'뿐",
+    desc: "사람이 그립다는 마음은 인간과 꽤 닮았습니다. 다만 다가가는 방법이 아직 발목을 붙드는 것밖에 없습니다.",
+    law: "제7조(접촉 원칙) — 직접 접촉 최소화 요망",
+    next: "손 대신 말로 다가가는 연습을 해 보세요.",
+  },
+  {
+    step: 3, min: 26, name: "배고픈 떠돌이",
+    ghost: "걸신", link: "human-encyclopedia-detail.html?ghost=geolsin",
+    doc: "임시 체류 신청 반려서",
+    summary: "인간 세상의 즐거움은 아는데, 남의 몸을 빌려야 누린다",
+    desc: "밥맛, 잔치의 흥 같은 인간의 기쁨을 알아보기 시작했습니다. 아직은 그걸 스스로 누리지 못하고 사람에게 씌어야 합니다.",
+    law: "제9조(금지 행위) — 지속적인 간섭 주의",
+    next: "남의 입 말고 내 숟가락으로 먹는 법을 익혀 보세요.",
+  },
+  {
+    step: 4, min: 38, name: "문 닫은 은둔자",
+    ghost: "청군여귀", link: "human-encyclopedia-detail.html?ghost=cheonggun",
+    doc: "야간 한정 임시 체류증",
+    summary: "사람이 궁금하지만, 아직 문을 열지 못했다",
+    desc: "인간의 마음을 제법 이해합니다. 그런데 곁에 두자니 겁나고 혼자 있자니 외로워 흉가의 방문을 반쯤만 열어 둔 상태입니다.",
+    law: "제3조(출몰 시간) 준수 우수",
+    next: "거문고 소리 대신 먼저 인사 한마디를 건네 보세요.",
+  },
+  {
+    step: 5, min: 51, name: "먼발치의 수호자",
+    ghost: "신지께", link: "ghost-archive-detail.html?ghost=sinjikke",
+    doc: "인간 관찰자 등록증",
+    summary: "사람을 지킬 줄 알지만, 말 대신 몸짓으로",
+    desc: "사람을 해치지 않고 위험하면 먼저 알아채 막아섭니다. 절반은 인간입니다. 다만 아직 말 대신 몸짓으로, 가까이 대신 먼발치에서 전합니다.",
+    law: "제8조(허용 행위) 범위 안에서 모범적 활동",
+    next: "몸짓 대신 말 한마디로 마음을 전해 보세요.",
+  },
+  {
+    step: 6, min: 63, name: "숨은 살림꾼",
+    ghost: "우렁각시", link: "ghost-archive-detail.html?ghost=uureong",
+    doc: "견습 인간 증명서",
+    summary: "사람처럼 살고 있지만, 들킬까 봐 조마조마",
+    desc: "밥 짓고 살림하고 사람을 돌보는 일상이 몸에 익었습니다. 정해진 날수만 채우면 사람이 될 수 있는데, 정체를 들킬까 봐 아직 껍데기를 곁에 둡니다.",
+    law: "제1조(목적) — 공존 모범 사례",
+    next: "들켜도 떠나지 않기. 그게 사람이 되는 마지막 날수입니다.",
+  },
+  {
+    step: 7, min: 76, name: "잔치판의 악사",
+    ghost: "창부대신", link: "ghost-archive-detail.html?ghost=changbu",
+    doc: "준인간 증명서",
+    summary: "사람들 틈에서 함께 웃고 노래한다",
+    desc: "사람들과 섞여 흥을 나누고 함께 즐길 줄 압니다. 누가 봐도 인간입니다. 딱 하나, 아직 이름을 밝히지 않았을 뿐.",
+    law: "조례 전 조항 준수 — 표창 대상",
+    next: "이름을 밝혀도 괜찮아요. 고맙다는 인사도 받아 보세요.",
+  },
+  {
+    step: 8, min: 88, name: "낮에는 완벽한 인간",
+    ghost: "동자삼", link: "ghost-archive-detail.html?ghost=dongjasam",
+    doc: "정식 인간 자격 증명서",
+    summary: "술과 팥죽을 좋아하는, 사실상 인간",
+    desc: "인간 음식을 좋아하고 인간 세상을 체험하는 걸 즐깁니다. 밤이면 가끔 산삼으로 돌아간다는 것만 빼면 흠잡을 데 없는 인간입니다.",
+    law: "인간 유사도 최상위 — 증명서 즉시 발급",
+    next: "축하합니다! 이제 인간에게 복을 나눠 줄 차례입니다.",
+  },
+];
+
+// 점수(%) → 등급 찾기
+function getGhostLevel(percent) {
+  var level = ghostLevels[0];
+  ghostLevels.forEach(function (lv) {
+    if (percent >= lv.min) level = lv;
+  });
+  return level;
+}
 
 function startGhostExam() {
   var quizBox = document.getElementById("quiz");
@@ -330,19 +606,17 @@ function startGhostExam() {
 
   var total = ghostQuestions.length;
   var current = 0;
-  var chosen = []; // 각 문항에서 고른 점수를 저장 (이전 버튼 지원)
+  var chosen = []; // 각 문항에서 고른 점수 (이전 버튼 지원)
 
   function showQuestion() {
     var item = ghostQuestions[current];
 
-    // 상단 표시
     counterEl.textContent = (current + 1) + "/" + total;
     fillEl.style.width = ((current + 1) / total) * 100 + "%";
     qnumEl.textContent = "Q" + (current + 1) + ".";
     questionEl.textContent = item.q;
     prevBtn.disabled = current === 0;
 
-    // 보기 버튼 만들기
     answersEl.innerHTML = "";
     item.answers.forEach(function (answer) {
       var btn = document.createElement("button");
@@ -350,7 +624,7 @@ function startGhostExam() {
       btn.type = "button";
       btn.textContent = answer.text;
       btn.addEventListener("click", function () {
-        chosen[current] = answer.score; // 점수 저장
+        chosen[current] = answer.score;
         if (current < total - 1) {
           current += 1;
           showQuestion();
@@ -362,7 +636,6 @@ function startGhostExam() {
     });
   }
 
-  // 이전 버튼
   prevBtn.addEventListener("click", function () {
     if (current > 0) {
       current -= 1;
@@ -371,7 +644,7 @@ function startGhostExam() {
   });
 
   function finishGhostExam() {
-    // 모든 문항 점수 합산 → 백분율 (문항당 최대 10점)
+    // 합계 → 백분율 (문항당 최대 10점)
     var sum = 0;
     for (var i = 0; i < chosen.length; i++) sum += chosen[i] || 0;
     var percent = Math.round((sum / (total * 10)) * 100);
@@ -386,27 +659,42 @@ function startGhostExam() {
 
 /* ===========================================================
    4. 시험 결과 (ghost-exam-result.html)
-   점수에 따라 등급을 발급하고 증명서에 표시합니다.
+   ▸ 기존 결과 화면의 id(result-score / result-grade / cert-grade)는 그대로 채웁니다.
+   ▸ 아래 id 가 화면에 있으면 함께 채웁니다 (없으면 건너뜀).
+       result-step, result-summary, result-desc, result-ghost(링크),
+       result-law, result-next, cert-doc
+   ▸ 주소에 ?score=73 을 붙이면 그 점수로 바로 볼 수 있습니다 (디자인 확인용).
    =========================================================== */
 function showGhostResult() {
   var scoreEl = document.getElementById("result-score");
   if (!scoreEl) return;
 
-  var gradeEl = document.getElementById("result-grade");
-  var certGradeEl = document.getElementById("cert-grade");
+  var fromUrl = new URLSearchParams(location.search).get("score");
+  var percent = Number(fromUrl !== null ? fromUrl : localStorage.getItem("ghostExamScore") || 0);
+  percent = Math.max(0, Math.min(100, percent || 0));
 
-  var percent = Number(localStorage.getItem("ghostExamScore") || 0);
+  var level = getGhostLevel(percent);
 
-  // 점수 → 등급
-  var grade;
-  if (percent >= 80) grade = "정식 인간";
-  else if (percent >= 50) grade = "견습 인간";
-  else if (percent >= 20) grade = "수상한 인간";
-  else grade = "그냥 귀신";
+  function setText(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
 
-  scoreEl.textContent = percent;
-  gradeEl.textContent = grade;
-  certGradeEl.textContent = grade;
+  setText("result-score", percent);
+  setText("result-grade", level.step + "단계 · " + level.name);
+  setText("cert-grade", level.name);
+  setText("cert-doc", level.doc);
+  setText("result-step", level.step + " / " + ghostLevels.length + "단계");
+  setText("result-summary", level.summary);
+  setText("result-desc", level.desc);
+  setText("result-law", level.law);
+  setText("result-next", level.next);
+
+  var ghostEl = document.getElementById("result-ghost");
+  if (ghostEl) {
+    ghostEl.textContent = level.ghost;
+    if (ghostEl.tagName === "A") ghostEl.href = level.link;
+  }
 }
 
 
@@ -1436,6 +1724,196 @@ function setupGlitch() {
 
 
 /* ===========================================================
+   8-1-2. 가만히 두면 저절로 홀리기 (human-encyclopedia.html)
+
+   마우스를 움직이지도 누르지도 않은 채 30초가 지나면,
+   카드 1~2장이 저 혼자 정체를 드러내며 글리치를 일으킵니다.
+   6초마다 홀리는 카드를 다시 뽑아 자리가 옮겨 다닙니다.
+   마우스를 움직이거나 누르면 곧바로 원래대로 돌아가고 30초를 다시 셉니다.
+
+   호버와 똑같은 모습을 쓰기 위해 카드에 haunted 클래스를 붙입니다.
+   (css 의 .dogam-card.reveal:is(:hover, .haunted) 규칙)
+   =========================================================== */
+function setupIdleHaunt() {
+  var cards = document.querySelectorAll(".dogam-card.reveal");
+  if (cards.length === 0) return; // 이 페이지가 아니면 중단
+
+  // 움직임을 줄이도록 설정한 사용자에게는 저절로 바뀌지 않게 둡니다.
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var IDLE_TIME = 10000; // 10초 동안 아무 것도 안 하면 시작
+  var SWAP_TIME = 5000;  // 홀리는 카드를 바꾸는 간격
+  var idleTimer = null;
+  var swapTimer = null;
+
+  function clearHaunt() {
+    cards.forEach(function (card) { card.classList.remove("haunted"); });
+  }
+
+  function haunt() {
+    clearHaunt();
+
+    // 남은 카드 중에서 1~2장을 겹치지 않게 뽑습니다.
+    var pool = Array.prototype.slice.call(cards);
+    var count = 1 + Math.floor(Math.random() * 2);
+    for (var i = 0; i < count && pool.length > 0; i++) {
+      var picked = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+      picked.classList.add("haunted");
+    }
+
+    swapTimer = setTimeout(haunt, SWAP_TIME);
+  }
+
+  function wake() {
+    clearTimeout(idleTimer);
+    clearTimeout(swapTimer);
+    clearHaunt();
+    idleTimer = setTimeout(haunt, IDLE_TIME);
+  }
+
+  ["mousemove", "mousedown", "click", "keydown", "wheel", "touchstart"].forEach(function (name) {
+    window.addEventListener(name, wake, { passive: true });
+  });
+  document.addEventListener("scroll", wake, { passive: true });
+
+  // 다른 탭에 가 있는 동안에는 세지 않습니다.
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      clearTimeout(idleTimer);
+      clearTimeout(swapTimer);
+      clearHaunt();
+    } else {
+      wake();
+    }
+  });
+
+  wake(); // 페이지가 열리면 30초부터 세기 시작
+}
+
+
+/* ===========================================================
+   8-1-3. 조례 글자 모션 (ghost-rules.html)
+
+   법전을 읽어 내려가면 군데군데 글자가 제멋대로 굽니다.
+     타이핑 : 글자가 하나씩 차례로 켜집니다. (스크롤할 때마다 다시 재생)
+     뒤집힘 : 무작위로 고른 낱말이 통째로 뒤집히고, 그대로 남습니다.
+
+   ▸ 어느 줄에 걸릴지, 어느 낱말이 뒤집힐지는 열 때마다 무작위입니다.
+   ▸ 타이핑은 화면에 들어올 때 재생하고 나가면 되돌리므로 오르내릴 때마다
+     다시 보입니다. 뒤집힘은 한 번 넘어가면 되돌리지 않습니다.
+   ▸ 글자를 <span> 으로 쪼개도 자리가 밀리지 않도록, 숨길 때 opacity 만
+     건드리고 폭·줄바꿈에 영향을 주는 값은 쓰지 않습니다.
+     (띄어쓰기는 쪼개지 않고 그대로 둡니다.)
+   =========================================================== */
+function setupOrdinanceMotion() {
+  var doc = document.querySelector(".ordinance-doc");
+  if (!doc) return; // 이 페이지가 아니면 중단
+  if (!("IntersectionObserver" in window)) return;
+
+  // 움직임을 줄이도록 설정한 사용자에게는 걸지 않습니다.
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var PICK_LINE = 0.4;  // 줄을 고를 확률
+  var PICK_WORD = 0.35; // '뒤집힘'에서 낱말을 고를 확률
+
+  /* 글 안의 텍스트를 조각내어 <span class="ch"> 로 감쌉니다.
+     byWord=false : 글자 하나씩 전부 감쌉니다 (타이핑용)
+     byWord=true  : 띄어쓰기로 나눈 낱말 중 무작위로 고른 것만 감쌉니다 (뒤집힘용)
+     감싸지 않은 부분과 띄어쓰기는 그대로 두어 줄바꿈이 달라지지 않게 합니다. */
+  function wrapPieces(el, byWord) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    // 1) 먼저 조각을 내고, 감쌀 것을 정합니다.
+    //    낱말 단위면 띄어쓰기를 경계로, 글자 단위면 한 글자씩 자릅니다.
+    var split = nodes.map(function (node) {
+      return (byWord ? node.nodeValue.split(/(\s+)/) : node.nodeValue.split("")).filter(function (p) {
+        return p !== "";
+      });
+    });
+
+    var picks = split.map(function (pieces) {
+      return pieces.map(function (piece) {
+        if (/^\s+$/.test(piece)) return false;       // 띄어쓰기는 건드리지 않습니다
+        return byWord ? Math.random() < PICK_WORD : true;
+      });
+    });
+
+    // 확률이 낮아 한 낱말도 안 걸리면 줄이 통째로 조용해집니다. 하나는 보장합니다.
+    if (byWord) {
+      var chosen = 0;
+      picks.forEach(function (row) { row.forEach(function (p) { if (p) chosen++; }); });
+      if (chosen === 0) {
+        var spots = [];
+        split.forEach(function (pieces, n) {
+          pieces.forEach(function (piece, i) {
+            if (!/^\s+$/.test(piece)) spots.push([n, i]);
+          });
+        });
+        if (spots.length) {
+          var spot = spots[Math.floor(Math.random() * spots.length)];
+          picks[spot[0]][spot[1]] = true;
+        }
+      }
+    }
+
+    // 2) 정한 대로 감쌉니다. 감싸지 않은 조각은 그냥 글자로 둡니다.
+    var order = 0;
+    nodes.forEach(function (node, n) {
+      var frag = document.createDocumentFragment();
+
+      split[n].forEach(function (piece, i) {
+        if (!picks[n][i]) {
+          frag.appendChild(document.createTextNode(piece));
+          return;
+        }
+        var span = document.createElement("span");
+        span.className = "ch";
+        span.textContent = piece;
+        span.style.setProperty("--i", order++);
+        frag.appendChild(span);
+      });
+
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+
+  var lines = doc.querySelectorAll(".ordinance-article, .ordinance-clause, .ordinance-bullets li");
+  var picked = [];
+
+  lines.forEach(function (el) {
+    if (Math.random() > PICK_LINE) return;
+
+    var mode = Math.random() < 0.5 ? "type" : "flip";
+    wrapPieces(el, mode === "flip");
+    el.classList.add("om", "om-" + mode);
+    picked.push(el);
+  });
+
+  if (picked.length === 0) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var isFlip = entry.target.classList.contains("om-flip");
+
+      if (!entry.isIntersecting) {
+        // 타이핑만 되돌려 다시 볼 수 있게 합니다.
+        if (!isFlip) entry.target.classList.remove("play");
+        return;
+      }
+
+      entry.target.classList.add("play");
+      // 뒤집힌 낱말은 그대로 두므로 더 볼 필요가 없습니다.
+      if (isFlip) io.unobserve(entry.target);
+    });
+  }, { threshold: 0 });
+
+  picked.forEach(function (el) { io.observe(el); });
+}
+
+
+/* ===========================================================
    8-2. 착한 귀신상 상세 페이지 (ghost-archive-detail.html)
 
    ★ 새 귀신을 추가하려면 ARCHIVE 에 한 덩어리만 더 적으면 됩니다.
@@ -1901,6 +2379,8 @@ function setupStoryPages() {
    =========================================================== */
 document.addEventListener("DOMContentLoaded", function () {
   setupGlitch();
+  setupIdleHaunt();
+  setupOrdinanceMotion();
   setupArchiveDetail();   // 기사·팝업 내용을 먼저 채운 뒤에 넘기기를 붙입니다
   setupModals();
   setupStoryPages();
