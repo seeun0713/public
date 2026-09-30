@@ -5,6 +5,212 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>테스트 결과 — 인간</title>
   <link rel="stylesheet" href="css/style.css" />
+  <!--
+    귀신 유형 테스트 결과 (Figma "Desktop - 136", node 613:5361)
+
+    · 한지 위에 도감 카드 한 장 + 오른쪽 글, 아래로 소개 글 · 특징 · 궁합 · 버튼.
+    · 카드는 도감 목록의 카드를 그대로 쓰고 1.17배로 키웁니다(시안 288.005 / 246).
+      처음엔 "당신"이라는 사람 이름 → 잠시 뒤 글리치와 함께 정체가 드러납니다.
+    · 내용은 js/script.js 의 humanTypes 를 그대로 씁니다.
+    · 주소 뒤에 ?type=jigwi 처럼 귀신 key 를 붙이면 그 결과를 바로 볼 수 있습니다.
+    · 이 페이지 전용 스타일은 모두 ht- 로 시작합니다.
+    · 이전 화면은 human-test-result.backup.html 에 있습니다.
+  -->
+  <style>
+    /* 시안의 본문 칸: 왼쪽 308 ~ 오른쪽 1120 = 폭 812 */
+    .ht-panel {
+      position: relative;
+      z-index: 1;
+      width: 812px;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 0 25px;         /* 한지 무대가 이미 187 에서 시작합니다 */
+      font-family: "Pretendard Variable", "Pretendard", sans-serif;
+      color: #000;
+    }
+
+    /* ---------- 1) 카드 + 오른쪽 글 ---------- */
+    .ht-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 47px;                 /* 643 - (308 + 288) */
+    }
+
+    /* 도감 카드를 1.17배로 — 안쪽 좌표(px)가 전부 같이 커집니다 */
+    .ht-card-wrap { flex: none; zoom: 1.17075; }
+    .ht-card { cursor: default; }
+
+    /* 정체가 드러난 상태 — 도감 목록의 호버 상태를 그대로 옮겨 왔습니다.
+       (도감 목록의 .reveal 을 쓰면 '가만히 두면 홀리기' 스크립트가
+        마우스를 움직일 때마다 원래대로 돌려놓아서 따로 이름을 붙였습니다) */
+    .ht-card { --reveal-time: 220ms; }
+    .ht-card.is-open .dogam-photo-img.on-hover { opacity: 1; }
+    .ht-card.is-open .name-base { opacity: 0; }
+    .ht-card.is-open .name-hover { opacity: 1; animation: dogam-name-glitch 2.8s steps(1, end) infinite; }
+    .ht-card.is-open .dogam-photo::after { opacity: 1; animation: dogam-scan 2.6s linear infinite; }
+    .ht-card.is-open .dogam-photo-img.glitch.a {
+      animation: dogam-glitch-a 2.8s steps(1, end) infinite, dogam-glitch-fade 2.8s linear infinite;
+    }
+    .ht-card.is-open .dogam-photo-img.glitch.b {
+      animation: dogam-glitch-b 2.8s steps(1, end) infinite, dogam-glitch-fade 2.8s linear infinite;
+    }
+    /* 노리개 — 위에서 스르륵 내려와 살랑살랑 */
+    .ht-card .dogam-knot {
+      transform-origin: top center;
+      transform: translateY(-24px);
+      transition: opacity .35s ease .1s, transform .5s cubic-bezier(.3, 1.4, .5, 1) .1s;
+    }
+    .ht-card.is-open .dogam-knot {
+      opacity: 1;
+      transform: translateY(0);
+      animation: ht-sway 3.4s ease-in-out .7s infinite;
+    }
+    @keyframes ht-sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg); }
+    }
+    /* 드러나는 순간 카드가 한 번 크게 튑니다 */
+    .ht-card.is-hit { animation: ht-shake .45s steps(1, end); }
+    @keyframes ht-shake {
+      0%   { transform: translate(3px, 0); }
+      20%  { transform: translate(-4px, 1px); }
+      40%  { transform: translate(2px, -1px); }
+      60%  { transform: translate(-1px, 0); }
+      80%, 100% { transform: none; }
+    }
+
+    /* 오른쪽 글 — 시안: 폭 477, 묶음 사이 32 */
+    .ht-text {
+      flex: none;
+      width: 477px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .ht-head { display: flex; flex-direction: column; gap: 16px; }
+    .ht-name-group { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+    .ht-body { display: flex; flex-direction: column; align-items: flex-start; gap: 26px; }
+    .ht-summary-group { display: flex; flex-direction: column; gap: 12px; }
+
+    .ht-text > *, .ht-text > * > * {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    .ht-top.is-open .ht-text > *,
+    .ht-top.is-open .ht-text > * > * { opacity: 1; transform: none; }
+
+
+    .ht-lead { margin: 0; font-size: 19px; font-weight: 500; }
+    .ht-ghost {
+      margin: 0;
+      /* 피그마 원본은 'ON 월인석보' 손글씨체인데 웹폰트가 없어 굵은 기본 폰트로 대체 */
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -5.12px;
+      line-height: normal;
+    }
+    .ht-type {
+      margin: 0;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 700;
+      background: #fff;
+      color: #000;
+    }
+    .ht-type.blue   { background: #002bff; color: #fff; }
+    .ht-type.white  { background: #fff;    color: #000; }
+    .ht-type.yellow { background: #ffe400; color: #000; }
+    .ht-type.red    { background: #d51313; color: #fff; }
+    .ht-summary { margin: 0; font-size: 19px; font-weight: 700; word-break: keep-all; }
+    .ht-story   { margin: 0; font-size: 19px; font-weight: 500; line-height: 1.55; word-break: keep-all; }
+    .ht-more {
+      font-size: 19px;
+      font-weight: 700;
+      color: #000;
+      text-decoration: underline;
+      text-underline-position: from-font;
+    }
+
+    /* ---------- 2) 소개 글 + 특징 ---------- */
+    .ht-about {
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+      margin-top: 102px;         /* 카드 아래 → 시안 672 */
+      font-size: 19px;
+    }
+    .ht-intro p { margin: 0; line-height: 1.55; font-weight: 500; word-break: keep-all; }
+    .ht-traits-box { display: flex; flex-direction: column; gap: 20px; }
+    .ht-trait-title { margin: 0; font-weight: 700; }
+    .ht-traits { margin: 0; padding-left: 28.5px; font-weight: 500; }
+    .ht-traits li { line-height: 1.55; word-break: keep-all; }
+
+    /* ---------- 3) 궁합 ---------- */
+    .ht-mates {
+      display: flex;
+      justify-content: center;
+      gap: 104px;                /* 769 - (419 + 246) */
+      margin-top: 76px;          /* 소개 글 아래 → 시안 1055 */
+    }
+    .ht-mate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 31px;                 /* 제목(1055) 아래 → 카드(1115) */
+      text-decoration: none;
+      color: #000;
+    }
+    .ht-mate-label { font-size: 24px; font-weight: 700; line-height: normal; }
+    .ht-mate .dogam-card { transition: transform .15s ease; }
+    .ht-mate:hover .dogam-card,
+    .ht-mate:focus-visible .dogam-card { transform: translateY(-4px); }
+    .ht-mate:focus-visible { outline: none; }
+    .ht-mate .dogam-photo-img.on-hover { opacity: 1; }
+    .ht-mate .dogam-card-name { color: #fff; }
+    .ht-mate .dogam-knot { opacity: 1; }
+
+    /* ---------- 4) 버튼 세 개 ---------- */
+    .ht-actions {
+      display: flex;
+      gap: 24px;
+      margin-top: 103px;         /* 궁합 카드 아래 → 시안 1546 */
+    }
+    .ht-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 16px 44px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .ht-btn.white { background: #fff;     color: #000; }
+    .ht-btn.blue  { background: #002bff;  color: #fff; }
+    .ht-btn.red   { background: #d51313;  color: #fff; }
+    .ht-btn:hover { filter: brightness(1.12); }
+
+    /* ---------- 좁은 화면 ---------- */
+    @media (max-width: 900px) {
+      .ht-panel { width: 100%; padding: 32px 20px 80px; }
+      .ht-top { flex-direction: column; align-items: center; gap: 32px; }
+      .ht-card-wrap { zoom: 1; }
+      .ht-text { width: 100%; }
+      .ht-ghost { font-size: 44px; letter-spacing: -2px; }
+      .ht-about { margin-top: 56px; gap: 32px; }
+      .ht-mates { flex-direction: column; align-items: center; gap: 48px; margin-top: 64px; }
+      .ht-actions { flex-direction: column; margin-top: 200px; }
+      .ht-btn { padding: 14px 20px; }
+    }
+  </style>
 </head>
 <body class="typetest-page human">
 
@@ -13,54 +219,171 @@
     <a class="icon left" href="human-test.html" aria-label="테스트로 돌아가기">
       <img src="images/dogam2-icon-back.svg" alt="" />
     </a>
-    <h1 class="typetest-brand">테스트 결과</h1>
+    <h1 class="typetest-brand">귀신 유형 테스트</h1>
     <button class="icon right menu-toggle" type="button" aria-label="메뉴">
       <img src="images/dogam2-icon-menu.svg" alt="" />
     </button>
   </header>
 
-  <!-- 오방색 띠 -->
+  <!-- 오방색 띠 (상단) -->
   <div class="saekdong-band top"></div>
 
-  <!--
-    결과는 8마리 귀신 중 하나입니다. 저장된 key 는 귀신 도감(GHOSTS)과
-    같은 값이라, 그림과 상세 페이지 주소를 그대로 가져다 씁니다.
-    내용은 js/script.js 의 humanTypes / showHumanResult 가 채웁니다.
-  -->
-  <main class="page result-page">
+  <!-- 한지 무대 (좌우 끝은 살짝 어둡게) -->
+  <main class="typetest-stage">
+    <i class="typetest-shade left" aria-hidden="true"></i>
+    <i class="typetest-shade right" aria-hidden="true"></i>
 
-    <section class="result-card">
-      <p class="result-lead">당신 안에 있는 귀신은</p>
-      <div class="result-art" id="result-art"><!-- 그림은 JS가 채웁니다 --></div>
-      <p class="result-type" id="result-type">유형 이름</p>
-      <h2 class="result-ghost" id="result-ghost">귀신 이름</h2>
-      <p class="result-summary" id="result-summary">한 줄 요약이 들어갑니다.</p>
-      <p class="result-story" id="result-story">이야기가 들어갑니다.</p>
-      <a class="result-more" id="result-more" href="#">도감 보기</a>
-    </section>
+    <div class="ht-panel">
 
-    <section class="result-block">
-      <h2>이런 사람입니다</h2>
-      <ul class="result-traits" id="result-traits">
-        <!-- 특징 세 줄이 채워집니다 -->
-      </ul>
-    </section>
+      <!-- 1) 카드 + 오른쪽 글 -->
+      <section class="ht-top" id="ht-top">
+        <div class="ht-card-wrap">
+          <!-- 카드 안쪽 그림 · 이름 · 노리개는 아래 스크립트가 채웁니다 -->
+          <div class="dogam-card ht-card" id="ht-card" aria-hidden="true"></div>
+        </div>
 
-    <section class="result-block">
-      <h2>한마디</h2>
-      <p class="result-advice" id="result-advice">조언이 들어갑니다.</p>
-    </section>
+        <div class="ht-text">
+          <div class="ht-head">
+            <p class="ht-lead">당신 안에 있는 귀신은...</p>
+            <div class="ht-name-group">
+              <h2 class="ht-ghost" id="ht-ghost">귀신</h2>
+              <p class="ht-type" id="ht-type">유형</p>
+            </div>
+          </div>
 
-    <section class="result-block">
-      <h2>궁합</h2>
-      <div class="result-mates" id="result-ghosts">
-        <!-- 잘 맞는 귀신 / 상극인 귀신 카드가 채워집니다 -->
+          <div class="ht-body">
+            <div class="ht-summary-group">
+              <p class="ht-summary" id="ht-summary">한 줄 요약</p>
+              <p class="ht-story" id="ht-story">이야기</p>
+            </div>
+            <a class="ht-more" id="ht-more" href="human-encyclopedia.html">자세히 보기</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2) 소개 글 + 특징 -->
+      <section class="ht-about">
+        <div class="ht-intro" id="ht-intro"></div>
+        <div class="ht-traits-box">
+          <p class="ht-trait-title" id="ht-trait-title"></p>
+          <ul class="ht-traits" id="ht-traits"></ul>
+        </div>
+      </section>
+
+      <!-- 3) 궁합 -->
+      <section class="ht-mates" id="ht-mates" aria-label="궁합"></section>
+
+      <!-- 4) 버튼 -->
+      <div class="ht-actions">
+        <a class="ht-btn white" id="ht-detail" href="human-encyclopedia.html">도감 보러가기</a>
+        <button class="ht-btn blue" id="ht-share" type="button">결과 공유하기</button>
+        <a class="ht-btn red" href="human-test.html">다시 테스트하기</a>
       </div>
-    </section>
 
-    <a class="btn" href="human-test.html">다시 테스트하기</a>
+    </div>
   </main>
 
+  <!-- 오방색 띠 (하단) -->
+  <div class="saekdong-band bottom"></div>
+
   <script src="js/script.js"></script>
+  <script>
+  (function () {
+    if (typeof humanTypes === "undefined") return;
+
+    /* 도감 목록 카드와 같은 그림 · 잘라내기 값 · 사람 이름 · 노리개 */
+    var CARD = {
+      susalgwi:   { no: 1, human: "한수아",   base: ["dogam2-2", "-342.98%", "-65.81%"], hover: ["-342.98%", "-76.43%"], knot: "red" },
+      geolsin:    { no: 2, human: "김준호",   base: ["dogam2-3", "-342.98%", "-73.05%"], hover: ["-342.98%", "-76.43%"], knot: "green" },
+      jigwi:      { no: 3, human: "서화진",   base: ["dogam2-7", "-342.98%", "-61.59%"], hover: ["-343.06%", "-59.96%"], knot: "yellow" },
+      singiwonyo: { no: 4, human: "신유진",   base: ["dogam2-9", "-342.97%", "-71.39%"], hover: ["-353.06%", "-74.75%"], knot: "red" },
+      baekgwi:    { no: 5, human: "백현우",   base: ["dogam2-5", "-351.77%", "-71.84%"], hover: ["-343.34%", "-81.56%"], knot: "green" },
+      arang:      { no: 6, human: "정아영",   base: ["dogam2-6", "-342.98%", "-70.03%"], hover: ["-339.22%", "-77.4%"],  knot: "yellow" },
+      maehwa:     { no: 7, human: "배춘섭",   base: ["dogam2-4", "-342.98%", "-73.05%"], hover: ["-361.69%", "-86.54%"], knot: "green" },
+      cheonggun:  { no: 8, human: "남궁채연", base: ["dogam2-8", "-339.6%",  "-97.4%"],  hover: ["-341.76%", "-97.41%"], knot: "yellow" }
+    };
+    var KNOT = {
+      red:    "left: 156px; width: 84.639px; height: 154px;",
+      green:  "left: 166.82px; width: 63px; height: 155px;",
+      yellow: "left: 159.32px; width: 78px; height: 154px;"
+    };
+
+    /* 결과 key — 주소의 ?type= 이 먼저, 없으면 테스트가 저장한 값 */
+    var fromUrl = new URLSearchParams(location.search).get("type");
+    var key = humanTypes[fromUrl] ? fromUrl : localStorage.getItem("humanResultType");
+    if (!humanTypes[key]) key = "jigwi";
+    var data = humanTypes[key];
+
+    function $(id) { return document.getElementById(id); }
+    function img(src, left, top, extra) {
+      return '<img class="dogam-photo-img' + (extra || "") + '" src="' + src +
+        '" alt="" aria-hidden="true" style="left: ' + left + "; top: " + top + ';" />';
+    }
+    function cardInner(k, nameHtml, withBase, glitch) {
+      var c = CARD[k];
+      var hoverSrc = "images/dogam2-hover-" + k + ".png";
+      var html = '<span class="dogam-photo">';
+      if (withBase) html += img("images/" + c.base[0] + ".png", c.base[1], c.base[2]);
+      html += img(hoverSrc, c.hover[0], c.hover[1], " on-hover");
+      if (glitch) {
+        html += img(hoverSrc, c.hover[0], c.hover[1], " on-hover glitch a");
+        html += img(hoverSrc, c.hover[0], c.hover[1], " on-hover glitch b");
+      }
+      html += '<i class="dogam-frame"></i><i class="dogam-corner tl"></i><i class="dogam-corner tr"></i>' +
+              '<i class="dogam-corner bl"></i><i class="dogam-corner br"></i></span>';
+      html += '<span class="dogam-card-name">' + nameHtml + "</span>";
+      html += '<img class="dogam-knot" src="images/dogam2-knot-' + c.knot + '.svg" alt="" aria-hidden="true" style="' + KNOT[c.knot] + '" />';
+      return html;
+    }
+
+    /* 1) 큰 카드 — 처음엔 "당신", 곧 정체가 드러납니다 */
+    var bigCard = $("ht-card");
+    bigCard.innerHTML = cardInner(key,
+      '<span class="name-base">당신</span><span class="name-hover">' + data.ghost + "</span>", true, true);
+
+    /* 오른쪽 글 */
+    document.title = data.ghost + " — 귀신 유형 테스트 결과";
+    $("ht-ghost").textContent = data.ghost;
+    $("ht-type").textContent = data.type;
+    $("ht-type").className = "ht-type " + data.color;
+    $("ht-summary").textContent = data.summary;
+    $("ht-story").textContent = data.story;
+    // '자세히 보기'는 이 귀신의 상세 페이지로,
+    // '도감 보러가기'는 목록 페이지로 갑니다(주소는 HTML 에 그대로 적어 두었습니다).
+    $("ht-more").href = "human-encyclopedia-detail.html?ghost=" + key;
+
+    /* 2) 소개 글 + 특징 */
+    $("ht-intro").innerHTML = (data.intro || []).map(function (t) { return "<p>" + t + "</p>"; }).join("");
+    $("ht-trait-title").textContent = data.traitTitle || "";
+    $("ht-traits").innerHTML = data.traits.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+
+    /* 3) 궁합 카드 */
+    var mates = $("ht-mates");
+    [["잘 맞는 귀신", data.good], ["안 맞는 귀신", data.bad]].forEach(function (m) {
+      var mate = humanTypes[m[1]];
+      if (!mate || !CARD[m[1]]) return;
+      var a = document.createElement("a");
+      a.className = "ht-mate";
+      a.href = "human-encyclopedia-detail.html?ghost=" + m[1];
+      a.innerHTML = '<span class="ht-mate-label">' + m[0] + "</span>" +
+        '<span class="dogam-card">' + cardInner(m[1], mate.ghost, false, false) + "</span>";
+      mates.appendChild(a);
+    });
+
+    /* 정체 드러내기 — 기다리지 않고 페이지가 뜨자마자 바로 드러냅니다 */
+    $("ht-top").classList.add("is-open");
+    bigCard.classList.add("is-open", "is-hit");
+
+    /* 결과 공유하기 — 주소 복사 */
+    $("ht-share").addEventListener("click", function () {
+      var url = location.origin + location.pathname + "?type=" + key;
+      var btn = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+        .then(function () { btn.textContent = "주소를 복사했어요"; })
+        .catch(function () { btn.textContent = url; });
+      setTimeout(function () { btn.textContent = "결과 공유하기"; }, 2000);
+    });
+  })();
+  </script>
 </body>
 </html>

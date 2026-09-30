@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>테스트 결과 — 인간</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="typetest-page human">
+
+  <!-- 헤더 (검정 바 127px) — 귀신 유형 테스트 페이지와 같은 머리말 -->
+  <header class="typetest-header">
+    <a class="icon left" href="human-test.html" aria-label="테스트로 돌아가기">
+      <img src="images/dogam2-icon-back.svg" alt="" />
+    </a>
+    <h1 class="typetest-brand">테스트 결과</h1>
+    <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+      <img src="images/dogam2-icon-menu.svg" alt="" />
+    </button>
+  </header>
+
+  <!-- 오방색 띠 -->
+  <div class="saekdong-band top"></div>
+
+  <!--
+    결과는 8마리 귀신 중 하나입니다. 저장된 key 는 귀신 도감(GHOSTS)과
+    같은 값이라, 그림과 상세 페이지 주소를 그대로 가져다 씁니다.
+    내용은 js/script.js 의 humanTypes / showHumanResult 가 채웁니다.
+  -->
+  <main class="page result-page">
+
+    <section class="result-card">
+      <p class="result-lead">당신 안에 있는 귀신은</p>
+      <div class="result-art" id="result-art"><!-- 그림은 JS가 채웁니다 --></div>
+      <p class="result-type" id="result-type">유형 이름</p>
+      <h2 class="result-ghost" id="result-ghost">귀신 이름</h2>
+      <p class="result-summary" id="result-summary">한 줄 요약이 들어갑니다.</p>
+      <p class="result-story" id="result-story">이야기가 들어갑니다.</p>
+      <a class="result-more" id="result-more" href="#">도감 보기</a>
+    </section>
+
+    <section class="result-block">
+      <h2>이런 사람입니다</h2>
+      <ul class="result-traits" id="result-traits">
+        <!-- 특징 세 줄이 채워집니다 -->
+      </ul>
+    </section>
+
+    <section class="result-block">
+      <h2>한마디</h2>
+      <p class="result-advice" id="result-advice">조언이 들어갑니다.</p>
+    </section>
+
+    <section class="result-block">
+      <h2>궁합</h2>
+      <div class="result-mates" id="result-ghosts">
+        <!-- 잘 맞는 귀신 / 상극인 귀신 카드가 채워집니다 -->
+      </div>
+    </section>
+
+    <a class="btn" href="human-test.html">다시 테스트하기</a>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

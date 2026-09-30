@@ -5,80 +5,514 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>시험 결과 — 귀신</title>
   <link rel="stylesheet" href="css/style.css" />
-</head>
-<!--
-  인간 유사도 시험 결과
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap" />
+  <!--
+    인간 유사도 시험 결과 — 세로 두루마리 (Figma 세로형 시안)
+    · 내용은 js/script.js 의 ghostLevels / getGhostLevel 을 그대로 씁니다.
+    · 주소 뒤에 ?score=73 을 붙이면 그 점수로 바로 볼 수 있습니다(확인용).
+    · 이 페이지 전용 스타일은 모두 rj- 로 시작합니다.
+    · 바로 전 공문서(괘선) 화면은 ghost-exam-result.paper.html 에 있습니다.
+    · 두루마리는 images/exam-scroll.png 한 장을 border-image 로 씁니다.
+      위아래 막대는 그대로 두고, 가운데 종이만 내용 길이에 맞춰 늘어납니다.
+  -->
+  <style>
+    :root {
+      --rj-ink: #1b1712;
+      --rj-ink-soft: #4a4238;
+      --rj-seal: #c8231a;          /* 인주 */
+      /* 두루마리 폭. 그림(788×1525px) 기준으로 막대·종이 위치를 비율로 계산합니다. */
+      --rj-w: min(752px, 100vw - 40px);
+      --rj-k: calc(var(--rj-w) / 788);  /* 그림 1px 이 화면에서 차지하는 크기 */
+    }
 
-  점수(0~100)에 따라 8단계 중 하나가 나옵니다.
-  내용은 js/script.js 의 ghostLevels / showGhostResult 가 채웁니다.
-  주소 뒤에 ?score=73 을 붙이면 그 점수로 바로 볼 수 있습니다(확인용).
--->
+    .rj-main {
+      position: relative;
+      z-index: 1;
+      max-width: var(--rj-w);
+      margin: 36px auto 0;
+      padding-bottom: 60px;
+    }
+
+    /* ---------- 위 안내 ---------- */
+    .rj-intro {
+      margin: 0 0 44px;
+      text-align: center;
+      font-size: 17px;
+      color: #fff;
+    }
+
+    /* ---------- 두루마리 ---------- */
+    .rj-scroll {
+      position: relative;
+      box-sizing: border-box;
+      width: var(--rj-w);
+      margin: 0 auto;
+      /* 그림에서 위 막대 = 0~140px, 아래 막대 = 1370~1525px,
+         종이 = 가로 55~704px. 막대는 비율 그대로, 종이만 세로로 늘어납니다. */
+      border-style: solid;
+      border-color: transparent;
+      border-width: calc(var(--rj-k) * 140) 0 calc(var(--rj-k) * 155);
+      border-image: url("images/exam-scroll.png") 140 0 155 0 fill stretch;
+      padding: 40px calc(var(--rj-k) * 84 + 34px) 56px calc(var(--rj-k) * 55 + 34px);
+      color: var(--rj-ink);
+      filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .55));
+      animation: rj-scroll-in .8s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    @keyframes rj-scroll-in {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .rj-scroll.is-hit { animation: rj-hit .35s ease-out; }
+    @keyframes rj-hit {
+      30%  { transform: translateY(4px) scale(.996); }
+      100% { transform: none; }
+    }
+    .rj-sheet { position: relative; }
+
+    /* 문서 머리 */
+    .rj-doc-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 16px;
+    }
+    .rj-title {
+      margin: 50px auto 0;
+      padding: 0 0 12px;
+      max-width: 520px;
+      border-bottom: 1px solid var(--rj-ink);
+      text-align: center;
+      font-family: "East Sea Dokdo", "Pretendard Variable", cursive;
+      font-size: 64px;
+      font-weight: 400;
+      -webkit-text-stroke: .7px currentColor;   /* 붓글씨를 시안처럼 조금 더 굵게 */
+      line-height: 1;
+      letter-spacing: 1px;
+      word-break: keep-all;
+    }
+
+    /* 증명사진 + 인적 사항 */
+    .rj-profile {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 62px;
+      padding-left: 12px;
+    }
+    .rj-photo { margin: 0; }
+    .rj-photo a { display: block; }
+    .rj-photo canvas {
+      display: block;
+      width: 150px;
+      height: 182px;
+      background: #fff;
+    }
+    .rj-table {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      row-gap: 30px;
+      margin: 0;
+      padding-top: 2px;
+      font-size: 17px;
+      line-height: 1.3;
+    }
+    .rj-table dt { margin: 0; }
+    .rj-table dd { margin: 0; word-break: keep-all; }
+    .rj-score { font-variant-numeric: tabular-nums; }
+
+    /* 8단계 표시 */
+    .rj-ladder { margin: 52px 0 0; }
+    .rj-ladder-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--rj-ink-soft);
+      margin-bottom: 8px;
+    }
+    .rj-steps {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      border: 1px solid var(--rj-ink);
+    }
+    .rj-step {
+      position: relative;
+      padding: 9px 3px 8px;
+      border-left: 1px solid var(--rj-ink);
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--rj-ink-soft);
+      word-break: keep-all;
+    }
+    .rj-step:first-child { border-left: 0; }
+    .rj-step b {
+      display: block;
+      font-size: 15px;
+      color: var(--rj-ink);
+    }
+    .rj-step.is-past { background: rgba(27, 23, 18, .08); }
+    .rj-step.is-now { background: var(--rj-ink); color: #f4ecd9; }
+    .rj-step.is-now b { color: #f4ecd9; }
+    .rj-step.is-now::after {             /* 현재 위치 표시 삼각 */
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -9px;
+      border: 8px solid transparent;
+      border-bottom: 0;
+      border-top-color: var(--rj-ink);
+      transform: translateX(-50%);
+    }
+
+    /* 본문 항목 */
+    .rj-body {
+      margin: 48px 0 0;
+      display: grid;
+      row-gap: 22px;
+    }
+    .rj-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+    .rj-item dt { margin: 0; }
+    .rj-item dd { margin: 0; word-break: keep-all; }
+
+    /* 증명 문구 + 서명 */
+    .rj-foot {
+      position: relative;
+      margin-top: 70px;
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+    .rj-foot p { margin: 0; }
+    .rj-foot .rj-date { margin-top: 48px; }
+    .rj-sign {
+      position: relative;
+      display: inline-block;
+      margin-top: 14px !important;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    /* 판정 도장 — 서명 오른쪽에 비스듬히 */
+    .rj-stamp {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      width: 136px;
+      height: 136px;
+      margin: -92px 0 0 2px;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+      opacity: 0;
+      transform: scale(2.6) rotate(-24deg);
+    }
+    .rj-stamp.is-on { animation: rj-stamp .42s cubic-bezier(.3, 1.6, .5, 1) forwards; }
+    @keyframes rj-stamp {
+      0%   { opacity: 0;   transform: scale(2.6) rotate(-24deg); }
+      60%  { opacity: .92; transform: scale(.94) rotate(-14deg); }
+      100% { opacity: .9;  transform: scale(1)   rotate(-14deg); }
+    }
+    .rj-stamp text { font-family: "Pretendard Variable", "Pretendard", sans-serif; }
+
+    /* ---------- 버튼 (이전 버전 모양) ---------- */
+    .rj-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 56px;
+    }
+    .rj-btn {
+      display: block;
+      padding: 16px 12px;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .rj-btn:hover, .rj-btn:focus-visible { background: #fff; color: #000; outline: none; }
+    .rj-btn.primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, #fffbd4, #fdd0f3 45%, #9fffca);
+      color: #000;
+    }
+    .rj-btn.primary:hover { filter: brightness(1.05); }
+
+    /* ---------- 좁은 화면 ---------- */
+    @media (max-width: 720px) {
+      .rj-main { margin-top: 16px; }
+      .rj-intro { font-size: 15px; margin-bottom: 24px; }
+      .rj-scroll { padding: 26px calc(var(--rj-k) * 84 + 16px) 36px calc(var(--rj-k) * 55 + 16px); }
+      .rj-doc-meta { font-size: 12px; }
+      .rj-title { margin-top: 30px; font-size: 42px; }
+      .rj-profile { grid-template-columns: 1fr; gap: 24px; margin-top: 36px; padding-left: 0; }
+      .rj-photo { justify-self: center; }
+      .rj-photo canvas { width: 120px; height: 146px; }
+      .rj-table { grid-template-columns: 92px 1fr; row-gap: 14px; font-size: 15px; }
+      .rj-body { margin-top: 36px; row-gap: 16px; }
+      .rj-item { grid-template-columns: 1fr; font-size: 15px; line-height: 1.65; }
+      .rj-item dt { font-weight: 700; }
+      .rj-foot { margin-top: 44px; font-size: 15px; }
+      .rj-foot .rj-date { margin-top: 28px; }
+      /* 좁은 화면: 날짜·서명은 왼쪽으로 조금 비키고, 도장은 오른쪽 아래 빈 곳에 */
+      .rj-foot .rj-date { margin-right: 124px; }
+      .rj-sign { position: static; font-size: 18px; margin-right: 124px; }
+      .rj-stamp { width: 92px; height: 92px; left: auto; top: auto; right: -4px; bottom: -10px; margin: 0; }
+      .rj-actions { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; }
+      .rj-ladder { margin-top: 36px; }
+      .rj-steps { grid-template-columns: repeat(4, 1fr); }
+      .rj-step:nth-child(5) { border-left: 0; }
+      .rj-step:nth-child(n+5) { border-top: 1px solid var(--rj-ink); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rj-scroll, .rj-scroll.is-hit { animation: none; }
+      .rj-stamp { opacity: .88; transform: rotate(-14deg); }
+      .rj-stamp.is-on { animation: none; }
+    }
+  </style>
+</head>
 <body class="exam-page ghost">
   <div class="exam-wrap">
 
-    <!-- 헤더 — 인간 유사도 시험 페이지와 같은 머리말 -->
+    <!-- 머리말 -->
     <header class="exam-header">
       <a class="icon left" href="ghost-exam.html" aria-label="시험으로 돌아가기">
         <img src="images/dogam2-icon-back.svg" alt="" />
       </a>
-      <h1 class="exam-brand">시험 결과</h1>
+      <h1 class="exam-brand">인간 유사도 시험</h1>
       <button class="icon right menu-toggle" type="button" aria-label="메뉴">
         <img src="images/dogam2-icon-menu.svg" alt="" />
       </button>
     </header>
 
-    <!-- 4모서리 장식 -->
     <i class="exam-corner tl"></i>
     <i class="exam-corner tr"></i>
     <i class="exam-corner bl"></i>
     <i class="exam-corner br"></i>
 
-    <main class="exam-result">
+    <main class="rj-main">
+      <p class="rj-intro">귀신 위원회에서 서류가 도착했습니다.</p>
 
-      <!-- 점수 + 단계 -->
-      <section class="exam-score-card">
-        <p class="label">인간 유사도</p>
-        <p class="score"><span id="result-score">0</span><span class="unit">%</span></p>
-        <p class="step" id="result-step">- 단계</p>
-        <p class="grade" id="result-grade">-</p>
-        <p class="summary" id="result-summary">한 줄 요약이 들어갑니다.</p>
-      </section>
+      <div class="rj-scroll" id="rj-scroll">
 
-      <!-- 판정 내용 -->
-      <section class="exam-block">
-        <h2>판정</h2>
-        <p class="exam-desc" id="result-desc">설명이 들어갑니다.</p>
-        <p class="exam-mate">
-          가장 닮은 존재 · <a id="result-ghost" href="#">귀신</a>
-        </p>
-      </section>
+        <article class="rj-sheet">
+          <div class="rj-doc-meta">
+            <span id="rj-docno">귀위 제0000-00호</span>
+            <span>보존 기한-영구(저승 기준)</span>
+          </div>
 
-      <!-- 조례 -->
-      <section class="exam-block">
-        <h2>공존에 관한 조례 대조</h2>
-        <p class="exam-law" id="result-law">조례 판정이 들어갑니다.</p>
-      </section>
+          <h2 class="rj-title">인간 사회 적응 심사 결과서</h2>
 
-      <!-- 다음 단계 -->
-      <section class="exam-block">
-        <h2>다음 단계까지</h2>
-        <p class="exam-next" id="result-next">과제가 들어갑니다.</p>
-      </section>
+          <!-- 증명사진 + 인적 사항 (dt/dd 한 쌍씩이라 값이 비어도 줄이 밀리지 않습니다) -->
+          <section class="rj-profile">
+            <figure class="rj-photo">
+              <a id="rj-ghost" href="#" aria-label="닮은 존재 자세히 보기">
+                <canvas id="rj-photo-canvas" width="300" height="364"></canvas>
+              </a>
+            </figure>
+            <dl class="rj-table">
+              <dt>신청인</dt>      <dd>이름 밝히기를 거부한 귀신</dd>
+              <dt>신청내용</dt>    <dd>인간 사회 체류 자격 심사</dd>
+              <dt>인간 유사도</dt> <dd><span class="rj-score" id="rj-score">0</span>%</dd>
+              <dt>판정 단계</dt>   <dd id="rj-grade">—</dd>
+            </dl>
+          </section>
 
-      <!-- 증명서 -->
-      <section class="exam-cert">
-        <h2 class="cert-doc" id="cert-doc">인간 자격 증명서</h2>
-        <p class="cert-line">위 귀신은 인간 유사도 시험을 치러</p>
-        <p class="cert-line">아래 단계에 해당함을 증명함.</p>
-        <p class="cert-grade" id="cert-grade">등급</p>
-        <p class="cert-seal">— 귀신 위원회 —</p>
-      </section>
+          <!-- 8단계 표시 -->
+          <section class="rj-ladder" aria-label="인간 유사도 단계">
+            <div class="rj-ladder-label"><span>귀신에 가까움</span><span>인간에 가까움</span></div>
+            <div class="rj-steps" id="rj-steps"></div>
+          </section>
 
-      <a class="exam-retry" href="ghost-exam.html">다시 시험보기</a>
+          <!-- 본문 -->
+          <dl class="rj-body">
+            <div class="rj-item"><dt>요약</dt><dd id="rj-summary">—</dd></div>
+            <div class="rj-item"><dt>판정 사유</dt><dd id="rj-desc">—</dd></div>
+            <div class="rj-item"><dt>조례 대조</dt><dd id="rj-law">—</dd></div>
+            <div class="rj-item"><dt>보완 사항</dt><dd id="rj-next">—</dd></div>
+          </dl>
+
+          <!-- 증명 문구 + 서명 + 판정 도장 -->
+          <footer class="rj-foot">
+            <p>위 귀신은 인간 유사도 시험을 치러<br />위와 같이 판정되었음을 알림.</p>
+            <p class="rj-date" id="rj-date">0000년 0월 0일</p>
+            <p class="rj-sign">귀신위원회 위원장
+              <svg class="rj-stamp" id="rj-stamp" viewBox="0 0 200 200" aria-hidden="true">
+                <defs>
+                  <filter id="rj-rough">
+                    <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" result="t"/>
+                    <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.4 0 0 0 2.6" result="m"/>
+                    <feComposite in="SourceGraphic" in2="m" operator="in"/>
+                  </filter>
+                  <path id="rj-arc-top" d="M30 100 A70 70 0 0 1 170 100"/>
+                </defs>
+                <g filter="url(#rj-rough)" fill="none" stroke="#c8231a">
+                  <circle cx="100" cy="100" r="92" stroke-width="7"/>
+                  <circle cx="100" cy="100" r="80" stroke-width="2"/>
+                  <line x1="38" y1="118" x2="162" y2="118" stroke-width="2"/>
+                  <g fill="#c8231a" stroke="none">
+                    <text font-size="17" font-weight="700" letter-spacing="4"><textPath href="#rj-arc-top" startOffset="50%" text-anchor="middle">귀신위원회</textPath></text>
+                    <text id="rj-stamp-word" x="100" y="106" font-size="44" font-weight="900" text-anchor="middle">판정</text>
+                    <text id="rj-stamp-step" x="100" y="148" font-size="17" font-weight="700" text-anchor="middle">0단계</text>
+                  </g>
+                </g>
+              </svg>
+            </p>
+          </footer>
+        </article>
+
+      </div>
+
+      <div class="rj-actions">
+        <a class="rj-btn" id="rj-detail" href="#">닮은 존재 자세히 보기</a>
+        <button class="rj-btn" id="rj-share" type="button">결과 공유하기</button>
+        <a class="rj-btn primary" href="ghost-exam.html">다시 시험보기</a>
+      </div>
     </main>
-
   </div>
 
   <script src="js/script.js"></script>
+  <script>
+  (function () {
+    if (typeof ghostLevels === "undefined") return;
+
+    /* 단계별 도장 문구 */
+    var STAMP = ["제한", "경고", "불허", "임시허가", "등록", "견습", "준인간", "합격"];
+
+    /* 대조 인물 그림 — 도감(인간 쪽)은 dogam2-N.png, 착한 귀신상은 arc-키.png */
+    var HUMAN_IMG = {
+      susalgwi: "dogam2-2", geolsin: "dogam2-3", maehwa: "dogam2-4", baekgwi: "dogam2-5",
+      arang: "dogam2-6", jigwi: "dogam2-7", cheonggun: "dogam2-8", singiwonyo: "dogam2-9"
+    };
+
+    var params = new URLSearchParams(location.search);
+    var fromUrl = params.get("score");
+    var percent = Number(fromUrl !== null ? fromUrl : localStorage.getItem("ghostExamScore") || 0);
+    percent = Math.max(0, Math.min(100, Math.round(percent) || 0));
+    var level = getGhostLevel(percent);
+
+    function $(id) { return document.getElementById(id); }
+    function set(id, t) { var el = $(id); if (el) el.textContent = t; }
+
+    /* 글자 채우기 */
+    var now = new Date();
+    set("rj-docno", "귀위 제" + now.getFullYear() + "-" + String(percent).padStart(2, "0") + "호");
+    set("rj-date", now.getFullYear() + "년 " + (now.getMonth() + 1) + "월 " + now.getDate() + "일");
+    set("rj-grade", level.step + "단계 · " + level.name);
+    set("rj-summary", level.summary);
+    set("rj-desc", level.desc);
+    set("rj-law", level.law);
+    set("rj-next", level.next);
+    set("rj-stamp-word", STAMP[level.step - 1] || "판정");
+    set("rj-stamp-step", level.step + "단계");
+    var sw = $("rj-stamp-word");
+    if (sw && sw.textContent.length > 2) sw.setAttribute("font-size", "32");
+    $("rj-ghost").href = level.link;
+    $("rj-ghost").setAttribute("aria-label", level.ghost + " 자세히 보기");
+    $("rj-detail").href = level.link;
+    $("rj-detail").textContent = level.ghost + " 자세히 보기";
+    document.title = "인간 사회 적응 심사 결과서 — " + level.step + "단계";
+
+    /* 8단계 칸 */
+    var steps = $("rj-steps");
+    ghostLevels.forEach(function (lv) {
+      var cell = document.createElement("div");
+      cell.className = "rj-step" + (lv.step < level.step ? " is-past" : lv.step === level.step ? " is-now" : "");
+      cell.innerHTML = "<b>" + lv.step + "</b>" + lv.name;
+      if (lv.step === level.step) cell.setAttribute("aria-current", "step");
+      steps.appendChild(cell);
+    });
+
+    /* 증명사진 — 그림에서 인물이 있는 곳을 찾아 얼굴~가슴만 잘라 그립니다 */
+    (function drawPhoto() {
+      var key = (level.link.split("ghost=")[1] || "").split("&")[0];
+      var src = HUMAN_IMG[key] ? "images/" + HUMAN_IMG[key] + ".png" : "images/arc-" + key + ".png";
+      var canvas = $("rj-photo-canvas");
+      var g = canvas.getContext("2d");
+      var img = new Image();
+      img.onload = function () {
+        var W = img.naturalWidth, H = img.naturalHeight;
+        var sw = 400, sh = Math.round(400 * H / W);
+        var probe = document.createElement("canvas");
+        probe.width = sw; probe.height = sh;
+        var pg = probe.getContext("2d");
+        pg.drawImage(img, 0, 0, sw, sh);
+        var d = pg.getImageData(0, 0, sw, sh).data;
+        // 배경 종류: 투명 / 검정(착한 귀신상 그림) / 흰색(도감 그림) — 왼쪽 위 모서리로 판단
+        var c0 = (d[0] + d[1] + d[2]) / 3;
+        var mode = d[3] < 20 ? "alpha" : c0 < 50 ? "dark" : "light";
+        var x0 = sw, x1 = 0, y0 = sh, y1 = 0;
+        for (var y = 0; y < sh; y++) for (var x = 0; x < sw; x++) {
+          var i = (y * sw + x) * 4;
+          var b = (d[i] + d[i + 1] + d[i + 2]) / 3;
+          var hit = mode === "alpha" ? d[i + 3] > 40 : mode === "dark" ? b > 70 : (d[i + 3] > 40 && b < 200);
+          if (hit) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        }
+        if (x1 <= x0) { x0 = 0; x1 = sw; y0 = 0; y1 = sh; }
+        var k = W / sw;
+        var bw = (x1 - x0) * k, cx = (x0 + x1) / 2 * k;
+        var cw = Math.min(bw * 1.3, (y1 - y0) * k * 1.1);
+        var ch = cw * canvas.height / canvas.width;
+        var cy = y0 * k - cw * 0.06;
+        g.fillStyle = mode === "light" ? "#ffffff" : "#0b0b0b";
+        g.fillRect(0, 0, canvas.width, canvas.height);
+        g.imageSmoothingQuality = "high";
+        g.drawImage(img, cx - cw / 2, cy, cw, ch, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = src;
+    })();
+
+    /* 점수 올라가기 → 도장 쾅 */
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var scoreEl = $("rj-score");
+    var stamp = $("rj-stamp");
+    var scroll = $("rj-scroll");
+    if (reduce || document.hidden) {
+      scoreEl.textContent = percent;
+      stamp.classList.add("is-on");
+    } else {
+      var start = null, dur = 900;
+      setTimeout(function () {
+        requestAnimationFrame(function tick(t) {
+          if (!start) start = t;
+          var p = Math.min(1, (t - start) / dur);
+          scoreEl.textContent = Math.round(percent * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick);
+          else setTimeout(function () {
+            stamp.classList.add("is-on");
+            setTimeout(function () { scroll.classList.add("is-hit"); }, 230);
+          }, 250);
+        });
+      }, 700);
+    }
+
+    /* 결과 공유 — 휴대폰은 공유 창, 컴퓨터는 링크 복사 */
+    $("rj-share").addEventListener("click", function () {
+      var url = location.origin + location.pathname + "?score=" + percent;
+      var btn = this;
+      if (navigator.share) {
+        navigator.share({ title: "인간 사회 적응 심사 결과서", url: url }).catch(function () {});
+        return;
+      }
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+        .then(function () { btn.textContent = "링크를 복사했어요"; })
+        .catch(function () { window.prompt("이 링크를 복사하세요", url); });
+      setTimeout(function () { btn.textContent = "결과 공유하기"; }, 2000);
+    });
+  })();
+  </script>
 </body>
 </html>

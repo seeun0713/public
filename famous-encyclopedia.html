@@ -5,81 +5,334 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>유명 한국 괴물</title>
   <link rel="stylesheet" href="css/style.css" />
+  <!--
+    유명 한국 괴물 — 목록 페이지 (한옥 창호 벽)
+
+    · 머리말·한지 배경·붓 테두리는 상세 페이지(fg-)와 같은 것을 씁니다.
+    · 가운데 창문 5개가 괴물 카드입니다. 마우스를 올리면(휴대폰은 한 번 탭)
+      창문 두 짝이 양옆으로 밀려 열리고, 불 켜진 방 안에 괴물 실루엣이 보입니다.
+      휴대폰은 두 번째 탭에 상세 페이지로 넘어갑니다.
+    · 실루엣은 상세 페이지 그림(images/famous-*.png)을 까맣게 칠해 씁니다.
+    · 창살은 이미지 없이 SVG 무늬(아래 --p-...)로 직접 그립니다.
+      무늬를 바꾸려면 창문의 style="--pat: var(--p-무늬이름)" 만 바꾸면 됩니다.
+    · 이 페이지 전용 스타일은 모두 fw- 로 시작합니다.
+    · 이전 목록(검정 카드 그리드)은 famous-encyclopedia.backup.html 에 있습니다.
+  -->
+  <style>
+    :root {
+      /* 창살·창틀 색 (검정 단색) */
+      --wood: #000;
+      --wood-dark: #000;
+      --wood-light: #000;
+      --hanji: #f1e8d6;
+      --p-wanja: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M0 0H60M0 0V60M30 0V60M0 30H60'/><rect x='-9' y='-9' width='18' height='18'/><rect x='51' y='-9' width='18' height='18'/><rect x='-9' y='51' width='18' height='18'/><rect x='51' y='51' width='18' height='18'/></g></svg>");
+      --p-ja: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='56'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M0 0H44M0 0V56M11 14H33V42H11Z'/></g></svg>");
+      --p-bitsal: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='46' height='46'><g fill='none' stroke='%23000' stroke-width='5' stroke-linecap='square'><path d='M0 0L46 46M46 0L0 46'/></g></svg>");
+      --p-jeong: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='110'><g fill='none' stroke='%23000' stroke-width='5' stroke-linecap='square'><path d='M0 0H90M0 0V110M16 16H74V94H16Z'/></g></svg>");
+      --p-palgak: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M20 8H44L56 20V44L44 56H20L8 44V20Z M32 0V8M32 56V64M0 32H8M56 32H64 M26 26H38V38H26Z'/></g></svg>");
+      --p-mesh: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18'><g fill='none' stroke='%23000' stroke-width='3' stroke-linecap='square'><path d='M0 0L18 18M18 0L0 18'/></g></svg>");
+      --p-chain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='24'><g fill='none' stroke='%23000' stroke-width='3' stroke-linecap='square'><path d='M0 12L10 2L20 12L10 22Z M20 12L30 2L40 12L30 22Z'/></g></svg>");
+      --p-brick: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M0 0H52M0 13H52M13 0V13M39 13V26'/></g></svg>");
+      --p-octx: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M18 6H38L50 18V38L38 50H18L6 38V18Z M28 0V56M0 28H56'/></g></svg>");
+      --p-nest: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M30 0L60 30L30 60L0 30Z M30 14L46 30L30 46L14 30Z'/></g></svg>");
+    }
+
+    /* 창틀·문틀 — 검정 단색 */
+    .fw-wood { background: var(--wood); }
+
+    /* ---------- 창호 벽 ---------- */
+    .fw-wall {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 17.25fr 20.75fr 24fr 20.75fr 17.25fr;
+      aspect-ratio: 2000 / 1245;
+      margin-top: 4px;
+      background: var(--wood-dark);
+    }
+    .fw-col {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* 창살 칸 (문이 아닌 고정 창) — 한지 위에 무늬 */
+    .fw-panel {
+      position: relative;
+      border: 7px solid transparent;
+      border-image: linear-gradient(180deg, var(--wood-light), var(--wood-dark)) 1;
+      background: var(--pat) center / var(--tile, 40px) repeat, var(--hanji);
+    }
+
+    /* ---------- 괴물 창문 (카드) ---------- */
+    .fw-win {
+      position: relative;
+      display: block;
+      padding: 16px;                 /* 창틀 두께 */
+      color: inherit;
+      text-decoration: none;
+      outline: none;
+    }
+    .fw-frame {                       /* 창 안쪽 (여기서 문짝이 미끄러짐) */
+      position: relative;
+      display: block;
+      height: 100%;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 2px var(--wood-dark);
+    }
+
+    /* 방 안 — 흰 바탕 위에 괴물 실루엣 */
+    .fw-room {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+    }
+
+    .fw-ghost {
+      position: absolute;
+      left: 50%;
+      bottom: -4%;
+      height: 108%;
+      width: auto;
+      max-width: none;
+      transform: translate(-50%, 8%) scale(.94);
+      z-index: 1;
+      filter: url(#fw-ink) blur(1.5px);
+      opacity: 0;
+      transition: opacity .5s ease .15s, transform .9s cubic-bezier(.2, .8, .2, 1) .1s, filter .9s ease .1s;
+    }
+    .fw-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 12px;
+      z-index: 2;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: #000;
+      text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #fff;   /* 실루엣 위에서도 읽히게 */
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity .4s ease .35s, transform .4s ease .35s;
+    }
+
+    /* 미닫이 두 짝 */
+    .fw-sash {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      border: 9px solid transparent;
+      border-image: linear-gradient(180deg, var(--wood-light), var(--wood-dark)) 1;
+      background: var(--pat) center / var(--tile, 40px) repeat, var(--hanji);
+      transition: transform .75s cubic-bezier(.65, 0, .25, 1);
+    }
+    .fw-sash.l { left: 0; }
+    .fw-sash.r { right: 0; }
+    .fw-sash::after {                 /* 문고리 */
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 4px;
+      height: 34px;
+      margin-top: -17px;
+      border-radius: 2px;
+      background: var(--hanji);
+    }
+    .fw-sash.l::after { right: 3px; }
+    .fw-sash.r::after { left: 3px; }
+
+    /* 열림 — 마우스 올림 / 키보드 초점 / 휴대폰 첫 탭 */
+    .fw-win:hover .fw-sash.l, .fw-win:focus-visible .fw-sash.l, .fw-win.is-open .fw-sash.l { transform: translateX(-90%); }
+    .fw-win:hover .fw-sash.r, .fw-win:focus-visible .fw-sash.r, .fw-win.is-open .fw-sash.r { transform: translateX(90%); }
+    .fw-win:hover .fw-ghost, .fw-win:focus-visible .fw-ghost, .fw-win.is-open .fw-ghost {
+      opacity: 1;
+      transform: translate(-50%, 0) scale(1);
+      filter: url(#fw-ink) blur(0);
+    }
+    .fw-win:hover .fw-name, .fw-win:focus-visible .fw-name, .fw-win.is-open .fw-name { opacity: 1; transform: none; }
+    .fw-win:focus-visible { box-shadow: inset 0 0 0 3px #fff; }
+
+    /* ---------- 양옆 큰 문 (띠살 분합문) ---------- */
+    .fw-door {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 7% 11% 5%;
+    }
+    .fw-door-lattice {                /* 띠살 — 세로살 + 위·가운데·아래 가로 띠 */
+      flex: 1;
+      background:
+        /* 가로 띠 3묶음 */
+        linear-gradient(180deg,
+          transparent 6%, var(--wood) 6% 7%, transparent 7% 10%, var(--wood) 10% 11%, transparent 11% 14%, var(--wood) 14% 15%, transparent 15%,
+          transparent 44%, var(--wood) 44% 45%, transparent 45% 48%, var(--wood) 48% 49%, transparent 49% 52%, var(--wood) 52% 53%, transparent 53%,
+          transparent 84%, var(--wood) 84% 85%, transparent 85% 88%, var(--wood) 88% 89%, transparent 89% 92%, var(--wood) 92% 93%, transparent 93%),
+        /* 세로살 */
+        repeating-linear-gradient(90deg, var(--wood) 0 6px, transparent 6px 14.2%),
+        var(--hanji);
+      box-shadow: inset 0 0 0 6px var(--wood);
+    }
+    .fw-door-panel {                  /* 아래 궁판 */
+      height: 17%;
+      margin-top: 8%;
+      
+    }
+    .fw-door::after {                 /* 문고리 */
+      content: "";
+      position: absolute;
+      top: 52%;
+      width: 10px;
+      height: 10px;
+      border: 3px solid var(--hanji);
+      border-radius: 50%;
+    }
+    .fw-door.left::after  { right: 6%; }
+    .fw-door.right::after { left: 6%; }
+
+    .fw-hint {
+      position: relative;
+      z-index: 1;
+      margin: 18px 0 30px;
+      text-align: center;
+      font-size: 15px;
+      color: #3a2a18;
+    }
+
+    /* ---------- 좁은 화면 — 큰 문·고정 창을 빼고 창문 5개만 ---------- */
+    @media (max-width: 900px) {
+      .fw-wall {
+        aspect-ratio: auto;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 10px;
+      }
+      .fw-col { display: contents; }
+      .fw-door, .fw-panel { display: none; }
+      .fw-win { aspect-ratio: 3 / 4; padding: 10px; }
+      .fw-win.big { grid-column: 1 / -1; aspect-ratio: 4 / 3; order: -1; }
+      .fw-win.big .fw-ghost { height: 112%; }
+      .fw-sash { border-width: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fw-sash, .fw-ghost, .fw-name { transition-duration: .01s; transition-delay: 0s; }
+    }
+  </style>
 </head>
-<!--
-  유명 한국 괴물 — 목록 페이지
+<body class="fg-page">
+  <!-- 먹그림을 까만 실루엣으로 — 색은 검정, 옅은 먹도 진하게(투명도 ×2.4) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="fw-ink" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0 0 0 0 .05  0 0 0 0 .03  0 0 0 0 .02  0 0 0 2.4 0" />
+    </filter>
+  </svg>
+  <div class="fg-wrap">
 
-  앞서 만든 "귀신 도감" 목록(human-encyclopedia.html)과 같은 틀을 씁니다.
-  검정 헤더 + 오방색 띠 + 한지 배경 + 검정 카드 그리드.
-  다른 점은 이 귀신들은 이미 널리 알려진 존재라서
-  이름이 깨진 글자가 아니라 흰 글씨로 바로 보인다는 것입니다.
--->
-<body class="dogam-page human">
-
-  <!-- 헤더 (검정 바 127px) -->
-  <header class="dogam-header">
-    <a class="icon left" href="index.html" aria-label="홈으로">
-      <img src="images/dogam2-icon-back.svg" alt="" />
-    </a>
-    <h1 class="dogam-brand">유명 한국 괴물</h1>
-    <button class="icon right menu-toggle" type="button" aria-label="메뉴">
-      <img src="images/dogam2-icon-menu.svg" alt="" />
-    </button>
-  </header>
-
-  <!-- 오방색 띠 (상단) -->
-  <div class="saekdong-band top"></div>
-
-  <main class="dogam-main">
-    <div class="dogam-grid">
-
-      <a class="dogam-card" href="famous-encyclopedia-detail.html?ghost=gumiho">
-        <span class="dogam-photo">
-          <img class="dogam-photo-img fit" src="images/famous-gumiho.png" alt="구미호" />
-          <i class="dogam-frame"></i>
-          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        </span>
-        <span class="dogam-card-name known">구미호</span>
-      </a>
-
-      <a class="dogam-card" href="famous-encyclopedia-detail.html?ghost=cheonyeo">
-        <span class="dogam-photo">
-          <img class="dogam-photo-img fit" src="images/famous-cheonyeo.png" alt="처녀귀신" />
-          <i class="dogam-frame"></i>
-          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        </span>
-        <span class="dogam-card-name known">처녀귀신</span>
-      </a>
-
-      <a class="dogam-card" href="famous-encyclopedia-detail.html?ghost=dalgyal">
-        <span class="dogam-photo">
-          <img class="dogam-photo-img fit" src="images/famous-dalgyal.png" alt="달걀귀신" />
-          <i class="dogam-frame"></i>
-          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        </span>
-        <span class="dogam-card-name known">달걀귀신</span>
-      </a>
-
-      <a class="dogam-card" href="famous-encyclopedia-detail.html?ghost=eoduksini">
-        <span class="dogam-photo">
-          <img class="dogam-photo-img fit" src="images/famous-eoduksini.png" alt="어둑시니" />
-          <i class="dogam-frame"></i>
-          <i class="dogam-corner tl"></i><i class="dogam-corner tr"></i><i class="dogam-corner bl"></i><i class="dogam-corner br"></i>
-        </span>
-        <span class="dogam-card-name known">어둑시니</span>
-      </a>
-
+    <!-- 한지 배경 두 겹 (상세 페이지와 같음) -->
+    <div class="fg-paper" aria-hidden="true">
+      <img class="a" src="images/dogam2-bg.jpg" alt="" />
+      <img class="b" src="images/fg-paper2.png" alt="" />
     </div>
-  </main>
 
-  <!-- 그리드 아래 검정 여백 + 흐릿한 손글씨 낙서 -->
-  <div class="dogam-graffiti">
-    <p>이름은 알아도, 얼굴은 모른다.</p>
+    <header class="fg-header">
+      <a class="icon left" href="index.html" aria-label="홈으로">
+        <img src="images/famous-icon-back.svg" alt="" />
+      </a>
+      <h1 class="fg-title">유명 한국 괴물</h1>
+      <button class="icon right menu-toggle" type="button" aria-label="메뉴">
+        <img src="images/famous-icon-menu.svg" alt="" />
+      </button>
+    </header>
+
+    <main class="fw-wall">
+
+      <!-- 왼쪽 큰 문 -->
+      <div class="fw-door left fw-wood" aria-hidden="true">
+        <span class="fw-door-lattice"></span>
+        <span class="fw-door-panel fw-wood"></span>
+      </div>
+
+      <!-- 1열: 고정 창 · 처녀귀신 · 고정 창 · 달걀귀신 -->
+      <div class="fw-col">
+        <span class="fw-panel" style="flex: 9; --pat: var(--p-mesh); --tile: 18px" aria-hidden="true"></span>
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-wanja); --tile: 60px" href="famous-encyclopedia-detail.html?ghost=cheonyeo" aria-label="처녀귀신">
+          <span class="fw-frame">
+            <span class="fw-room"><img class="fw-ghost" src="images/famous-cheonyeo.png" alt="" /></span>
+            <span class="fw-name">처녀귀신</span>
+            <span class="fw-sash l"></span><span class="fw-sash r"></span>
+          </span>
+        </a>
+        <span class="fw-panel" style="flex: 9; --pat: var(--p-chain); --tile: 40px 24px" aria-hidden="true"></span>
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-ja); --tile: 44px 56px" href="famous-encyclopedia-detail.html?ghost=dalgyal" aria-label="달걀귀신">
+          <span class="fw-frame">
+            <span class="fw-room"><img class="fw-ghost" src="images/famous-dalgyal.png" alt="" /></span>
+            <span class="fw-name">달걀귀신</span>
+            <span class="fw-sash l"></span><span class="fw-sash r"></span>
+          </span>
+        </a>
+      </div>
+
+      <!-- 2열(가운데): 고정 창 · 구미호(큰 창) · 고정 창 두 개 -->
+      <div class="fw-col">
+        <span class="fw-panel" style="flex: 23; --pat: var(--p-brick); --tile: 52px 26px" aria-hidden="true"></span>
+        <a class="fw-win fw-wood big" style="flex: 48; --pat: var(--p-bitsal); --tile: 46px" href="famous-encyclopedia-detail.html?ghost=gumiho" aria-label="구미호">
+          <span class="fw-frame">
+            <span class="fw-room"><img class="fw-ghost" src="images/famous-gumiho.png" alt="" /></span>
+            <span class="fw-name">구미호</span>
+            <span class="fw-sash l"></span><span class="fw-sash r"></span>
+          </span>
+        </a>
+        <span class="fw-panel" style="flex: 19; --pat: var(--p-octx); --tile: 56px" aria-hidden="true"></span>
+        <span class="fw-panel" style="flex: 10; --pat: var(--p-mesh); --tile: 18px" aria-hidden="true"></span>
+      </div>
+
+      <!-- 3열: 어둑시니 · 도깨비 · 고정 창 -->
+      <div class="fw-col">
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-jeong); --tile: 90px 110px" href="famous-encyclopedia-detail.html?ghost=eoduksini" aria-label="어둑시니">
+          <span class="fw-frame">
+            <span class="fw-room"><img class="fw-ghost" src="images/famous-eoduksini.png" alt="" /></span>
+            <span class="fw-name">어둑시니</span>
+            <span class="fw-sash l"></span><span class="fw-sash r"></span>
+          </span>
+        </a>
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-palgak); --tile: 64px" href="famous-encyclopedia-detail.html?ghost=dokkaebi" aria-label="도깨비">
+          <span class="fw-frame">
+            <span class="fw-room"><img class="fw-ghost" src="images/famous-dokkaebi.png" alt="" /></span>
+            <span class="fw-name">도깨비</span>
+            <span class="fw-sash l"></span><span class="fw-sash r"></span>
+          </span>
+        </a>
+        <span class="fw-panel" style="flex: 17; --pat: var(--p-nest); --tile: 60px" aria-hidden="true"></span>
+      </div>
+
+      <!-- 오른쪽 큰 문 -->
+      <div class="fw-door right fw-wood" aria-hidden="true">
+        <span class="fw-door-lattice"></span>
+        <span class="fw-door-panel fw-wood"></span>
+      </div>
+    </main>
+
+    <p class="fw-hint">창문에 다가가 보세요. 누군가 안에 있습니다.</p>
   </div>
 
-  <!-- 오방색 띠 (하단) -->
-  <div class="saekdong-band bottom"></div>
-
   <script src="js/script.js"></script>
+  <script>
+  /* 휴대폰(마우스 올림이 없는 기기): 첫 탭은 창문만 열고, 두 번째 탭에 상세 페이지로 */
+  (function () {
+    if (!window.matchMedia("(hover: none)").matches) return;
+    var wins = document.querySelectorAll(".fw-win");
+    wins.forEach(function (win) {
+      win.addEventListener("click", function (e) {
+        if (win.classList.contains("is-open")) return;   // 두 번째 탭 → 이동
+        e.preventDefault();
+        wins.forEach(function (w) { w.classList.remove("is-open"); });
+        win.classList.add("is-open");
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
