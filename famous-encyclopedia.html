@@ -35,6 +35,7 @@
       --p-brick: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M0 0H52M0 13H52M13 0V13M39 13V26'/></g></svg>");
       --p-octx: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M18 6H38L50 18V38L38 50H18L6 38V18Z M28 0V56M0 28H56'/></g></svg>");
       --p-nest: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><g fill='none' stroke='%23000' stroke-width='4' stroke-linecap='square'><path d='M30 0L60 30L30 60L0 30Z M30 14L46 30L30 46L14 30Z'/></g></svg>");
+      --p-simple: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='84'><path d='M0 0H64M0 0V84' fill='none' stroke='%23000' stroke-width='3'/></svg>");
     }
 
     /* 창틀·문틀 — 검정 단색 */
@@ -165,6 +166,7 @@
     .fw-door-lattice {                /* 띠살 — 세로살 + 위·가운데·아래 가로 띠 */
       flex: 1;
       background:
+        /* 가로 띠 3묶음 */
         /* 가로 띠 3묶음 */
         linear-gradient(180deg,
           transparent 6%, var(--wood) 6% 7%, transparent 7% 10%, var(--wood) 10% 11%, transparent 11% 14%, var(--wood) 14% 15%, transparent 15%,

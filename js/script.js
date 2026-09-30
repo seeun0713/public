@@ -1775,10 +1775,18 @@ function setupGlitch() {
 /* ===========================================================
    8-1-2. 가만히 두면 저절로 홀리기 (human-encyclopedia.html)
 
-   마우스를 움직이지도 누르지도 않은 채 30초가 지나면,
-   카드 1~2장이 저 혼자 정체를 드러내며 글리치를 일으킵니다.
-   6초마다 홀리는 카드를 다시 뽑아 자리가 옮겨 다닙니다.
-   마우스를 움직이거나 누르면 곧바로 원래대로 돌아가고 30초를 다시 셉니다.
+   마우스를 움직이지도 누르지도 않은 채 한동안 두면,
+   카드가 저 혼자 정체를 드러내며 글리치를 일으킵니다.
+
+   한 장씩 이어받는 방식입니다. 한 장이 홀려 있는 동안(HOLD) 그 절반쯤
+   지난 시점에 다음 장이 켜지므로(STEP), 늘 두 장이 겹쳐 있다가
+   앞의 것이 꺼지는 식으로 맞물려 돌아갑니다. 다 같이 껐다 켜지지 않아
+   흐름이 끊기지 않습니다.
+       0.0초  A 켜짐
+       2.8초  B 켜짐 (A 는 아직)
+       5.6초  A 꺼짐, C 켜짐
+       8.4초  B 꺼짐, D 켜짐 …
+   마우스를 움직이거나 누르면 곧바로 원래대로 돌아가고 다시 셉니다.
 
    호버와 똑같은 모습을 쓰기 위해 카드에 haunted 클래스를 붙입니다.
    (css 의 .dogam-card.reveal:is(:hover, .haunted) 규칙)
@@ -1791,33 +1799,54 @@ function setupIdleHaunt() {
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var IDLE_TIME = 10000; // 10초 동안 아무 것도 안 하면 시작
-  var SWAP_TIME = 5000;  // 홀리는 카드를 바꾸는 간격
+  var HOLD = 5600;       // 한 장이 홀려 있는 시간 (글리치 두 바퀴 = 2.8초 × 2)
+  var STEP = 2800;       // 다음 장이 켜지는 간격 (글리치 한 바퀴)
   var idleTimer = null;
-  var swapTimer = null;
+  var stepTimer = null;
+  var holdTimers = [];   // 켜 둔 카드를 끄기로 예약해 둔 것들
+  var recent = [];       // 바로 직전에 나온 카드들 (연달아 다시 뽑히지 않게)
 
   function clearHaunt() {
+    holdTimers.forEach(clearTimeout);
+    holdTimers = [];
+    recent = [];
     cards.forEach(function (card) { card.classList.remove("haunted"); });
   }
 
-  function haunt() {
-    clearHaunt();
+  // 지금 홀려 있지 않은 카드 중 하나를 켜고, HOLD 뒤에 끕니다.
+  // 막 꺼진 카드가 곧바로 다시 뽑히면 제자리걸음처럼 보여서,
+  // 최근에 나온 두 장은 후보에서 빼 둡니다.
+  function hauntOne() {
+    var pool = [];
+    cards.forEach(function (card) {
+      if (card.classList.contains("haunted")) return;
+      if (recent.indexOf(card) >= 0) return;
+      pool.push(card);
+    });
 
-    // 남은 카드 중에서 1~2장을 겹치지 않게 뽑습니다.
-    var pool = Array.prototype.slice.call(cards);
-    var count = 1 + Math.floor(Math.random() * 2);
-    for (var i = 0; i < count && pool.length > 0; i++) {
-      var picked = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+    if (pool.length > 0) {
+      var picked = pool[Math.floor(Math.random() * pool.length)];
       picked.classList.add("haunted");
+
+      recent.push(picked);
+      while (recent.length > 2) recent.shift();
+
+      var off = setTimeout(function () {
+        picked.classList.remove("haunted");
+        var at = holdTimers.indexOf(off);
+        if (at >= 0) holdTimers.splice(at, 1);
+      }, HOLD);
+      holdTimers.push(off);
     }
 
-    swapTimer = setTimeout(haunt, SWAP_TIME);
+    stepTimer = setTimeout(hauntOne, STEP); // 다음 장은 겹쳐서 이어받습니다
   }
 
   function wake() {
     clearTimeout(idleTimer);
-    clearTimeout(swapTimer);
+    clearTimeout(stepTimer);
     clearHaunt();
-    idleTimer = setTimeout(haunt, IDLE_TIME);
+    idleTimer = setTimeout(hauntOne, IDLE_TIME);
   }
 
   ["mousemove", "mousedown", "click", "keydown", "wheel", "touchstart"].forEach(function (name) {
@@ -1829,7 +1858,7 @@ function setupIdleHaunt() {
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
       clearTimeout(idleTimer);
-      clearTimeout(swapTimer);
+      clearTimeout(stepTimer);
       clearHaunt();
     } else {
       wake();
