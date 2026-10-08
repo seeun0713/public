@@ -1434,7 +1434,8 @@ var FAMOUS = {
   dokkaebi: {
     name: "도깨비",
     image: "images/famous-dokkaebi.png",
-    art: { left: 116.2, top: -32.8, width: 474.9, height: 633.2 },
+    // 새 그림의 먹 영역(x 306~1126, y 105~1428)을 기준으로 다시 잡은 값
+    art: { left: 41.4, top: -46.4, width: 530.6, height: 707.5 },
     rows: [
       { label: "이름", value: "도깨비" },
       { label: "종류", value: "정령 · 요괴" },
@@ -2003,8 +2004,8 @@ function setupOrdinanceMotion() {
 var ARCHIVE = {
   dongjasam: {
     name: "동자삼",
-    image: "images/dj-illust.png",
-    art: "left: -4.99%; top: -4.82%; width: 212.48%; height: 139.06%;",
+    image: "images/arc-dongjasam.png",
+    art: "left: -15.86%; top: 16.77%; width: 133.83%; height: 87.63%;",
     tag: "[돋보이는 자기 희생 정신]",
     pages: [
       {
@@ -2066,7 +2067,7 @@ var ARCHIVE = {
   changbu: {
     name: "창부대신",
     image: "images/arc-changbu.png",
-    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    art: "left: -26.39%; top: -3.32%; width: 154.07%; height: 100.88%;",
     tag: "[탁월한 액운 차단 능력]",
     pages: [
       {
@@ -2127,7 +2128,7 @@ var ARCHIVE = {
   sinjikke: {
     name: "신지께",
     image: "images/arc-sinjikke.png",
-    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    art: "left: -24.31%; top: 8.54%; width: 124.42%; height: 81.47%;",
     tag: "[모범적인 인명 구조 활동]",
     pages: [
       {
@@ -2188,7 +2189,7 @@ var ARCHIVE = {
   geogugoe: {
     name: "거구괴&청의동자",
     image: "images/arc-geogugoe.png",
-    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    art: "left: -12.67%; top: 9.76%; width: 123.29%; height: 80.72%;",
     tag: "[위기 상황 속 기지 발휘]",
     pages: [
       {
@@ -2250,7 +2251,7 @@ var ARCHIVE = {
   uureong: {
     name: "우렁각시",
     image: "images/arc-uureong.png",
-    art: "left: -26.33%; top: 0%; width: 152.66%; height: 100%;",
+    art: "left: -4.58%; top: 10.61%; width: 107.57%; height: 70.43%;",
     tag: "[묵묵한 헌신의 표본]",
     pages: [
       {
