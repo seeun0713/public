@@ -350,7 +350,11 @@
     $("ht-story").textContent = data.story;
     // '자세히 보기'는 이 귀신의 상세 페이지로,
     // '도감 보러가기'는 목록 페이지로 갑니다(주소는 HTML 에 그대로 적어 두었습니다).
-    $("ht-more").href = "human-encyclopedia-detail.html?ghost=" + key;
+    //
+    // 상세 페이지로 가는 주소에는 "이 결과 화면에서 왔다"는 표시를 붙입니다.
+    // 그래야 상세 페이지의 ← 가 도감 목록이 아니라 지금 이 결과로 돌아갑니다.
+    var fromHere = "&from=test&type=" + encodeURIComponent(key);
+    $("ht-more").href = "human-encyclopedia-detail.html?ghost=" + key + fromHere;
 
     /* 2) 소개 글 + 특징 */
     $("ht-intro").innerHTML = (data.intro || []).map(function (t) { return "<p>" + t + "</p>"; }).join("");
@@ -364,7 +368,7 @@
       if (!mate || !CARD[m[1]]) return;
       var a = document.createElement("a");
       a.className = "ht-mate";
-      a.href = "human-encyclopedia-detail.html?ghost=" + m[1];
+      a.href = "human-encyclopedia-detail.html?ghost=" + m[1] + fromHere;
       a.innerHTML = '<span class="ht-mate-label">' + m[0] + "</span>" +
         '<span class="dogam-card">' + cardInner(m[1], mate.ghost, false, false) + "</span>";
       mates.appendChild(a);

@@ -10,10 +10,14 @@
 
     · 머리말·한지 배경·붓 테두리는 상세 페이지(fg-)와 같은 것을 씁니다.
     · 가운데 창문 5개가 괴물 카드입니다. 마우스를 올리면(휴대폰은 한 번 탭)
-      창문 두 짝이 양옆으로 밀려 열리고, 불 켜진 방 안에 괴물 실루엣이 보입니다.
+      창문 두 짝이 양옆으로 밀려 열리고, 방 안에 괴물이 보입니다.
+      한 번에 한 짝만 열리고 나머지는 닫힌 채로 둡니다.
       휴대폰은 두 번째 탭에 상세 페이지로 넘어갑니다.
-    · 실루엣은 상세 페이지 그림(images/famous-*.png)을 까맣게 칠해 씁니다.
-    · 창살은 이미지 없이 SVG 무늬(아래 --p-...)로 직접 그립니다.
+    · 열린 방 안은 시안 672:5214 대로 괴물 색 물빛 + 먹그림 + 창살 + 도장입니다.
+      색은 css/style.css 의 :root 에 --tint-<키> 로 모아 두었고,
+      상세 페이지 그림칸도 같은 값을 씁니다.
+    · 양옆 큰 문은 시안의 그래픽(images/fw-door.svg)을 그대로 씁니다.
+    · 닫힌 창의 창살은 이미지 없이 SVG 무늬(아래 --p-...)로 직접 그립니다.
       무늬를 바꾸려면 창문의 style="--pat: var(--p-무늬이름)" 만 바꾸면 됩니다.
     · 이 페이지 전용 스타일은 모두 fw- 로 시작합니다.
     · 이전 목록(검정 카드 그리드)은 famous-encyclopedia.backup.html 에 있습니다.
@@ -82,11 +86,56 @@
       box-shadow: inset 0 0 0 2px var(--wood-dark);
     }
 
-    /* 방 안 — 흰 바탕 위에 괴물 실루엣 */
+    /* ---------- 방 안 (창문이 열렸을 때) ----------
+       시안 672:5214 의 칸과 같은 구성입니다. 아래에서 위로
+         흰 바탕 → 괴물 색 물빛 → 먹그림 → 팔각 창살(아주 옅게) → 도장
+       색은 괴물마다 다르고, 창문마다 --tint-rgb 로 지정합니다.
+       상세 페이지 그림칸(.fg-figure)과 같은 값을 씁니다. */
     .fw-room {
       position: absolute;
       inset: 0;
+      overflow: hidden;
       background: #fff;
+      /* z-index 를 0 으로 못박아 방 안의 겹(물빛·그림·창살·도장)이
+         뒤에 오는 문짝 위로 올라오지 않게 합니다. 닫힌 창은 닫혀 보여야 합니다.
+         isolation 은 물빛의 multiply 가 방 밖까지 번지지 않게 가둡니다. */
+      z-index: 0;
+      isolation: isolate;
+    }
+    .fw-tint {                        /* 괴물 색 물빛 */
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(var(--tint-rgb, var(--tint-gumiho)), 0) 11.213%,
+        rgb(var(--tint-rgb, var(--tint-gumiho))) 114.69%
+      );
+      mix-blend-mode: multiply;
+      opacity: .31;
+      z-index: 1;
+    }
+    .fw-lattice {                     /* 팔각 창살 — 그림 위에 13% 로 덮입니다 */
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 116%;
+      height: auto;
+      max-width: none;
+      transform: translate(-50%, -50%);
+      opacity: .13;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .fw-stamp {                       /* 오른쪽 아래 도장 (요괴 / 정령 / 귀신) */
+      position: absolute;
+      right: 3.55%;
+      bottom: 5.2%;
+      width: 12.06%;
+      height: auto;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .45s ease .3s;
     }
 
     .fw-ghost {
@@ -97,8 +146,8 @@
       width: auto;
       max-width: none;
       transform: translate(-50%, 8%) scale(.94);
-      z-index: 1;
-      filter: url(#fw-ink) blur(1.5px);
+      z-index: 2;
+      filter: blur(1.5px);
       opacity: 0;
       transition: opacity .5s ease .15s, transform .9s cubic-bezier(.2, .8, .2, 1) .1s, filter .9s ease .1s;
     }
@@ -151,48 +200,29 @@
     .fw-win:hover .fw-ghost, .fw-win:focus-visible .fw-ghost, .fw-win.is-open .fw-ghost {
       opacity: 1;
       transform: translate(-50%, 0) scale(1);
-      filter: url(#fw-ink) blur(0);
+      filter: blur(0);
     }
+    .fw-win:hover .fw-stamp, .fw-win:focus-visible .fw-stamp, .fw-win.is-open .fw-stamp { opacity: 1; }
     .fw-win:hover .fw-name, .fw-win:focus-visible .fw-name, .fw-win.is-open .fw-name { opacity: 1; transform: none; }
     .fw-win:focus-visible { box-shadow: inset 0 0 0 3px #fff; }
 
-    /* ---------- 양옆 큰 문 (띠살 분합문) ---------- */
+    /* ---------- 양옆 큰 문 (띠살 분합문) ----------
+       시안 672:5214 의 문 그래픽(images/fw-door.svg)을 그대로 씁니다.
+       원본은 192×1014 로 그려졌지만 preserveAspectRatio="none" 이라
+       칸 크기에 맞춰 늘어납니다 (시안에서도 같은 방식입니다). */
     .fw-door {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      padding: 7% 11% 5%;
+      background: var(--hanji);
     }
-    .fw-door-lattice {                /* 띠살 — 세로살 + 위·가운데·아래 가로 띠 */
-      flex: 1;
-      background:
-        /* 가로 띠 3묶음 */
-        /* 가로 띠 3묶음 */
-        linear-gradient(180deg,
-          transparent 6%, var(--wood) 6% 7%, transparent 7% 10%, var(--wood) 10% 11%, transparent 11% 14%, var(--wood) 14% 15%, transparent 15%,
-          transparent 44%, var(--wood) 44% 45%, transparent 45% 48%, var(--wood) 48% 49%, transparent 49% 52%, var(--wood) 52% 53%, transparent 53%,
-          transparent 84%, var(--wood) 84% 85%, transparent 85% 88%, var(--wood) 88% 89%, transparent 89% 92%, var(--wood) 92% 93%, transparent 93%),
-        /* 세로살 */
-        repeating-linear-gradient(90deg, var(--wood) 0 6px, transparent 6px 14.2%),
-        var(--hanji);
-      box-shadow: inset 0 0 0 6px var(--wood);
-    }
-    .fw-door-panel {                  /* 아래 궁판 */
-      height: 17%;
-      margin-top: 8%;
-      
-    }
-    .fw-door::after {                 /* 문고리 */
-      content: "";
+    /* 칸 높이에 맞춰 늘어나야 하므로 띄워서 네 변에 붙입니다.
+       (흐름에 두면 원본 높이 1014px 가 그대로 칸을 밀어 올립니다) */
+    .fw-door img {
       position: absolute;
-      top: 52%;
-      width: 10px;
-      height: 10px;
-      border: 3px solid var(--hanji);
-      border-radius: 50%;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
     }
-    .fw-door.left::after  { right: 6%; }
-    .fw-door.right::after { left: 6%; }
 
     .fw-hint {
       position: relative;
@@ -225,12 +255,6 @@
   </style>
 </head>
 <body class="fg-page">
-  <!-- 먹그림을 까만 실루엣으로 — 색은 검정, 옅은 먹도 진하게(투명도 ×2.4) -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <filter id="fw-ink" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values="0 0 0 0 .05  0 0 0 0 .03  0 0 0 0 .02  0 0 0 2.4 0" />
-    </filter>
-  </svg>
   <div class="fg-wrap">
 
     <!-- 한지 배경 두 겹 (상세 페이지와 같음) -->
@@ -252,25 +276,34 @@
     <main class="fw-wall">
 
       <!-- 왼쪽 큰 문 -->
-      <div class="fw-door left fw-wood" aria-hidden="true">
-        <span class="fw-door-lattice"></span>
-        <span class="fw-door-panel fw-wood"></span>
+      <div class="fw-door left" aria-hidden="true">
+        <img src="images/fw-door.svg" alt="" />
       </div>
 
       <!-- 1열: 고정 창 · 처녀귀신 · 고정 창 · 달걀귀신 -->
       <div class="fw-col">
         <span class="fw-panel" style="flex: 9; --pat: var(--p-mesh); --tile: 18px" aria-hidden="true"></span>
-        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-wanja); --tile: 60px" href="famous-encyclopedia-detail.html?ghost=cheonyeo" aria-label="처녀귀신">
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-wanja); --tile: 60px; --tint-rgb: var(--tint-cheonyeo)" href="famous-encyclopedia-detail.html?ghost=cheonyeo" aria-label="처녀귀신">
           <span class="fw-frame">
-            <span class="fw-room"><img class="fw-ghost" src="images/famous-cheonyeo.png" alt="" /></span>
+            <span class="fw-room">
+              <i class="fw-tint"></i>
+              <img class="fw-ghost" src="images/famous-cheonyeo.png" alt="" />
+              <img class="fw-lattice" src="images/fg-lattice.png" alt="" />
+              <img class="fw-stamp" src="images/fg-stamp-gwisin.svg" alt="" />
+            </span>
             <span class="fw-name">처녀귀신</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
           </span>
         </a>
         <span class="fw-panel" style="flex: 9; --pat: var(--p-chain); --tile: 40px 24px" aria-hidden="true"></span>
-        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-ja); --tile: 44px 56px" href="famous-encyclopedia-detail.html?ghost=dalgyal" aria-label="달걀귀신">
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-ja); --tile: 44px 56px; --tint-rgb: var(--tint-dalgyal)" href="famous-encyclopedia-detail.html?ghost=dalgyal" aria-label="달걀귀신">
           <span class="fw-frame">
-            <span class="fw-room"><img class="fw-ghost" src="images/famous-dalgyal.png" alt="" /></span>
+            <span class="fw-room">
+              <i class="fw-tint"></i>
+              <img class="fw-ghost" src="images/famous-dalgyal.png" alt="" />
+              <img class="fw-lattice" src="images/fg-lattice.png" alt="" />
+              <img class="fw-stamp" src="images/fg-stamp-gwisin.svg" alt="" />
+            </span>
             <span class="fw-name">달걀귀신</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
           </span>
@@ -280,9 +313,14 @@
       <!-- 2열(가운데): 고정 창 · 구미호(큰 창) · 고정 창 두 개 -->
       <div class="fw-col">
         <span class="fw-panel" style="flex: 23; --pat: var(--p-brick); --tile: 52px 26px" aria-hidden="true"></span>
-        <a class="fw-win fw-wood big" style="flex: 48; --pat: var(--p-bitsal); --tile: 46px" href="famous-encyclopedia-detail.html?ghost=gumiho" aria-label="구미호">
+        <a class="fw-win fw-wood big" style="flex: 48; --pat: var(--p-bitsal); --tile: 46px; --tint-rgb: var(--tint-gumiho)" href="famous-encyclopedia-detail.html?ghost=gumiho" aria-label="구미호">
           <span class="fw-frame">
-            <span class="fw-room"><img class="fw-ghost" src="images/famous-gumiho.png" alt="" /></span>
+            <span class="fw-room">
+              <i class="fw-tint"></i>
+              <img class="fw-ghost" src="images/famous-gumiho.png" alt="" />
+              <img class="fw-lattice" src="images/fg-lattice.png" alt="" />
+              <img class="fw-stamp" src="images/fg-stamp-yogoe.svg" alt="" />
+            </span>
             <span class="fw-name">구미호</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
           </span>
@@ -293,16 +331,26 @@
 
       <!-- 3열: 어둑시니 · 도깨비 · 고정 창 -->
       <div class="fw-col">
-        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-jeong); --tile: 90px 110px" href="famous-encyclopedia-detail.html?ghost=eoduksini" aria-label="어둑시니">
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-jeong); --tile: 90px 110px; --tint-rgb: var(--tint-eoduksini)" href="famous-encyclopedia-detail.html?ghost=eoduksini" aria-label="어둑시니">
           <span class="fw-frame">
-            <span class="fw-room"><img class="fw-ghost" src="images/famous-eoduksini.png" alt="" /></span>
+            <span class="fw-room">
+              <i class="fw-tint"></i>
+              <img class="fw-ghost" src="images/famous-eoduksini.png" alt="" />
+              <img class="fw-lattice" src="images/fg-lattice.png" alt="" />
+              <img class="fw-stamp" src="images/fg-stamp-yogoe.svg" alt="" />
+            </span>
             <span class="fw-name">어둑시니</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
           </span>
         </a>
-        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-palgak); --tile: 64px" href="famous-encyclopedia-detail.html?ghost=dokkaebi" aria-label="도깨비">
+        <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-palgak); --tile: 64px; --tint-rgb: var(--tint-dokkaebi)" href="famous-encyclopedia-detail.html?ghost=dokkaebi" aria-label="도깨비">
           <span class="fw-frame">
-            <span class="fw-room"><img class="fw-ghost" src="images/famous-dokkaebi.png" alt="" /></span>
+            <span class="fw-room">
+              <i class="fw-tint"></i>
+              <img class="fw-ghost" src="images/famous-dokkaebi.png" alt="" />
+              <img class="fw-lattice" src="images/fg-lattice.png" alt="" />
+              <img class="fw-stamp" src="images/fg-stamp-jeongryeong.svg" alt="" />
+            </span>
             <span class="fw-name">도깨비</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
           </span>
@@ -311,9 +359,8 @@
       </div>
 
       <!-- 오른쪽 큰 문 -->
-      <div class="fw-door right fw-wood" aria-hidden="true">
-        <span class="fw-door-lattice"></span>
-        <span class="fw-door-panel fw-wood"></span>
+      <div class="fw-door right" aria-hidden="true">
+        <img src="images/fw-door.svg" alt="" />
       </div>
     </main>
 

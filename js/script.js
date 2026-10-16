@@ -1294,6 +1294,8 @@ function setupGhostDetail() {
 
    ★ 새 귀신을 추가하려면 FAMOUS 에 한 덩어리만 더 적으면 됩니다.
      rows  : 정보 줄. wide: true 면 이름표 폭을 넓게 씁니다.
+     stamp : 오른쪽 위 도장. 괴물의 갈래에 맞춰 셋 중 하나를 고릅니다.
+             "yogoe"(妖怪) / "jeongryeong"(精靈) / "gwisin"(鬼神)
      level : 위험도 (별 5개 중 몇 개)
      texts : 왼쪽 아래 설명 글
      bars  : 오른쪽 아래 막대 그래프. 0~100 사이 값.
@@ -1302,6 +1304,7 @@ var FAMOUS = {
   gumiho: {
     name: "구미호",
     image: "images/famous-gumiho.png",
+    stamp: "yogoe",
     art: { left: 71.1, top: -141.4, width: 583.1, height: 777.4 },
     rows: [
       { label: "이름", value: "구미호" },
@@ -1335,6 +1338,7 @@ var FAMOUS = {
   cheonyeo: {
     name: "처녀귀신",
     image: "images/famous-cheonyeo.png",
+    stamp: "gwisin",
     art: { left: 55.0, top: -92.5, width: 536.3, height: 715.1 },
     rows: [
       { label: "이름", value: "처녀귀신" },
@@ -1368,6 +1372,7 @@ var FAMOUS = {
   dalgyal: {
     name: "달걀귀신",
     image: "images/famous-dalgyal.png",
+    stamp: "gwisin",
     art: { left: 63.1, top: -90.9, width: 524.7, height: 699.6 },
     rows: [
       { label: "이름", value: "달걀귀신" },
@@ -1401,6 +1406,7 @@ var FAMOUS = {
   eoduksini: {
     name: "어둑시니",
     image: "images/famous-eoduksini.png",
+    stamp: "yogoe",
     art: { left: 52.5, top: -165.6, width: 589.4, height: 785.9 },
     rows: [
       { label: "이름", value: "어둑시니" },
@@ -1434,6 +1440,7 @@ var FAMOUS = {
   dokkaebi: {
     name: "도깨비",
     image: "images/famous-dokkaebi.png",
+    stamp: "jeongryeong",
     // 새 그림의 먹 영역(x 306~1126, y 105~1428)을 기준으로 다시 잡은 값
     art: { left: 41.4, top: -46.4, width: 530.6, height: 707.5 },
     rows: [
@@ -1490,6 +1497,22 @@ function setupFamousDetail() {
   var img = document.getElementById("fg-image");
   img.src = ghost.image;
   img.alt = ghost.name + " 일러스트";
+
+  // 그림칸에 덮이는 물빛 — 괴물마다 정해진 색입니다.
+  // 색 자체는 css 의 :root 에 --tint-<키> 로 적어 두었습니다 (시안 672:5214).
+  var figure = document.querySelector(".fg-figure");
+  if (figure) figure.style.setProperty("--tint-rgb", "var(--tint-" + key + ")");
+
+  // 오른쪽 위 도장 — 괴물의 갈래에 맞는 그림을 올립니다.
+  // stamp 를 적어두지 않은 괴물은 도장 없이 둡니다.
+  var stamp = document.getElementById("fg-stamp");
+  if (stamp) {
+    if (ghost.stamp) {
+      stamp.src = "images/fg-stamp-" + ghost.stamp + ".svg";
+    } else {
+      stamp.removeAttribute("src");
+    }
+  }
 
   // 그림 확대·위치 (먹이 그려진 영역을 그림 칸 높이에 맞춘 값)
   if (ghost.art) {
@@ -1724,8 +1747,12 @@ function buildPager(opts) {
   var prevKey = order[(here - 1 + order.length) % order.length];
   var nextKey = order[(here + 1) % order.length];
 
+  // 결과 화면에서 들어왔다면 그 표시를 옆 귀신에게도 들고 갑니다.
+  // (이전/다음으로 몇 번을 넘겨도 ← 는 보던 결과로 돌아갑니다)
+  var carry = (resultOrigin() || {}).query || "";
+
   function linkTo(el, nameEl, target, label) {
-    el.href = opts.page + "?ghost=" + target;
+    el.href = opts.page + "?ghost=" + target + (carry ? "&" + carry : "");
     el.setAttribute("aria-label", label + " " + opts.noun + ": " + opts.nameOf(target));
     if (nameEl) nameEl.textContent = opts.nameOf(target);
   }
@@ -1740,6 +1767,64 @@ function buildPager(opts) {
       if (e.key === "ArrowRight") location.href = nextEl.href;
     });
   }
+}
+
+
+/* ===========================================================
+   8-0-2. 결과 화면에서 들어왔을 때의 '뒤로 가기'
+
+   테스트 결과 · 시험 결과에서 상세 페이지로 넘어올 때는 주소 뒤에
+   어디서 왔는지가 함께 붙어 옵니다.
+     from=test&type=<유형>   — 귀신 유형 테스트 결과
+     from=exam&score=<점수>  — 인간 유사도 시험 결과
+   그 표시가 있으면 머리말의 ← 가 목록이 아니라 보던 결과 화면으로
+   돌아갑니다. 결과 화면은 주소에 담긴 값으로 다시 그려지므로
+   다시 테스트를 치르지 않아도 같은 결과가 그대로 나옵니다.
+
+   주소에 적힌 값을 그대로 믿지 않고, 아는 값일 때만 주소를
+   새로 만들어 씁니다. 모르는 값이면 평소처럼 목록으로 갑니다.
+   =========================================================== */
+function resultOrigin() {
+  var p = new URLSearchParams(location.search);
+  var from = p.get("from");
+
+  if (from === "test") {
+    // 테스트 결과 — 8가지 유형 중 하나인지 확인합니다
+    var type = p.get("type");
+    var known = typeof humanTypes !== "undefined" && !!humanTypes[type];
+    var t = known ? "&type=" + encodeURIComponent(type) : "";
+    return {
+      url: "human-test-result.html" + (known ? "?type=" + encodeURIComponent(type) : ""),
+      label: "테스트 결과로 돌아가기",
+      query: "from=test" + t,
+    };
+  }
+
+  if (from === "exam") {
+    // 시험 결과 — 0~100 사이의 점수인지 확인합니다
+    var raw = p.get("score");
+    var score = Number(raw);
+    var ok = raw !== null && raw !== "" && isFinite(score) && score >= 0 && score <= 100;
+    var s = ok ? "&score=" + Math.round(score) : "";
+    return {
+      url: "ghost-exam-result.html" + (ok ? "?score=" + Math.round(score) : ""),
+      label: "시험 결과로 돌아가기",
+      query: "from=exam" + s,
+    };
+  }
+
+  return null; // 결과 화면을 거치지 않고 들어온 경우
+}
+
+function setupBackToResult() {
+  var origin = resultOrigin();
+  if (!origin) return;
+
+  var back = document.querySelector("a.icon.left"); // 머리말 왼쪽 ← 단추
+  if (!back) return;
+
+  back.href = origin.url;
+  back.setAttribute("aria-label", origin.label);
 }
 
 
@@ -1776,7 +1861,7 @@ function setupGlitch() {
 /* ===========================================================
    8-1-2. 가만히 두면 저절로 홀리기 (human-encyclopedia.html)
 
-   마우스를 움직이지도 누르지도 않은 채 한동안 두면,
+   마우스를 움직이지도 누르지도 않은 채 5~7초쯤 두면,
    카드가 저 혼자 정체를 드러내며 글리치를 일으킵니다.
 
    한 장씩 이어받는 방식입니다. 한 장이 홀려 있는 동안(HOLD) 그 절반쯤
@@ -1799,9 +1884,17 @@ function setupIdleHaunt() {
   // 움직임을 줄이도록 설정한 사용자에게는 저절로 바뀌지 않게 둡니다.
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var IDLE_TIME = 10000; // 10초 동안 아무 것도 안 하면 시작
+  // 아무 것도 안 하고 5~7초쯤 지나면 시작합니다.
+  // 매번 그 사이에서 하나를 집어 쓰므로 똑같은 박자로 되풀이되지 않습니다.
+  var IDLE_MIN = 5000;
+  var IDLE_MAX = 7000;
   var HOLD = 5600;       // 한 장이 홀려 있는 시간 (글리치 두 바퀴 = 2.8초 × 2)
   var STEP = 2800;       // 다음 장이 켜지는 간격 (글리치 한 바퀴)
+
+  function idleWait() {
+    return IDLE_MIN + Math.random() * (IDLE_MAX - IDLE_MIN);
+  }
+
   var idleTimer = null;
   var stepTimer = null;
   var holdTimers = [];   // 켜 둔 카드를 끄기로 예약해 둔 것들
@@ -1847,7 +1940,7 @@ function setupIdleHaunt() {
     clearTimeout(idleTimer);
     clearTimeout(stepTimer);
     clearHaunt();
-    idleTimer = setTimeout(hauntOne, IDLE_TIME);
+    idleTimer = setTimeout(hauntOne, idleWait());
   }
 
   ["mousemove", "mousedown", "click", "keydown", "wheel", "touchstart"].forEach(function (name) {
@@ -1866,7 +1959,7 @@ function setupIdleHaunt() {
     }
   });
 
-  wake(); // 페이지가 열리면 30초부터 세기 시작
+  wake(); // 페이지가 열리면 그때부터 세기 시작
 }
 
 
@@ -2465,6 +2558,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupStoryPages();
   setupGhostDetail();
   setupFamousDetail();
+  setupBackToResult();   // ← 를 결과 화면으로 돌리는 일. 상세 페이지를 다 채운 뒤에 합니다
   startHumanTest();
   showHumanResult();
   startGhostExam();

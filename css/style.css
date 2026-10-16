@@ -149,6 +149,15 @@ body.side-nav-open .ordinance-corner.right {
 :root {
   --page-max: 1440px;    /* 본문이 놓이는 칸의 최대 폭 */
   --header-inset: 40px;  /* 그 칸의 끝에서 아이콘까지의 거리 */
+
+  /* --- 유명 한국 괴물: 괴물마다 정해진 색 (시안 672:5214) ---
+     목록 페이지의 열린 창과 상세 페이지의 그림칸이 같은 색을 씁니다.
+     색을 투명하게도 써야 해서 #hex 가 아니라 r, g, b 숫자로 둡니다. */
+  --tint-gumiho:    230,   0, 132;  /* 구미호  — 분홍 */
+  --tint-cheonyeo:  192,   0, 226;  /* 처녀귀신 — 보라 */
+  --tint-dalgyal:   255, 204,   0;  /* 달걀귀신 — 노랑 */
+  --tint-eoduksini:   0,  43, 255;  /* 어둑시니 — 파랑 */
+  --tint-dokkaebi:    0, 233,  38;  /* 도깨비  — 초록 */
 }
 
 /* 칸이 화면보다 좁으면 남는 여백의 절반만큼 안쪽으로 들어옵니다 */
@@ -168,7 +177,7 @@ body.side-nav-open .ordinance-corner.right {
 /* 테두리가 둘러진 머리말은 그 두께만큼 안쪽에서 시작하므로,
    같은 두께를 빼 줘야 다른 페이지와 화면상 같은 자리에 놓입니다. */
 .gd-header { --frame: 2px; }   /* 머리말 테두리 2px */
-.fg-header { --frame: 16px; }  /* 페이지 테두리 6px + 머리말 테두리 10px */
+.fg-header { --frame: 0px; }  /* 시안 666:4293 부터 테두리가 획 그림으로 바뀌어 자리를 차지하지 않습니다 */
 
 .dogam-header .icon.left,
 .rules-header .icon.left,
@@ -2694,7 +2703,8 @@ body.gd-page {
 .fg-page .gd-pager {
   position: relative;
   z-index: 1;
-  margin-top: 20px;
+  /* 본문 아래 가로획과 이 줄 사이에 빈 자리를 두지 않습니다 */
+  margin-top: 0;
 }
 
 @media (max-width: 620px) {
@@ -2772,7 +2782,6 @@ body.fg-page {
   margin: 0 auto;
   /* 실제 테두리는 아래 ::before의 붓 자국 프레임 이미지로 그립니다.
      border는 색을 투명으로만 두어 자리(레이아웃 폭)만 차지하게 합니다. */
-  border: 6px solid transparent;
   padding-bottom: 20px;
   overflow: hidden;   /* 배경 두 겹과 세로 획이 밖으로 나가지 않게 */
 }
@@ -2782,10 +2791,10 @@ body.fg-page {
 .fg-wrap::before {
   content: "";
   position: absolute;
-  left: -7.2px;
-  top: -7.2px;
-  right: -7.2px;
-  bottom: -7.2px;
+  left: -1.51px;
+  top: -5px;
+  right: -2.63px;
+  bottom: -1.91px;
   background-image: url(../images/fg-frame-wrap.svg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -2819,27 +2828,41 @@ body.fg-page {
    1~2px 안에 뭉개져서 그냥 매끈한 직선처럼 보입니다 (안티에일리어싱 때문).
    그래서 SVG 자체의 높이를 14px로 키워서 붓터치의 울퉁불퉁함이 실제로
    눈에 보이게 합니다. */
+/* 두 칸을 가르는 세로 획 (시안 666:4388 — 가로 1002 × 두께 6 을 눕힌 것)
+   왼쪽 위 모서리를 기준으로 돌리면 길이에 상관없이 항상 같은 자리에서
+   시작합니다. 돌린 뒤에는 두께가 왼쪽으로 뻗으므로 6px 만큼 되밀어
+   시안대로 x 714~720 에 놓이게 합니다. */
 .fg-rule {
   position: absolute;
-  /* 90도 회전은 요소 "중심"을 기준으로 돕니다.
-     그림 칸(716px)에는 네 모서리를 잘라내는 검정 덮개(.cut)가 있는데,
-     이 덮개가 그림 칸 안쪽 692~716px 구간은 늘 검게 덮고 있어서,
-     원래 중심(713)에 두면 이 획이 그 덮개 속에 파묻혀 위쪽(그림+정보표) 구간에서는
-     전혀 보이지 않습니다.
-     그래서 중심을 정보 칸이 시작되는 경계(716)로 옮겨, 획의 절반은 덮개 속에
-     (안 보여도 무방) 절반은 정보 칸의 한지 위로 나오게 합니다.
-     정보 칸에는 이 덮개가 없어서 위쪽·아래쪽 구간 모두에서 항상 보입니다:
-     716 - 1002/2 = 215 */
-  left: 215px;
-  top: 127px;           /* 머리말 아래부터 */
-  bottom: 0;
+  left: 714px;
+  top: 123px;           /* 머리말(127) 보다 4px 위에서 시작 */
   width: 1002px;
-  height: 14px;
-  margin: auto 0;       /* 위아래 남는 만큼 가운데로 */
-  transform: rotate(90deg);
+  height: 6px;
+  transform-origin: 0 0;
+  transform: rotate(90deg) translate(0, -6px);
   z-index: 2;
   pointer-events: none;
 }
+
+/* --- 오른쪽 위 도장 (시안 668:5078 "yogoe_tall_ju 1") ---
+   시안 좌표: x 1178.94 / y -31.25 / 150.06 × 246.25.
+   1440 기준 오른쪽에서 111px 떨어진 자리라, 폭이 줄어도 메뉴 단추 곁에
+   붙어 있도록 right 로 잡았습니다.
+   위쪽 31px 은 종이 밖으로 나가 .fg-wrap 의 overflow 에 잘립니다 (시안 그대로).
+   머리말·본문(z-index 1)과 세로 획(2) 위, 바깥 테두리(5) 아래에 놓입니다. */
+.fg-stamp {
+  position: absolute;
+  right: 111px;
+  top: -31.25px;
+  width: 150.06px;
+  height: 246.25px;
+  object-fit: cover;   /* 350×600 원본을 이 칸에 맞춰 위아래를 조금 깎습니다 */
+  z-index: 4;
+  pointer-events: none;
+}
+/* 아직 어떤 괴물인지 정해지기 전(src 가 빈 값)에는 깨진 그림이 보이지 않게 */
+.fg-stamp:not([src]),
+.fg-stamp[src=""] { display: none; }
 
 /* 배경 위로 내용이 오도록 */
 .fg-header,
@@ -2851,7 +2874,6 @@ body.fg-page {
   position: relative;
   height: 127px;
   /* 실제 테두리는 ::before의 붓 자국 프레임 이미지로 그립니다 (아래) */
-  border: 10px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2860,10 +2882,10 @@ body.fg-page {
 .fg-header::before {
   content: "";
   position: absolute;
-  left: -9.9px;
-  top: -9.9px;
-  right: -9.9px;
-  bottom: -9.9px;
+  left: -1.11px;
+  top: -5px;
+  right: -1.77px;
+  bottom: -1.92px;
   background-image: url(../images/fg-frame-header.svg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -2898,7 +2920,7 @@ body.fg-page {
 .fg-figure {
   position: relative;
   flex: none;
-  width: 716px;
+  width: 714px;
   margin: 0;
   overflow: hidden;
 }
@@ -2925,7 +2947,13 @@ body.fg-page {
   top: 0;
   width: 714px;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(230, 0, 132, 0) 11.213%, #e60084 114.69%);
+  /* 색은 괴물마다 다릅니다. JS 가 --tint-rgb 를 갈아 끼우고,
+     못 알아보는 값이 오면 구미호의 분홍을 씁니다. */
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--tint-rgb, var(--tint-gumiho)), 0) 11.213%,
+    rgb(var(--tint-rgb, var(--tint-gumiho))) 114.69%
+  );
   mix-blend-mode: multiply;
   opacity: 0.31;
 }
@@ -2973,16 +3001,15 @@ body.fg-page {
   display: flex;
   align-items: stretch;
   /* 실제 테두리는 ::before의 붓 자국 프레임 이미지로 그립니다 (아래) */
-  border: 10px solid transparent;
   overflow: hidden;
 }
 .fg-bottom::before {
   content: "";
   position: absolute;
-  left: -9.9px;
-  top: -9.9px;
-  right: -9.9px;
-  bottom: -9.9px;
+  left: -1.11px;
+  top: -5px;
+  right: -1.86px;
+  bottom: -1.92px;
   background-image: url(../images/fg-frame-bottom.svg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -3048,6 +3075,9 @@ body.fg-page {
   .fg-bottom { flex-direction: column; }
   .fg-bars { border-top: 6px solid #000; }
   .fg-rule { display: none; }
+  /* 칸이 위아래로 쌓이면 도장이 그림 위에 겹쳐 내려앉으므로 감춥니다
+     (세로 획·창살과 같은 처리) */
+  .fg-stamp { display: none; }
 }
 @media (max-width: 620px) {
   .fg-title { font-size: 30px; }
