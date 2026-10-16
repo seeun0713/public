@@ -84,6 +84,8 @@
       height: 100%;
       overflow: hidden;
       box-shadow: inset 0 0 0 2px var(--wood-dark);
+      /* 비치는 그림자(.fw-shadow)의 multiply 가 창 밖으로 번지지 않게 가둡니다 */
+      isolation: isolate;
     }
 
     /* ---------- 방 안 (창문이 열렸을 때) ----------
@@ -194,6 +196,30 @@
     .fw-sash.l::after { right: 3px; }
     .fw-sash.r::after { left: 3px; }
 
+    /* ---------- 닫힌 창에 비치는 그림자 ----------
+       문짝 위에 같은 그림을 아주 옅게 겹칩니다. multiply 라서 종이만
+       은은하게 어두워지고 창살(검정)은 그대로 남아, 창호지 뒤에
+       누가 서 있는 것처럼 보입니다.
+       창이 열리면 이 그림자는 사라지고 방 안의 진짜 그림이 드러납니다. */
+    .fw-shadow {
+      position: absolute;
+      left: 50%;
+      bottom: -4%;
+      height: 108%;
+      width: auto;
+      max-width: none;
+      transform: translate(-50%, 0);
+      z-index: 3;                     /* 문짝(0)보다 위 */
+      opacity: .22;
+      filter: blur(4px);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      transition: opacity .45s ease;
+    }
+    .fw-win:hover .fw-shadow,
+    .fw-win:focus-visible .fw-shadow,
+    .fw-win.is-open .fw-shadow { opacity: 0; }
+
     /* 열림 — 마우스 올림 / 키보드 초점 / 휴대폰 첫 탭 */
     .fw-win:hover .fw-sash.l, .fw-win:focus-visible .fw-sash.l, .fw-win.is-open .fw-sash.l { transform: translateX(-101%); }
     .fw-win:hover .fw-sash.r, .fw-win:focus-visible .fw-sash.r, .fw-win.is-open .fw-sash.r { transform: translateX(101%); }
@@ -250,7 +276,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .fw-sash, .fw-ghost, .fw-name { transition-duration: .01s; transition-delay: 0s; }
+      .fw-sash, .fw-ghost, .fw-name, .fw-shadow, .fw-stamp { transition-duration: .01s; transition-delay: 0s; }
     }
   </style>
 </head>
@@ -293,6 +319,7 @@
             </span>
             <span class="fw-name">처녀귀신</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
+            <img class="fw-shadow" src="images/famous-cheonyeo.png" alt="" />
           </span>
         </a>
         <span class="fw-panel" style="flex: 9; --pat: var(--p-chain); --tile: 40px 24px" aria-hidden="true"></span>
@@ -306,6 +333,7 @@
             </span>
             <span class="fw-name">달걀귀신</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
+            <img class="fw-shadow" src="images/famous-dalgyal.png" alt="" />
           </span>
         </a>
       </div>
@@ -323,6 +351,7 @@
             </span>
             <span class="fw-name">구미호</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
+            <img class="fw-shadow" src="images/famous-gumiho.png" alt="" />
           </span>
         </a>
         <span class="fw-panel" style="flex: 19; --pat: var(--p-octx); --tile: 56px" aria-hidden="true"></span>
@@ -341,6 +370,7 @@
             </span>
             <span class="fw-name">어둑시니</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
+            <img class="fw-shadow" src="images/famous-eoduksini.png" alt="" />
           </span>
         </a>
         <a class="fw-win fw-wood" style="flex: 41; --pat: var(--p-palgak); --tile: 64px; --tint-rgb: var(--tint-dokkaebi)" href="famous-encyclopedia-detail.html?ghost=dokkaebi" aria-label="도깨비">
@@ -353,6 +383,7 @@
             </span>
             <span class="fw-name">도깨비</span>
             <span class="fw-sash l"></span><span class="fw-sash r"></span>
+            <img class="fw-shadow" src="images/famous-dokkaebi.png" alt="" />
           </span>
         </a>
         <span class="fw-panel" style="flex: 17; --pat: var(--p-nest); --tile: 60px" aria-hidden="true"></span>
